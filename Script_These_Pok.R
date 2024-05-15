@@ -5,7 +5,7 @@ date: "2024-05-13"
 
 # 0) Charger les données et les librairies
 
-
+# Modification sur place...
 
 library("ggpubr") # pour la fonction ggarrange 
 # ggpubr qui permet de rassembler plusieurs plots
