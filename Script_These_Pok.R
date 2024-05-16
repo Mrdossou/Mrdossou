@@ -49,9 +49,9 @@ str(Pok2001.2022)
 
 # Pok1 2001-09-26 E. coli "> 2000" remplacé par 2001
 
-En théorie, le tableau devrait comprendre 12 stations x 4 années x 
-4 sorties/année = 192 objets "stations-dates". Comprendre pourquoi
-le fichier contient 198 rangées plutôt que 192.
+# En théorie, le tableau devrait comprendre 12 stations x 4 années x 
+# 4 sorties/année = 192 objets "stations-dates". Comprendre pourquoi
+# le fichier contient 198 rangées plutôt que 192.
 
 
 # Lire les premières lignes de la variables "AnalysisSurfaceWater":
@@ -180,8 +180,6 @@ table(Pok2001.2022$Date, Pok2001.2022$Year)
 table(Pok2001.2022$Station, Pok2001.2022$Year)
 
 # À chaque année, chaque station a été visitée 4 ou 5 fois.
-
-
 
 ## 1.2) Créer des sous-groupes par tributaire
 
@@ -1453,12 +1451,6 @@ Period02
 #à connu de forte baisse et hausse avec la plus faible teneur de la periode et la 
 #station 02 avec la plis forte teneur durant la periode. 
 
-
-
-
-
-
-
 # Graphique de bas niveau: syntax simple, mais possibilités plus limitées
 # Plutôt que de créer 48 sous-tableaus (12 stations x 4 années), 
 # contrôler la fenêtre temporelle avec "xlim" pour chacune des 12 stations...
@@ -1486,16 +1478,21 @@ points(Waugh$Oxyg_dissous_YSI_mg_L~Waugh$Date, type="b", col="blue", pch=2, lty=
 # La fonction "scatterplot" permet facilement de représenter une association 
 # pour différents sous-groupes (ici, les stations), mais ne permet pas de
 # connecter les points...
+# La fonction "scatterplot" nécessite le chargement de la librairie "car"
+
 library("car")
 
-scatterplot(Period1$Oxyg_dissous_YSI_mg_L~Period1$Temp_eau_YSI_degC)
+scatterplot(Pok2001.2022$Oxyg_dissous_YSI_mg_L~Pok2001.2022$Temp_eau_YSI_degC, smooth=F)
+# La teneur en oxygène dissous a tendance à diminuer à mesure que la température
+# de l'eau augmente.
 
-subset(Period1, select=c("Station2", "Date", "Oxyg_dissous_YSI_mg_L","Temp_eau_YSI_degC"))
+# Voyons maintenant la distribution des points en fonction des années. 
+# Le code demeure le même, sauf pour un ajout:
+scatterplot(Pok2001.2022$Oxyg_dissous_YSI_mg_L~Pok2001.2022$Temp_eau_YSI_degC | Pok2001.2022$Year, smooth=F)
 
-names(Period1)
+# En 2001 et 2002, la tendance ne suit pas celle attendue. En effet, pendant ces deux années,
+# la concentration d'oxygène augmente avec la température, ce qui vient l'encontre de la loi
+# sur la solubilité des gaz.
 
-scatterplot(Period1$AlkalinityCaCO3_mg_L~Period1$Date | Period1$Station2,
-            smooth=T)
 
-Temp_eau_YSI_degC
 
