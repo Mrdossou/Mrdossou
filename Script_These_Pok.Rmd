@@ -1,6 +1,8 @@
 ---
 title: "Analyse des données de qualité de l'eau de la rivière Pokemouche 2021"
 date: "2024-05-13"
+editor_options:
+  chunk_output_type: inline
 ---
 
 # 0) Charger les données et les librairies
@@ -537,7 +539,7 @@ scatterplot(Period1$Temp_eau_YSI_degC~Period1$Date | Period1$Station2,
 #  Conductivity_microS_cm ##################
 
 ##Graphique de la variation de la Conductivité sur chacun des station en 2001
-```{r}
+```{r warning=TRUE}
 Condg2001=ggplot(aes(y=Conductivity_microS_cm, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2001) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
@@ -552,7 +554,10 @@ Condg2001
 ```
 
 Commentaire du graphique:
- 
+
+ La conductivité  n’a pas vraiment varié, ils ont baissé de (9%) à tous les stations soit une variation presque constante. La station 4 a la plus faible conductivité sur tous les prélèvements de l’an 2001. Les plus grandes conductivités  sont celle de la station 01 et 10. La station 08 a augmenter de 27% en octobre pour baisser de 36.6% en novembre.
+
+NB: si les autre son presque constant faut donc regarder ce qui se passe à la station 08.
 
 
 
@@ -599,7 +604,9 @@ Condg2021
 
 Commentaire du graphique:
  
+La conductivité  a baisser à tous les stations. La station 04  à la plus basse conductivité  a toutes les saisons en 2021.  la conductivité à varié entre 50 micros SCM à 200 micros SCM. La station 01 et 10 ont les plus grandes conductivités, avant que la station 01 ne connaisse une grande baisse (66%). 
 
+NB: la plus faible conductivité est en 2021 ainsi que la plus grande et c’est en cette année on observe de grande variation.
 
 
 ##Graphique de la variation de la Conductivité sur chacun des stations en 2022
@@ -619,7 +626,7 @@ Condg2022
 
 Commentaire du graphique:
  
-
+La conductivité à légèrement varier, avec les courbes presque constants sauf à la station 01 et 10.  sur la station 04 on à la plus faible conductivité. De la fin de l’été jusqu’en octobre la conductivité a augmenter à la station 01pour baisser de 27,3% jusqu’en novembre (NB: la plus grande variation par rapport au autre station)
 
 
 
@@ -640,7 +647,7 @@ CondPeriod01
 
 Commentaire:
 
-
+La conductivité de la station 4 demeure plus la plus basse. La conductivité  de la station 01 a varié en baissé en 2001 pour augmenter en 2002 avec la plus grande conductivité sur toutes les stations des deux années de la période. La conductivité  durant toute la période a augmenté avec de petite variation en 2001 et une augmentation continue en  2002. À la fin de l’été 2001 jusqu’en octobre et de la fin de l’été 2002 jusqu’en septembre la conductivité augmente à la station 08 pour baisser d’octorbre en novembre 2001 et de septembre en novembre 2002. (NB: voir ce qui influence la variation à cette saison .) 
 
 
 
@@ -661,9 +668,7 @@ CondPeriod02
 
 Commentaire:
 
-
-
-
+La conductivité de la station 4 a la plus basse conductivité de la période. En générale la conductivité a plus baissé en 2021 qu’en 2022.  À la fin de l’été en 2021 les conductivités sont plus haut que les conductivités à la fin de l’automne et on observe aussi une augmentation de la conductivité durant les deux saisons. Ce qui n’est pas le cas en 2022 ou la variation a augmenté à tous les stations mais casi constant sauf à la station 01 avec un grand baisse(27,3%).
 
 
 ##Pour crée un graphique qui montre les ligne de variation de tout les dates(periode) entre la variable et tous les stations
@@ -684,13 +689,20 @@ pHg2001=ggplot(aes(y=pH_units, x=Date,
   scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
                                               as.Date("2001-10-01"), as.Date("2001-11-01"),
                                              as.Date("2001-12-01"))) +
+  ggtitle("2001") +
   theme_bw()
 pHg2001
-````
+
+Year2001$Date
+subset(Year2001, Date=="2001-10-31", select=c("Station", "pH_units"))
+
+help(subset)
+
+```
 
  Commentaire du graphique:
  
-
+Le pH a baissé a toutes les stations de la fin de l’été à la fin de l’automne. À la fin de l’automne le pH de la station 02 est la plus élevé de tout les station pour baisser à la plus basse pH. En 2001 le pH est compris entre 7.4 et 8.2. le plus grand pH est observé à la station 01 à la fin de l’été de aout à septembre. Le plus bas pH est celle de la station. 
 
 
 	 
@@ -705,13 +717,14 @@ pHg2002=ggplot(aes(y=pH_units, x=Date,
   scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
                                               as.Date("2001-10-01"), as.Date("2001-11-01"),
                                              as.Date("2001-12-01"))) +
+  ggtitle("2002") +
   theme_bw()
 pHg2002
 ```
 
 Commentaire du graphique:
  
-
+Le pH n’a pas varié il est prèsque constant sur tout les station sauf à la station 01, 05. Le plus bas pH est observé à la station 04 sur tooute les saisons. La station 01 à le pH le plus élevé et à augmenté de fin aout en septembre pour baisser de septembre jusqu’en novembre. Le pH de la station a eu le meme allure que le pH de la station 01
 
 
 
@@ -726,12 +739,14 @@ pHg2021=ggplot(aes(y=pH_units, x=Date,
   scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
                                               as.Date("2001-10-01"), as.Date("2001-11-01"),
                                              as.Date("2001-12-01"))) +
+  ggtitle("2021") +
   theme_bw()
 pHg2021
 ```
  
 Commentaire du graphique:
  
+Le pH le plus bas est observe sur la station 04. le pH le plus élevé est à la station 08. Le plus haut pH est observe sur les stations 08, 06, 07, le  premier septembre. 
 
 
 
@@ -746,12 +761,13 @@ pHg2022=ggplot(aes(y=pH_units, x=Date,
   scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
                                               as.Date("2001-10-01"), as.Date("2001-11-01"),
                                              as.Date("2001-12-01"))) +
+  ggtitle("2022") +
   theme_bw()
 pHg2022
 ``` 
 Commentaire du graphique:
  
-
+Le pH a augmenté à tous les stations le premier septembre sauf à la station 04 qui à le plus bas pH. La station 01 à le pH le plus élevé. LepH à varié entre 7 et 8. De la fin de l’été au début de l’automne (01 septembre) le pH a augmenté  à tous les stations et graduellement baisser ainsi de suite à tout les stations. Sauf à la station 04 le pH a baissé graduelement Durant les deux saisons.
 
 
 ##Graphique de la variation du pH sur chacun des stations entre period: 2001_2002
@@ -764,13 +780,14 @@ pHPeriod01=ggplot(aes(y=pH_units, x=Date,
   scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
                                               as.Date("2001-10-01"), as.Date("2001-11-01"),
                                              as.Date("2001-12-01"))) +
+  ggtitle("2001_2002") +
   theme_bw()
 pHPeriod01
 ```
 
 Commentaire:
 
-
+Le pH en 2001 à baissé avec une allure décroissante. En 2002 le pH a augmenté à la fin de l’été pour ensuite baisser jusqu’a la fin de l’automne. En 2002 certaine station ont augmenté de pH. La plus haut pH est obtenu en 2001 et le plus bas en 2002.
 
 
 
@@ -784,13 +801,14 @@ pHPeriod02=ggplot(aes(y=pH_units, x=Date,
   scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
                                               as.Date("2001-10-01"), as.Date("2001-11-01"),
                                              as.Date("2001-12-01"))) +
+  ggtitle("2021_2022") +
   theme_bw()
 pHPeriod02
 ```
 
 Commentaire:
 
-
+Le pH en 2021 aaugment a la fin de l’été pour en suite baissé  et augmenté à la fin de l’automne sauf le cas de la station 08 qui baisse de la fin de l’été jusqu’en octobre pour augmenté à la fin de l’automne. En 2022 l’éffet est contraire qu’en 2021, le pH augment de la fin de l’été jusqu’au 1er septembre pour baisséjusqu’à la fin de l’automne sauf à la station 04 ou deja depuis la fin de l’été le pH baisse jusqu’a la fin de l’automne.
 
 
 
@@ -810,9 +828,9 @@ Turbg2001=ggplot(aes(y=Turbidity_NTU, x=Date,
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
   geom_line() + 
   geom_point() +
-  scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
-                                              as.Date("2001-10-01"), as.Date("2001-11-01"),
-                                             as.Date("2001-12-01"))) +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y") +
+
+  ggtitle("2001") +
   theme_bw()
 Turbg2001
 ```
@@ -820,7 +838,7 @@ Turbg2001
  
 Commentaire du graphique:
  
-
+La station 01 à la turbidité la plus élevé. En plus de la fin de l’été au premier septembre la turbidité était constante et compris entre 5 et 10 NTU. À l’automne du 1er septembre au 1er octobre la turbidité de l’eau a fortement augmenté (90%) et ensuite baissé aussi de 90% à la fin de l’automne. Au niveau de toutes les autres stations la turbidité à varié entre 0 et 10 NTU. La turbidité la plus élevé est de 44NTU.
 
 
 	 
@@ -835,6 +853,7 @@ Turbg2002=ggplot(aes(y=Turbidity_NTU, x=Date,
   scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
                                               as.Date("2001-10-01"), as.Date("2001-11-01"),
                                              as.Date("2001-12-01"))) +
+  ggtitle("2002") +
   theme_bw()
 Turbg2002
 ``` 
@@ -853,6 +872,7 @@ Turbg2021=ggplot(aes(y=Turbidity_NTU, x=Date,
   scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
                                               as.Date("2001-10-01"), as.Date("2001-11-01"),
                                              as.Date("2001-12-01"))) +
+  ggtitle("2021") +
   theme_bw()
 Turbg2021
 ```
@@ -890,6 +910,7 @@ TurbPeriod01=ggplot(aes(y=Turbidity_NTU, x=Date,
   scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
                                               as.Date("2001-10-01"), as.Date("2001-11-01"),
                                              as.Date("2001-12-01"))) +
+  ggtitle("2022") +
   theme_bw()
 TurbPeriod01
 ```
@@ -909,7 +930,7 @@ TurbPeriod02=ggplot(aes(y=Turbidity_NTU, x=Date,
   geom_point() +
   scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
                                               as.Date("2001-10-01"), as.Date("2001-11-01"),
-                                             as.Date("2001-12-01"))) +
+                                             as.Date("2001-12-01"))) +ggtitle("2001_2002") +
   theme_bw()
 TurbPeriod02
 ```
@@ -936,6 +957,7 @@ Coulg2001=ggplot(aes(y=Colour_TCU, x=Date,
   scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
                                               as.Date("2001-10-01"), as.Date("2001-11-01"),
                                              as.Date("2001-12-01"))) +
+  ggtitle("2001") +
   theme_bw()
 Coulg2001
 ```
@@ -1013,6 +1035,7 @@ CoulPeriod01=ggplot(aes(y=Colour_TCU, x=Date,
   scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
                                               as.Date("2001-10-01"), as.Date("2001-11-01"),
                                              as.Date("2001-12-01"))) +
+  ggtitle("2001_2002") +
   theme_bw()
 CoulPeriod01
 ```
@@ -1179,22 +1202,23 @@ scatterplot(Period1$Carbon_Total_Organic_mg_L~Period1$Date | Period1$Station2,
 ##############################################################################
 
 # 2) Analyser les données (les tests)
-
-
 #Dureté
 #Examiner les données
 
-```{r}
+```{r, fig=T}
 hist(Pok2001.2022$Hardness_as_CaCO3_mg_L)
-# Comparer 2001-2002 à 2021-2022
+```
+Comparer 2001-2002 à 2021-2022
+```{r}
 boxplot(Pok2001.2022$Hardness_as_CaCO3_mg_L ~ Pok2001.2022$Period)
-#Les valeurs de dureté en 2021-2022 sont légèrement inférieures à celles de
-2001-2002.
+```
+Les valeurs de dureté en 2021-2022 sont légèrement inférieures à celles de 2001-2002.
 
 Obtenir des statistiques par période avec la fonction "tapply"
 
+```{r}
 tapply(Pok2001.2022$Hardness_as_CaCO3_mg_L, Pok2001.2022$Period, summary)
-
+```
 En moyenne, la dureté en 2021-2022 (44 mg CaCO3/L) est plus faible qu'en
 2001-2002 (48 mg/L). Cette différence est-elle imputable à l'erreur 
 d'échantillonnage (hypothèse nulle H0) ou bien à des forces hydrologiques,
@@ -1202,10 +1226,11 @@ biologiques, physiques, chimiques, sociologiques, psychologiques ou autres
 (hypothèse alterne H1)?
 
 ### Vérifier les conditions d'application d'un test de t
+```{r}
 shapiro.test(Pok2001.2022$Hardness_as_CaCO3_mg_L)
 qqnorm(Pok2001.2022$Hardness_as_CaCO3_mg_L)
 qqline(Pok2001.2022$Hardness_as_CaCO3_mg_L)
-
+```
 Les valeurs extrêmes sont plus fréquentes (ou plus extrêmes) qu'attendues 
 si les données devaient suivre une distribution normale.
 
@@ -1218,15 +1243,15 @@ il nous faut un test de t "apparié" (diapo 79).
 
 # Créer deux groupes de même taille
 # car le test de t suppose des groupes de même taille.
-
+```{r}
 Hard2001.2002=subset(Pok2001.2022, Period=="2001-2002", 
                      select="Hardness_as_CaCO3_mg_L")
 class(Hard2001.2002)
 dim(Hard2001.2002) # 102 rangées x 1 colonne
+```
 
-
-# Ne prendre que les 96 premières rangées pour que la série soit
-# d'égale longueur au groupe 2021-2022
+Ne prendre que les 96 premières rangées pour que la série soit d'égale longueur au groupe 2021-2022
+```{r}
 groupe1Hard=Hard2001.2002[1:96,]
 groupe1Hard
 length(groupe1Hard)
@@ -1238,7 +1263,7 @@ groupe2Hard=Hard2021.2022[1:96,]
 length(groupe2Hard)
 
 t.test(groupe1Hard, groupe2Hard, paired=T)
-
+```
 La valeur p=0.015 représente la probabilité que l’hypothèse nulle soit vraie. 
 Comme elle est inférieure au seuil de signification généralement utilisé de 5 pourcen, 
 on décide de... accepter ou rejeter Ho??? On s’en reparle demain (2024-04-05 
@@ -1307,26 +1332,28 @@ summary(modelaov1)
 
 ### La dureté et l'alcalinité sont-elles corrélées?
 
-```{r}
 
-# Lister les noms de variables
-# names(Pok2001.2022)
+
+Lister les noms de variables
+```{r}
+names(Pok2001.2022)
 
 plot(Pok2001.2022$Hardness_as_CaCO3_mg_L~Pok2001.2022$AlkalinityCaCO3_mg_L)
 
 cor.test(Pok2001.2022$Hardness_as_CaCO3_mg_L, Pok2001.2022$AlkalinityCaCO3_mg_L,
 method=c('pearson'))
+```
+ Corrélation de rang (plus robuste, mais moins puissant)
 
-# Corrélation de rang (plus robuste, mais moins puissant)
-
+```{r}
 cor.test(Pok2001.2022$Hardness_as_CaCO3_mg_L, Pok2001.2022$AlkalinityCaCO3_mg_L,
 method=c('spearman'))
-
-# Avertissement sur les cas ex-aequo.
-
-# help(cor.test)
-
 ```
+
+Avertissement sur les cas ex-aequo.
+help(cor.test)
+
+
 
 ## Fluore
 
@@ -1650,6 +1677,8 @@ ggplot(aes(y=Oxyg_dissous_YSI_mg_L, x=Station2, fill=Period), data=Pok2001.2022)
   theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
         axis.title=element_text(size=14,face="bold"))
 ```
+
+```{r}
 boxplot(Pok2001.2022$Hardness_as_CaCO3_mg_L ~ Pok2001.2022$Year)
 
 ggplot(aes(y=Hardness_as_CaCO3_mg_L, x=DateSampled, fill=Year), data=Pok2001.2022) + geom_boxplot() +
@@ -1696,3 +1725,4 @@ ggplot(aes(y=Hardness_as_CaCO3_mg_L, x=Year, fill="Pok amont 04"), data=Pok2001.
 ggplot(aes(y=Hardness_as_CaCO3_mg_L, x=Year, fill="Branche sud aval 03"), data=Pok2001.2022) + geom_boxplot() +
   theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
         axis.title=element_text(size=14,face="bold"))
+```
