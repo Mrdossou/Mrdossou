@@ -3,22 +3,26 @@ title: "Analyse des données de qualité de l'eau de la rivière Pokemouche 2021
 date: "2024-05-13"
 editor_options:
   chunk_output_type: inline
+bibliography: rbilbio.bib
 ---
 
 # 0) Charger les données et les librairies
-```{r}
+```{r, echo=F, message=F, warning=F}
 
 library("ggpubr") # pour la fonction ggarrange 
 library("ggplot2")
-# ggpubr qui permet de rassembler plusieurs plots
+library("car")
+```
+
+ggpubr qui permet de rassembler plusieurs plots
 library("ggplot2") # to do sophisticated ("high-level") plots
 library("stats") # 
-# rm(list=ls(all=TRUE)) # to erase, remove, delete objects from environment
-# oldpar=par(no.readonly=TRUE) # to keep original graphical parameters
+rm(list=ls(all=TRUE)) # to erase, remove, delete objects from environment
+oldpar=par(no.readonly=TRUE) # to keep original graphical parameters
 library() # list available libraries (not necessarily loaded)
 library(lib.loc=.Library)
 library("car")
-```
+
 installed.packages() 
 (.packages()) # to list loaded libraries at startup.
 
@@ -35,9 +39,10 @@ find.package("utils")
 
 
 # 1) Traiter le tableau d'entrée
-##Ce 13 mai 2024
 
-```{r}
+Ce 13 mai 2024
+
+```{r, echo=F, message=F, warning=F}
 setwd("C:/Users/mrdos/OneDrive/Documents/Shippagan_mai_aout_2024/Analyse_R_sum/Github")
 getwd()
 list.files()
@@ -51,12 +56,12 @@ Normalement le tableau devrait comprendre 12 stations x 4 années x
 Le fait que le fichier contient 198 rangées plutôt que 192 s'explique par la suite:
 
 # Lire les premières lignes de la variables "AnalysisSurfaceWater":
-```{r}
+```{r, echo=F, message=F, warning=F}
 head(Pok2001.2022$AnalysisSurfaceWater)
 ```
 # Uniformiser la variable "AnalysisSurfaceWater" et l'attribuer à la nouvelle variable "Station":
 
-```{r}
+```{r, echo=F, message=F, warning=F}
 Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="Pok-1"] <- "Pok-01"
 Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="POK-1"] <- "Pok-01"
 
@@ -96,13 +101,13 @@ Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="POK-12"] <- "Pok-12"
 head(Pok2001.2022$Station)
 ```
 # Convertissons le type de la variable "Station" en type "facteur"
-```{r}
+```{r, echo=F, message=F, warning=F}
 Pok2001.2022$Station=as.factor(Pok2001.2022$Station)
 summary(Pok2001.2022$Station)
 ```
 # Créer la nouvelle variable "Station2" avec des variables plus parlantes:
 
-```{r}
+```{r, echo=F, message=F, warning=F}
 Pok2001.2022$Station2[Pok2001.2022$Station=="Pok-01"] <- "br. sud amont 01"
 Pok2001.2022$Station2[Pok2001.2022$Station=="Pok-02"] <- "Suggary 02"
 Pok2001.2022$Station2[Pok2001.2022$Station=="Pok-03"] <- "Branche sud aval 03"
@@ -117,7 +122,7 @@ Pok2001.2022$Station2[Pok2001.2022$Station=="Pok-11"] <- "Malt 11"
 Pok2001.2022$Station2[Pok2001.2022$Station=="Pok-12"] <- "Dempsey 12"
 ```
 # Ordonner les valeurs de la variables "Station2" de l'amont vers l'aval:
-```{r}
+```{r, echo=F, message=F, warning=F}
 Pok2001.2022$Station2=ordered(Pok2001.2022$Station2,
 levels=c("Pok amont 04",      "Suggary 02",          "Morrison 06", 
          "br. sud amont 01",  "Branche sud aval 03", "Trout Val-Doucet 09", 
@@ -128,16 +133,16 @@ summary(Pok2001.2022$Station2)
 ```
 
 # Lister les noms de variables (en-têtes des colonnes):
-```{r}
+```{r, echo=F, message=F, warning=F}
 names(Pok2001.2022)
 ```
 # Rechercher les variables comportant le mot "date":
-```{r}
+```{r, echo=F, message=F, warning=F}
 names(Pok2001.2022[grep("date",names(Pok2001.2022), ignore.case=T)])
 ```
 
 # Trois (3) variables de dates:
-```{r}
+```{r, echo=F, message=F, warning=F}
 head(Pok2001.2022$DateSampled)
 head(Pok2001.2022$DateSampled2)
 head(Pok2001.2022$Datesampled3)
@@ -146,7 +151,7 @@ class(Pok2001.2022$DateSampled)
 Pok2001.2022$DateSapled
 ```
 # Créer la nouvelle variable "Date" au format "date".
-```{r}
+```{r, echo=F, message=F, warning=F}
 Pok2001.2022$Date=format(as.Date(Pok2001.2022$DateSampled,format="%Y-%m-%d"))
 Pok2001.2022$Date=as.Date(Pok2001.2022$Date)
 summary(Pok2001.2022$Date)
@@ -154,7 +159,7 @@ summary(Pok2001.2022$Date)
 
 # Extraire les éléments d'année et en faire une variable "Year"  https://stackoverflow.com/questions/36568070/extract-year-from-date
 
-```{r}
+```{r, echo=F, message=F, warning=F}
 Pok2001.2022$Year=as.factor(format(Pok2001.2022$Date, "%Y"))
 summary(Pok2001.2022$Year)
 
@@ -167,7 +172,7 @@ names(Pok2001.2022)
 ```
 
 # Créer une variable "Period" qui désigne la période 2001-2002 ou 2021-2022.
-```{r}
+```{r, echo=F, message=F, warning=F}
 Pok2001.2022$Period[Pok2001.2022$Year==2001] <- "2001-2002"
 Pok2001.2022$Period[Pok2001.2022$Year==2002] <- "2001-2002"
 Pok2001.2022$Period[Pok2001.2022$Year==2021] <- "2021-2022"
@@ -183,20 +188,20 @@ Nous avons 102 enregistrements (rangées) pour la période 2001-2002 et 96 pour 
 
 La fonction "table" produit un tableau de contingence indiquant le nombre de rangées de données pour chaque combinaison:
 
-```{r}
+```{r, echo=F, message=F, warning=F}
 table(Pok2001.2022$Date, Pok2001.2022$Year)
 table(Pok2001.2022$Station, Pok2001.2022$Year)
 ```
 
  À chaque année, chaque station a été visitée 4 ou 5 fois.
  
-```{r}
+```{r, echo=F, message=F, warning=F}
 levels(Pok2001.2022$Station2)
 levels(Pok2001.2022$Period)
 ```
 
 ## 1.2) Créer des sous-groupes par tributaire
-```{r tributaires, echo=T, eval=F}
+```{r tributaires, echo=F, eval=F, warning=F}
 
 Malt=subset(Pok2001.2022, Station2=="Malt 11")
 dim(Malt) # 16 x 85
@@ -210,51 +215,179 @@ un graphiques avec plusieurs courbes (niveaux):
 #Crée des tableau pour les graph de variation à chaque station: 2001_2002_2021_2022 et les deux periodes.
 
 ## Créer un tableau avec les données de 2001 seulement:
-```{r}
+```{r, echo=F, message=F, warning=F}
 Year2001=subset(Pok2001.2022, Year=="2001")
 dim(Year2001)
 levels(Pok2001.2022$Station2)
 ```
 ##Créer un tableau avec les données de 2002 seulement
-```{r}
+```{r, echo=F, message=F, warning=F}
 Year2002=subset(Pok2001.2022, Year=="2002")
 dim(Year2002)
 levels(Pok2001.2022$Station2)
 ```
 ## Créer un tableau avec les données de 2021 seulement
-```{r}
+```{r, echo=F, message=F, warning=F}
 Year2021=subset(Pok2001.2022, Year=="2021")
 dim(Year2021)
 levels(Pok2001.2022$Station2)
 ```
 ## Créer un tableau avec les données de 2022 seulement
-```{r}
+```{r, echo=F, message=F, warning=F}
 Year2022=subset(Pok2001.2022, Year=="2022")
 dim(Year2022)
 levels(Pok2001.2022$Station2)
 ```
 ## Créer un tableau avec les données de la période 1 seulement 2001_2002:
-```{r}
+```{r, echo=F, message=F, warning=F}
 Period1=subset(Pok2001.2022, Period=="2001-2002")
 dim(Period1)
 ```
 ##Créer un tableau avec les données de la période 1 seulement 2021_2022:
-```{r}
+```{r, echo=F, message=F, warning=F}
 Period2=subset(Pok2001.2022, Period=="2021-2022")
 dim(Period2)
 ```
 
 
-#Oxygène dissous ################
+# INTRO
+ Les eaux des rivières ont de multiples usages pour les humains. Cette ressource naturellement est un facteur très important dans le développement territorial, elle participe au développement économique, social et environnemental. Influencer par différents indicateurs environnementaux ils affectent les propriétés et composition physico-chimique qui détermine la caractéristique et la qualité de cette eau. Généralement, elles sont destinées à servir à plusieurs fins comme diverses activités très importantes dans la vie quotidienne et des activités économiques d’un territoire, en particulier l’irrigation, l’approvisionnement en eau, la pêche et l’agriculture, etc. 
+ 
+Parmi les nombreux facteurs qui influences la qualité des eaux de surface dans leur ensemble deux de ces facteurs sont les vecteurs principaux des impacts liés à la qualité des eaux. On distingue la croissance démographie et l’urbanisation.  Ces deux facteurs proviennent de la transformation des terres qui est la résultante de différents secteurs et facteurs liées à l’environnement, au climat et aux activités humaines. Ont à la population (la démographie), l'urbanisation, l'industrialisation, la topographie, le tourisme, les politiques d'aménagement, la construction, la migration, le changement climatique, la distance avec le littoral, etc. Tous sont des facteurs de transformation des terres et surtout des terres côtières. L'augmentation de la population à l’échelle mondiale, les facteurs de développement des zones urbaines, la concentration industrielle et le tourisme sont les éléments qui propulsent la transformation des terres primaires et naturelles. 25% des études nous démontre que les transformations des terres côtières sont à l’origines de la démographie et de l’urbanisation. 37% des études couvres l’impact de ces transformations avec précision dans treize 13 domaines. L’agriculture, l'aquaculture, la température de l'air, le stock de carbone, la sécheresse, l'écosystème, les inondations, les glissements de terrain, la température de la surface terrestre (LST) qui font 8,3% des études. 5% pour la migration et l’occupation, la population, les intrusions de la salinité et la qualité de l’eau font 3,3% des cas d’études. Tandis que 13,3% des cas étudier sont sur la cause de la transformation causé par la dégradation des écosystèmes naturels qui sont aussi à l’origine des inondations et des glissements de terrains. Ces conséquences déséquilibrent la biodiversité et engendrent l’extinctions de diverses espèces. Seulement 4% des études visent les stratégies d’adaptation face aux conséquences de transformation de ces terres. { Nguyen, 2024}
 
-##Graphique de la variation de l'oxygène dissous sur chacun des station en 2001
-```{r}
-O2g2001=ggplot(aes(y=Oxyg_dissous_YSI_mg_L, x=Date), data=Year2001) + 
-  geom_line(aes(color=Station2, linetype=Station2)) + 
-  geom_point(aes(color=Station2, shape=Station2)) +
-  scale_x_date(date_breaks = "1 month", date_labels = "%B")
-#  date_minor_breaks = "1 week",
+
+# MÉTHODES
+
+##Description du site à l'étude:
+
+La rivière Pokemouche est située au nord-est du Nouveau-Brunswick, dans le bassin versant de la péninsule acadienne. Elle s'étend sur une longueur d'environ 41 kilomètres avec une superficie d'environ 20,8 km². L'entourage de la région est constitué d’un mélange de zones urbaines, agricoles et naturelles. La rivière Pokemouche est généralement alimentée par les précipitations, la fonte des neiges et les eaux de ruissèlement, avec des débits saisonniers qui varient de manière très considérable. Elle traverse plusieurs terres par son étendue, notamment des zones boisées, des terres agricoles et des zones urbaines, ce qui peut impacter la qualité de l’eau. Nous avons aussi l’agriculture, l’industrie et l’urbanisation qui sont des activités dans le bassin versant qui peuvent aussi influencer la qualité de l’eau de la rivière. Le suivi de la qualité de l'eau de la rivière Pokemouche a été effectué en deux temps, en 2001-2002 et en 2021-2022 soit 20ans après. Nos données ont été collectées à partir de 12 stations de surveillance réparties tout au long de la rivière, de l’amont à l’aval suivant le sens de l’écoulement de la rivières (de l’Est à l’Ouest), avec des prélèvements effectués 4 à 5 fois par an pour observer le dessin de la variation saisonnière (été vs automne) et celle observé en 20 ans plus tard. 
+
+##Le bassin dans son ensemble
+
+Un bassin hydrographique, encore appelé bassin versant, est une surface géographique délimitée par des courants et des lignes d’eau, se déversant les unes dans les autres, constituée d’un point plus haut qui est l’amont et d’un point le plus bas qui est l’aval. Au Nouveau-Brunswick, le règlement sur la classification des eaux se regroupe en eaux souterraines et eaux de surface. Nous distinguons les cours d’eau comme les rivières et leurs tributaires ; les lacs, les étangs, les réservoirs et les eaux des milieux humides. Nous pouvons y ajouter aussi des eaux estuariennes qui sont des zones stratégiques où une rivière rencontre et dilue l’eau marine, et l’eau dans les terres humides associée à ces estuaires (GNB, Classification des eaux du N-B, 2002). Le bassin hydrographique de la rivière Pokemouche peut être divisé en 12 sous-bassins versants. Le bassin hydrographique de la péninsule acadienne couvre environ 504 kilomètres carrés, avec une superficie de 44,316 hectares. 75% de ces terres sont des terres privées et 25% représentent l’ensemble des terres de l’État. Le bassin hydrographique de la rivière Pokemouche abrite à peu près 13,000 personnes composées de deux villages, Paquetville et St-Isidore, dans une zone profondément rurale. Dans le bassin, les populations sont des pêcheurs, des travailleurs dans les tourbières, des agriculteurs et des propriétaires de terres boisées (Rapport CGERP, 2003).
+
+##Description de la disposition des stations
+
+Les stations sont disposées stratégiquement, réparties de l'amont à l’aval et sur toute l'étendue de la rivière afin de permettre d'avoir une vision de la variation et de l'évolution de la qualité de l'eau sur toute sa longueur. Au total, nous disposons de 12 stations, la plupart étant situées sur les différents ruisseaux qui se déversent dans le cours d'eau de la rivière Pokemouche. 
+
+Nos données à l’étude ont été échantillonnées en 2001-2002 et en 2021-2022 en été et en automne, sur ces 12 stations soit le 1er août, le 1er septembre, le 1er octobre et le 1er novembre. Cet été 2024, nous allons collecter davantage de données liées à la composition du territoire, les données géospatiales, quelque données physico-chimique et poursser les annalyses statistiques.
+
+##Cgerp et les échantillonnages réalisés
+
+Le comité de gestion environnementale de la rivière Pokemouche a effectué les premiers échantillonnages que j’ai à ma disposition. Cette base de données est constituée de 56 paramètres étudiés, tous prélevés quatre à cinq fois chaque automne et été en 2001-2002, qui constitue une première période d’échantillonnages, et en 2021-2022, qui constitue une deuxième période. C'est sur ces données que nous allons nous appuyer pour étudier la variation de la qualité de l’eau sur une période de 20 ans, en regardant les variations inter-annuelles pour chaque période, ainsi que les variations saisonnières. Ces échantillonnages ont été effectués avec la même méthodologie à la surface de l’eau, car la rivière Pokemouche est peu profonde, soit environ un mètre de profondeur. Cela signifie que la qualité de l’eau en profondeur de la rivière sera quasiment la même qu’en surface.
+
+## Description des paramètres à l'étude
+
+Parmi les 56 paramètres étudiés, nous allons décrire les plus importants, soit ceux qui influencent le plus la qualité de l’eau de notre rivière et dont j’aimerai étudier la variation. Ces paramètres sont répartis en trois groupes différents, dont les paramètres physico-chimiques comme la température, le pH, la turbidité (NTU), la conductivité, l’oxygène dissous, les nutriments, etc. Les paramètres biologiques, tels que les coliformes fécaux, et les métaux comme le plomb (Pb), le cadmium (Cd), le mercure (Hg), et le zinc (Zn), etc. (Bricha, S., Ounine, K., Oulkheir, S., El Haloui, N., & Attarassi, B. 2007).
+
+###  Les paramètres physico-chimiques :
+
+
+#### La température: 
+
+La température de l'eau est mesurée en degrés Celsius (°C) ou en degré Kelvin (K), mais dans notre étude, elle sera en degrés Celsius. Elle varie en fonction des saisons, de la profondeur à laquelle elle est mesurée, ou même de sa proximité des sources de chaleur, comme l'exposition au soleil ou même des activités humaines. La température de l'eau a un impact sur la solubilité des gaz, la croissance des organismes aquatiques, et la chimie de l'eau.
+
+####   Le pH:
+
+Le pH mesure l'acidité ou l’alcalinité de l'eau. Nous le mesurons sur une échelle de 0 à 14, où 7 est neutre, tout pH inférieur à 7 est acide et supérieur à 7 est basique. Le pH de l'eau peut affecter la disponibilité des nutriments, la toxicité des métaux lourds, la santé des organismes aquatiques, et la disparition de certaines espèces.
+
+####   La turbidité
+
+La turbidité consiste à mesurer la clarté de l'eau en mesurant la quantité de particules en suspension. Elle est souvent mesurée en unités de turbidité (NTU). Lorsque la turbidité est élevée, cela peut être causé par des sédiments, des particules organiques, ou des polluants, et peut affecter la transmission de la lumière à travers l’eau, la photosynthèse, et la santé des écosystèmes aquatiques.
+
+####  La conductivité:
+
+La conductivité mesure la capacité de l'eau à conduire le courant électrique, ce qui est influencé par la présence de minéraux dissous, tels que les sels et les métaux (comme les océans). Elle est souvent mesurée en microsiemens par centimètre (µS/cm) ou en millisiemens par centimètre (ms/cm). La conductivité de l'eau peut nous permettre de savoir s'il y a présence de contaminants, et dans certains cas, nous pouvons l'utiliser comme indicateur de la salinité ou de la dureté de l'eau.
+
+#### L'oxygène dissous
+
+L'oxygène dissous mesure la quantité d'oxygène dissous dans l'eau, nécessaire à la respiration des organismes aquatiques. Nous le mesurons en milligrammes par litre (mg/L) ou en pourcentage de saturation. Le niveau d'oxygène dissous varie en fonction de la température, de l'altitude, de la pression atmosphérique, et de la présence de matière organique ou de polluants dans l’eau.
+
+
+####   La couleur
+
+
+
+
+###### autreschoses
+
+Les nutriments, tels que l'azote (sous forme de nitrate, nitrite, ammonium) et le phosphore (sous forme de phosphate), sont essentiels à la croissance des plantes aquatiques et des algues. Cependant, un excès de nutriments peut entraîner une propagation excessive d'algues, appelée eutrophisation, ce qui peut entraîner une diminution de l'oxygène dissous et des problèmes de qualité de l'eau.
+
+###  Les paramètres biologiques :
+
+#### les E_coli
+
+Les coliformes fécaux sont des bactéries qui sont généralement présentes dans les intestins des animaux (y compris les mammifères, dont les humains) et se retrouvent fréquemment dans les matières fécales. Ils sont souvent utilisés comme indicateurs de contamination fécale dans l'eau, car leur présence indique la possible présence de pathogènes d'origine fécale qui peuvent être dangereux pour la santé humaine. Les coliformes fécaux sont généralement exprimés en nombre de colonies formant unités (CFU) par 100 millilitres (ml) d'eau. Une concentration élevée de coliformes fécaux dans l'eau peut indiquer une contamination fécale récente et un risque potentiel de maladies d'origine hydrique. Cependant, il est important de noter que la présence de coliformes fécaux dans l'eau ne signifie pas nécessairement qu'elle est dangereuse pour la consommation, car d'autres facteurs, tels que le type de coliformes présents et la présence de pathogènes spécifiques, doivent être pris en compte.
+
+
+
+######  Les métaux :
+
+Ces éléments que nous allons vous décrire sont des polluants courants dans l'eau qui peuvent avoir des effets néfastes sur la santé humaine et celle des écosystèmes aquatiques.
+Le Plomb (Pb) : Le plomb est l’un des métaux lourds toxiques qui affectent souvent notre système nerveux, les reins, le sang et le développement du cerveau, surtout chez les enfants. Il provient généralement de la corrosion ou de l’altération des tuyaux en plomb, des conduites d'eau et de diverses activités industrielles.
+
+Le Cadmium (Cd) : Le cadmium est également un métal toxique qui provoque des problèmes rénaux, des troubles osseux et des dommages pulmonaires. Il est souvent associé à des activités industrielles telles que la production de batteries, l'exploitation minière et le traitement des métaux.
+
+Le Mercure (Hg) : Le mercure est l’un des métaux lourds qui a des effets toxiques sur notre système nerveux central, les reins et le système immunitaire, entre autres. Il est souvent associé à la combustion de combustibles fossiles, à la production de chlorure de vinyle et à d'autres activités industrielles.
+
+Le Zinc (Zn) : Le zinc est un oligo-élément essentiel à de nombreux processus biologiques, mais à des concentrations élevées dans l'eau, il devient toxique pour les organismes aquatiques. Le zinc provient de diverses sources, notamment des activités industrielles, de l'agriculture et de l'érosion des sols.
+
+Nous mesurons ces éléments en microgrammes par litre (µg/L) conformément aux réglementations et normes strictes qui limitent les concentrations de ces métaux dans l'eau potable et les eaux de surface pour protéger la santé humaine et l'environnement.
+En général, tous ces paramètres sont essentiels pour évaluer la qualité de l'eau et comprendre l'état des écosystèmes aquatiques.
+
+
+# RÉSULTATS ET DISCUSSION
+
+## Oxygène dissous
+
+### variabilité spatiale : Oxygène dissous
+ 
+  Essai de citation [@rabearisoa_evaluation_2023]
+
+
+```{r, echo=F, message=F, warning=F}
+
+# boxplot(Pok2001.2022$Oxyg_dissous_YSI_mg_L ~  Pok2001.2022$Station)
+
+ggplot(aes(y=Oxyg_dissous_YSI_mg_L, x=Station2, fill=Period), data=Pok2001.2022) + geom_boxplot() +
+
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de l'oxygène dissous à 20ans entre les deux Period")
+```
+
+Commentaire:
+
+La teneur en oxygène dissous de la period 2001-2002 est plus basse que la teneur en oxygène dissou de la periode 2021-2022.
+
+Le niveau d'oxygène dissous à une plus grande variabilité sur la station 12 en 2021-2022 qu'en 2001-2002.
+
+Les valeurs abérentes s'observent plus en 2001-2002 soit sur les stations 09, 12, et 11 qu'en la periode 2021-2022 soit sur les station 10 et 07
+
+La norme canadienne des recommandations du CCME (Conseil canadien des ministres de l’Environnement) dit que pour:
+
+les eaux chaudes c'est à dire l'eau des rivières, des lacs et lors des periodes d'été doivent etre de 6mg/l au premier stade biologique (embyrons) et de 5,5 mg/l aux autres stades biologiques.
+
+les eaux froides c'est à dit les aux des  montages, de haute altitudes ou en periode hivernale ou de froid doivent etre de 9,5 mg/l au premier stade biologique et de 6,5 mg/l aux autres stades biologiques.
+
+La solubilité de l'oxygènes dissous dans l'eau douce à 5 dégré celssuce et de 101,3 kPa est de 12,77 mg/l.
+
+Nos valeur sont comprise entre cette fouchette de niveau d'oxygènes dissous sauffe quelque valeur abérente observé sur les station 09 et 12.
+
+## Graphique de la variation de l'oxygène dissous sur chacun des station en 2001
+
+```{r, echo=F, message=F, warning=F}
+
+O2g2001=ggplot(aes(y=Oxyg_dissous_YSI_mg_L, x=Date, group=Station2, shape=Station2, color=Station2 ), data=Year2001) + scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2001")
+
 O2g2001
+
+
 ```
 
 Commentaire du graphique 2001:
@@ -278,7 +411,7 @@ grâce à "scale_shape_manual" selon
 https://stackoverflow.com/questions/26223857/more-than-six-shapes-in-ggplot
 
 ## Détermine le nombre de formes nécessaires:
-```{r}
+```{r, echo=F, message=F, warning=F}
 nlevels(Year2001$Station2)
 ```
 
@@ -296,14 +429,12 @@ O2g3
 	 
 
 ##Graphique de la variation de l'oxygène dissous sur chacun des stations en 2002
-```{r}
-O2g2002=ggplot(aes(y=Oxyg_dissous_YSI_mg_L, x=Date), data=Year2002) + 
-  geom_line(aes(color=Station2, linetype=Station2)) + 
-  geom_point(aes(color=Station2, shape=Station2)) +
-  scale_x_date(date_breaks = "1 month", date_labels = "%B")
-
-#  date_minor_breaks = "1 week",
-
+```{r, echo=F, message=F, warning=F}
+O2g2002=ggplot(aes(y=Oxyg_dissous_YSI_mg_L, x=Date, group=Station2, shape=Station2, color=Station2 ), data=Year2002) + scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2002")
 O2g2002
 ```
 Commentaire du graphique 2002:
@@ -311,15 +442,27 @@ Commentaire du graphique 2002:
 On observe qu'en 2002 la teneur en oxygène dissous a varié de manière presque constant sur tout les station à l'échelle saisonnière. La station 09 a varié avec des baisse et hausse aigu ayant le plus faible teneur. La station 06 a varié prèsque a la constance avec le plus haute teneur a coté de la station 06. Les variation saisonnière en 2002 ont été comprise entre 5mg/L et 11mg/L. Ce graphique nous renseigne sur une faible en 2002 par rapport à 2001, et avec une plus baisse que la teneur en 2001.
 
 
+A quoi sert ce graphique
+
+O2g2002=ggplot(aes(y=Oxyg_dissous_YSI_mg_L, x=Date), data=Year2002) + 
+scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2002") +
+  theme_bw()
+
+O2g2002
+
+
+
 ##Graphique de la variation de l'oxygène dissous sur chacun des stations en 2021
-```{r}
-O2g2021=ggplot(aes(y=Oxyg_dissous_YSI_mg_L, x=Date), data=Year2021) + 
-  geom_line(aes(color=Station2, linetype=Station2)) + 
-  geom_point(aes(color=Station2, shape=Station2)) +
-  scale_x_date(date_breaks = "1 month", date_labels = "%B")
-
-#  date_minor_breaks = "1 week",
-
+```{r, echo=F, message=F, warning=F}
+O2g2021=ggplot(aes(y=Oxyg_dissous_YSI_mg_L, x=Date, group=Station2, shape=Station2, color=Station2 ), data=Year2021) + scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2021")
 O2g2021
 ```
 Commentaire du graphique 2021:
@@ -329,14 +472,12 @@ On remarque d'abord par rapport au autres années que la teneur en oxygène diss
 
 ##Graphique de la variation de l'oxygène dissous sur chacun des stations en 2021
 
-```{r}
-O2g2022=ggplot(aes(y=Oxyg_dissous_YSI_mg_L, x=Date), data=Year2022) + 
-  geom_line(aes(color=Station2, linetype=Station2)) + 
-  geom_point(aes(color=Station2, shape=Station2)) +
-  scale_x_date(date_breaks = "1 month", date_labels = "%B")
-
-#  date_minor_breaks = "1 week",
-
+```{r, echo=F, message=F, warning=F}
+O2g2022=ggplot(aes(y=Oxyg_dissous_YSI_mg_L, x=Date, group=Station2, shape=Station2, color=Station2 ), data=Year2022) + scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2022")
 O2g2022
 ```
 Commentaire du graphique:
@@ -346,30 +487,26 @@ On remarque d'abord par rapport au autres années que la teneur en oxygène diss
 
 ##Graphique de la variation de l'oxygène dissous sur chacun des stations entre period: 2001_2002
 
-```{r}
-O2Period01=ggplot(aes(y=Oxyg_dissous_YSI_mg_L, x=Date), data=Period1) + 
-  geom_line(aes(color=Station2, linetype=Station2)) + 
-  geom_point(aes(color=Station2, shape=Station2)) +
-  scale_x_date(date_breaks = "1 month", date_labels = "%B")
-
-#  date_minor_breaks = "1 week",
-
+```{r, echo=F, message=F, warning=F}
+O2Period01=ggplot(aes(y=Oxyg_dissous_YSI_mg_L, x=Date, group=Station2, shape=Station2, color=Station2 ), data=Period1) + scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2001_2002")
 O2Period01
 ```
 Commentaire:
 
-On remarque que la variation periodique de 2001 à 2002 est comprise entre 5mg/L et 12mg/L on constat que malgré la variation saisonnière de hausse et de baisse qui se remarque sur les stations entre les deux année a sur le plan periodique une allure baissante. Les grande variation (de hausse & de baisse) sont plus observer en 2000 par rapport en 2001
+
 
 ##Graphique de la variation de l'oxygène dissous sur chacun des stations entre period: 2021_2022
 
-```{r}
-O2Period02=ggplot(aes(y=Oxyg_dissous_YSI_mg_L, x=Date), data=Period2) + 
-  geom_line(aes(color=Station2, linetype=Station2)) + 
-  geom_point(aes(color=Station2, shape=Station2)) +
-  scale_x_date(date_breaks = "1 month", date_labels = "%B")
-
-#  date_minor_breaks = "1 week",
-
+```{r, echo=F, message=F, warning=F}
+O2Period02=ggplot(aes(y=Oxyg_dissous_YSI_mg_L, x=Date, group=Station2, shape=Station2, color=Station2 ), data=Period2) + scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2021_2022")
 O2Period02
 ```
 
@@ -380,7 +517,7 @@ On remarque que la variation periodique de 2021 à 2022 est comprise entre 7mg/L
 
 ##Pour crée un graphique qui montre les ligne de variation de tout les dates(periode) entre la variable et tous les stations et aussi entre les variable
 
-```{r}
+```{r, echo=F, message=F, warning=F}
 scatterplot(Period1$Oxyg_dissous_YSI_mg_L~Period1$Date | Period1$Station2,
             smooth=F)
 
@@ -426,15 +563,52 @@ scatterplot(Pok2001.2022$Oxyg_dissous_YSI_mg_L~Pok2001.2022$Temp_eau_YSI_degC )
 
 # Température ###############
 
+
+
+## Température variabilité spatiale 
+```{r, echo=F, message=F, warning=F}
+Pok2001.2022[order(Pok2001.2022$Temp_eau_YSI_degC),
+             c("Station2", "Date", "Temp_eau_YSI_degC")]
+
+boxplot(Pok2001.2022$Temp_eau_YSI_degC ~ Pok2001.2022$Station)
+```
+
+```{r, echo=F, message=F, warning=F}
+
+ggplot(aes(y=Temp_eau_YSI_degC, x=Station2, fill=Period), data=Pok2001.2022) + geom_boxplot() +
+
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la température à 20ans entre les deux Period")
+```
+
+Commentaire:
+
+
+La température observé en 2001_2002 non pas réellement changer par rapport à la température obtenir en 2021_2022.
+
+Les températures en 2021-2022 indique une une plus grande variabilité par rapport à celle de la période 2001_2002.
+
+Des moustaches plus longues indiquent une plus grande variabilité dans les données.
+
+Les moustaches son plus grande et présent sur tout les stations en 2001_2002 qu'en 2021_2022 ce qui indique une grande variabilité.
+
+
+On observe plus de valeurs abérrantes et uniqument sur les stations en 2001_2002. Ce qui indique des anomalies ou une variabilité extrême sur les stations 02, 03, 08, 12, 11 et 07.
+ 
+
+
+
+
 ## Graphique de la variation de la Température sur chacun des station en 2001
 
-```{r}
-Tempg2001=ggplot(aes(y=Temp_eau_YSI_degC, x=Date), data=Year2001) + 
-  geom_line(aes(color=Station2, linetype=Station2)) + 
-  geom_point(aes(color=Station2, shape=Station2)) +
-  scale_x_date(date_breaks = "1 month", date_labels = "%B") +
+```{r, echo=F, message=F, warning=F}
+Tempg2001=ggplot(aes(y=Temp_eau_YSI_degC, x=Date, group=Station2, shape=Station2, color=Station2 ), data=Year2001) + scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
   ggtitle("2001")
-#  date_minor_breaks = "1 week",
 Tempg2001
 ```
 Commentaire du graphique 2001:
@@ -442,13 +616,12 @@ On observe une baisse de la température de la fin de la saison d'été jusqu'a 
 
 
 ##Graphique de la variation de l'oxygène dissous sur chacun des stations en 2002
-```{r}
-Tempg2002=ggplot(aes(y=Temp_eau_YSI_degC, x=Date), data=Year2002) + 
-  geom_line(aes(color=Station2, linetype=Station2)) + 
-  geom_point(aes(color=Station2, shape=Station2)) +
-  scale_x_date(date_breaks = "1 month", date_labels = "%B") +
+```{r, echo=F, message=F, warning=F}
+Tempg2002=ggplot(aes(y=Temp_eau_YSI_degC, x=Date, group=Station2, shape=Station2, color=Station2 ), data=Year2002) + scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
   ggtitle("2002")
-#  date_minor_breaks = "1 week",
 Tempg2002
 ```
 
@@ -460,13 +633,12 @@ En 2002 la temp est compris entre 4 et 15 dégré de la fin de l'été à la fin
 ##Graphique de la variation de l'oxygène dissous sur chacun des stations en 2021
 
 
-```{r}
-Tempg2021=ggplot(aes(y=Temp_eau_YSI_degC, x=Date), data=Year2021) + 
-  geom_line(aes(color=Station2, linetype=Station2)) + 
-  geom_point(aes(color=Station2, shape=Station2)) +
-  scale_x_date(date_breaks = "1 month", date_labels = "%B")+
+```{r, echo=F, message=F, warning=F}
+Tempg2021=ggplot(aes(y=Temp_eau_YSI_degC, x=Date, group=Station2, shape=Station2, color=Station2 ), data=Year2021) + scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
   ggtitle("2021")
-#  date_minor_breaks = "1 week",
 Tempg2021
 ```
 
@@ -477,12 +649,12 @@ La temp a baisser sur tout les stations. la station 4 et 2 à la fin de l'été 
 
 ##Graphique de la variation de l'oxygène dissous sur chacun des stations en 2022
 
-```{r}
-Tempg2022=ggplot(aes(y=Temp_eau_YSI_degC, x=Date), data=Year2022) + 
-  geom_line(aes(color=Station2, linetype=Station2)) + 
-  geom_point(aes(color=Station2, shape=Station2)) +
-  scale_x_date(date_breaks = "1 month", date_labels = "%B")+
-ggtitle("2022")
+```{r, echo=F, message=F, warning=F}
+Tempg2022=ggplot(aes(y=Temp_eau_YSI_degC, x=Date, group=Station2, shape=Station2, color=Station2 ), data=Year2022) + scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2022")
 #  date_minor_breaks = "1 week",
 Tempg2022
 ```
@@ -494,13 +666,12 @@ La temp a baissé sur tous les stations commes dans tout les autres années. la 
 
 ##Graphique de la variation de l'oxygène dissous sur chacun des stations entre period: 2001_2002
 
-```{r}
-TempPeriod01=ggplot(aes(y=Temp_eau_YSI_degC, x=Date), data=Period1) + 
-  geom_line(aes(color=Station2, linetype=Station2)) + 
-  geom_point(aes(color=Station2, shape=Station2)) +
-  scale_x_date(date_breaks = "1 month", date_labels = "%B")+
-  ggtitle("Periode_2001.2002")
-#  date_minor_breaks = "1 week",
+```{r, echo=F, message=F, warning=F}
+TempPeriod01=ggplot(aes(y=Temp_eau_YSI_degC, x=Date, group=Station2, shape=Station2, color=Station2 ), data=Period1) + scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2001_2002")
 TempPeriod01
 ```
 
@@ -511,13 +682,12 @@ La temp a baisser au meme niveau que la temp de l'air d'aout en novembre pour le
 
 ##Graphique de la variation de l'oxygène dissous sur chacun des stations entre period: 2021_2022
 
-```{r}
-TempPeriod02=ggplot(aes(y=Temp_eau_YSI_degC, x=Date), data=Period2) + 
-  geom_line(aes(color=Station2, linetype=Station2)) + 
-  geom_point(aes(color=Station2, shape=Station2)) +
-  scale_x_date(date_breaks = "1 month", date_labels = "%B")+
+```{r, echo=F, message=F, warning=F}
+TempPeriod02=ggplot(aes(y=Temp_eau_YSI_degC, x=Date, group=Station2, shape=Station2, color=Station2 ), data=Period2) + scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
   ggtitle("2021_2022")
-#  date_minor_breaks = "1 week",
 TempPeriod02
 ```
 
@@ -529,7 +699,7 @@ La temp a baissé aucours des deux saisons. la plus basse temp a été observé 
 
 
 ##Pour crée un graphique qui montre les ligne de variation de tout les dates(periode) entre la variable et tous les stations
-```{r}
+```{r, echo=F, message=F, warning=F}
 scatterplot(Period1$Temp_eau_YSI_degC~Period1$Date | Period1$Station2,
             smooth=F)
 ```
@@ -538,8 +708,40 @@ scatterplot(Period1$Temp_eau_YSI_degC~Period1$Date | Period1$Station2,
 
 #  Conductivity_microS_cm ##################
 
+## Conductivité variabilité spatiale 
+```{r, echo=F, message=F, warning=F}
+boxplot(Pok2001.2022$Conductivity_microS_cm ~ Pok2001.2022$Station)
+```
+
+```{r, echo=F, message=F, warning=F}
+
+ggplot(aes(y=Conductivity_microS_cm, x=Station2, fill=Period), data=Pok2001.2022) + geom_boxplot() +
+
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la température à 20ans entre les deux Period")
+```
+
+Commentaire:
+
+La conductivité est plus élevé sur tout les staions à la période 2001-2002 de plus que la conductivité en 2021-2021, sauf sur la station 10 qui a unee condictuvité plus élevé en 2021-2022.
+
+La plus basse conductivité est celle de la station 04.
+
+La conductivité présente une plus grande variabilité 20ans plus tard et ce sur les stations 01, 08 et 07. 
+
+La turbidité de la station 01, 08, 10 et 07 indiquent plus de variabilité dans les données en 2021-2022 de plus que celle de 20ans en arrière.
+
+La conductivité lors de la période 01 présente des valeurs abbérentes forte sur les station 02 et 07. mais à la période 02 ils indique des valeurs abbérente faible de la conductivité sur les stations 03, 09, 12, 11. ces valeurs nous indique soit une anomalie ou une variabilité extrème sur ces stations a ces périodes.
+
+
+
+
+
+
 ##Graphique de la variation de la Conductivité sur chacun des station en 2001
-```{r warning=TRUE}
+```{r, echo=F, message=F, warning=F}
 Condg2001=ggplot(aes(y=Conductivity_microS_cm, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2001) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
@@ -566,7 +768,7 @@ NB: si les autre son presque constant faut donc regarder ce qui se passe à la s
 #Graphique de la variation de la Conductivité sur chacun des stations en 2002
 
 
-```{r}
+```{r, echo=F, message=F, warning=F}
 Condg2002=ggplot(aes(y=Conductivity_microS_cm, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2002) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
@@ -582,13 +784,13 @@ Condg2002
 
 Commentaire du graphique:
  
-
+La plus basse conductivité a été enregistré sur la sation 04 sur tout la saison d'échantillonage avec un écart d'environs 75micro Sm_cm. la conductivité à augmenté de septembre à novembre à la station une avec la plus grande conductivité. seul en sep et Oct les plus grande observation on été faites.
 
 
 
 
 ##Graphique de la variation de la Conductivité sur chacun des stations en 2021
-```{r}
+```{r, echo=F, message=F, warning=F}
 Condg2021=ggplot(aes(y=Conductivity_microS_cm, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2021) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
@@ -610,7 +812,7 @@ NB: la plus faible conductivité est en 2021 ainsi que la plus grande et c’est
 
 
 ##Graphique de la variation de la Conductivité sur chacun des stations en 2022
-```{r}
+```{r, echo=F, message=F, warning=F}
 Condg2022=ggplot(aes(y=Conductivity_microS_cm, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2022) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
@@ -631,7 +833,7 @@ La conductivité à légèrement varier, avec les courbes presque constants sauf
 
 
 ##Graphique de la variation de la Conductivité sur chacun des stations entre period: 2001_2002
-```{r}
+```{r, echo=F, message=F, warning=F}
 CondPeriod01=ggplot(aes(y=Conductivity_microS_cm, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Period1) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
@@ -652,7 +854,7 @@ La conductivité de la station 4 demeure plus la plus basse. La conductivité  d
 
 
 ##Graphique de la variation de la Conductivité sur chacun des stations entre period: 2021_2022
-```{r}
+```{r, echo=F, message=F, warning=F}
 CondPeriod02=ggplot(aes(y=Conductivity_microS_cm, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Period2) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
@@ -672,15 +874,44 @@ La conductivité de la station 4 a la plus basse conductivité de la période. E
 
 
 ##Pour crée un graphique qui montre les ligne de variation de tout les dates(periode) entre la variable et tous les stations
-```{r}
+```{r, echo=F, message=F, warning=F}
 scatterplot(Period1$Conductivity_microS_cm~Period1$Date | Period1$Station2,
             smooth=F)
 ```
 
 #  pH  #########
 
+## pH variabilité spatiale 
+```{r, echo=F, message=F, warning=F}
+boxplot(Pok2001.2022$pH_units ~ Pok2001.2022$Station)
+```
+
+```{r, echo=F, message=F, warning=F}
+
+ggplot(aes(y=Temp_eau_YSI_degC, x=Station2, fill=Period), data=Pok2001.2022) + geom_boxplot() +
+
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la température à 20ans entre les deux Period")
+```
+
+Commentaire:
+
+
+Le pH sur les deux périodes n'ont pas beaucoup varié et cela prèsque sur tous les stations.
+
+Le pH de la stations 08 indique une plus grande variabilité sur la période 2021-2022 par rapport au pH en 2001-2002.
+
+le pH de la periode 01 présente une plus grand variabilité de données par rapport à la période 02.
+
+Le pH présentes beaucoup de valeur abérante uniquement sur la periode de 2001-2002, ce qui indique des anomalies ou une variabilité extreme sur les stations 02 03 08 12 11 et 07.
+
+
+
+
 ## Graphique de la variation du pH sur chacun des station en 2001
-```{r}
+```{r, echo=F, message=F, warning=F}
 pHg2001=ggplot(aes(y=pH_units, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2001) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
@@ -696,8 +927,7 @@ pHg2001
 Year2001$Date
 subset(Year2001, Date=="2001-10-31", select=c("Station", "pH_units"))
 
-help(subset)
-
+subset(Pok2001.2022, Date=="2001-10-31" & Station=="Pok-02")
 ```
 
  Commentaire du graphique:
@@ -708,7 +938,7 @@ Le pH a baissé a toutes les stations de la fin de l’été à la fin de l’au
 	 
 
 ##Graphique de la variation du pH sur chacun des stations en 2002
-```{r}
+```{r, echo=F, message=F, warning=F}
 pHg2002=ggplot(aes(y=pH_units, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2002) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
@@ -730,7 +960,7 @@ Le pH n’a pas varié il est prèsque constant sur tout les station sauf à la 
 
 
 ##Graphique de la variation du pH sur chacun des stations en 2021
-```{r}
+```{r, echo=F, message=F, warning=F}
 pHg2021=ggplot(aes(y=pH_units, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2021) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
@@ -752,7 +982,7 @@ Le pH le plus bas est observe sur la station 04. le pH le plus élevé est à la
 
 
 ##Graphique de la variation du pH sur chacun des stations en 2022
-```{r}
+```{r, echo=F, message=F, warning=F}
 pHg2022=ggplot(aes(y=pH_units, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2022) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
@@ -771,7 +1001,7 @@ Le pH a augmenté à tous les stations le premier septembre sauf à la station 0
 
 
 ##Graphique de la variation du pH sur chacun des stations entre period: 2001_2002
-```{r}
+```{r, echo=F, message=F, warning=F}
 pHPeriod01=ggplot(aes(y=pH_units, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Period1) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
@@ -792,7 +1022,7 @@ Le pH en 2001 à baissé avec une allure décroissante. En 2002 le pH a augment�
 
 
 ##Graphique de la variation du pH sur chacun des stations entre period: 2021_2022
-```{r}
+```{r, echo=F, message=F, warning=F}
 pHPeriod02=ggplot(aes(y=pH_units, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Period2) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
@@ -814,22 +1044,71 @@ Le pH en 2021 aaugment a la fin de l’été pour en suite baissé  et augmenté
 
 
 ##Pour crée un graphique qui montre les ligne de variation de tout les dates(periode) entre la variable et tous les stations
-```{r}
+```{r, echo=F, message=F, warning=F}
 scatterplot(Period1$pH_units~Period1$Date | Period1$Station2,
             smooth=F)
 ```
 
 #Turbidité  #########
 
+## Turbidité variabilité spatiale 
+```{r, echo=F, message=F, warning=F}
+boxplot(Pok2001.2022$Turbidity_NTU ~ Pok2001.2022$Station)
+```
+
+
+```{r, echo=F, message=F, warning=F}
+dim(Pok2001.2022)
+sub1tub=subset(Pok2001.2022, Turbidity_NTU<20)
+dim(sub1tub)
+
+ggplot(aes(y=Turbidity_NTU, x=Station2, fill=Period), data=sub1tub) + geom_boxplot() +
+
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la turbidité à 20ans entre les deux Period")
+```
+
+J'ai exclu deux valeur de la station 01 en 2001_2002 par la fonction subset(deux valeur plus grand que 20 NTU):
+sub1tub=subset(Pok2001.2022, Turbidity_NTU<20)
+dim(sub1tub)
+
+Commentaire:
+
+
+Une médiane plus élevée indique une valeur de turbidité plus élevée.
+
+
+
+La turbidité indique une plus grande variabilité en 2001-2002 sur les stations 02, 01, 08, 12, 11 et 05 par rapport à la turbidité 20ans après. (la tubidité à baissé 20ans après à ces station).
+
+La turbidité en 2021-2022 a une plus grande variabilité sur les stations 04, 06, 09, 10, et 07 par rapport à la turbidité 20en arrière.
+
+La plus grande variabilité s'est observé sur les stations 08 et 01.
+
+La turbidité présente très moins de variabilité des données sur la majorité des stations en 2001-2002 et 20ans après 
+
+
+Les moustaches au niveau de la station 08,02 et 12 en 2001-2002 et à la station 02 en 2021-2022 ce qui nous indique une grande variabilité dans les données.
+
+
+La turbidité présente plus de valeurs abbérente dans les deux périodes ce qui indique la présences d'anomalies ou une variabilité extrême dans la periode une sur les stations 01, 03, 09, 11 et 05. De même que sur les stations 02, 03, 08, 12, 11 et 05 sur la periode deux.
+
+Par rapport aux recommndations des normes cannadiennes en période d’écoulement limpide, l’augmentation induite de turbidité par rapport à la valeur de fond ne doit pas dépasser 8 NTU. 
+
+
+Dans le cas de notre rivière presque à tout les stations on est comprise entre cette valeur alors qu'au stat09 en 2001-2002 une valeur abbérente se retrouve au dela de cette valeur. Sur cette meme periode quelque station seraproche des 8 NTU. 
+
+
 ## Graphique de la variation de la Turbidité sur chacun des station en 2001
-```{r}
+```{r, echo=F, message=F, warning=F}
 Turbg2001=ggplot(aes(y=Turbidity_NTU, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2001) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
   geom_line() + 
   geom_point() +
-  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y") +
-
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y") 
   ggtitle("2001") +
   theme_bw()
 Turbg2001
@@ -844,34 +1123,31 @@ La station 01 à la turbidité la plus élevé. En plus de la fin de l’été a
 	 
 
 ##Graphique de la variation de la turbidité sur chacun des stations en 2002
-```{r}
+```{r, echo=F, message=F, warning=F}
 Turbg2002=ggplot(aes(y=Turbidity_NTU, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2002) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
   geom_line() + 
   geom_point() +
-  scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
-                                              as.Date("2001-10-01"), as.Date("2001-11-01"),
-                                             as.Date("2001-12-01"))) +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")
   ggtitle("2002") +
   theme_bw()
 Turbg2002
 ``` 
 Commentaire du graphique:
  
-
+Les pH qui ont le plus varié sont ceux de la station 08 et 12. la station 08 à baissé de la fin de l'été jusqu'en Septembre pour augmenter d'environs 65,7% de septembre en fin novembre. la station 12  fais l'inverse elle augmente de la fin d'été jusqu'en septembre pour aqytteindre le plus haut pH avans de baissé de 21,4% jusqu'à la fin de l'automne. (lors de la saison d'été à l'automne on observe une variation remarquable 2002).
+on observe une petite tendance de variation à la station 05 par raport aux autre stations.
 
 
 ##Graphique de la variation de la Turbidité sur chacun des stations en 2021
-```{r}
+```{r, echo=F, message=F, warning=F}
 Turbg2021=ggplot(aes(y=Turbidity_NTU, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2021) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
   geom_line() + 
   geom_point() +
-  scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
-                                              as.Date("2001-10-01"), as.Date("2001-11-01"),
-                                             as.Date("2001-12-01"))) +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")
   ggtitle("2021") +
   theme_bw()
 Turbg2021
@@ -879,162 +1155,213 @@ Turbg2021
  
 Commentaire du graphique:
  
+Le pH des stations 01, 08 et 05 sont ceux qui ont les plus varié avec le plus pH. Le premier septembre presque toutes les station on un pH élevé sauf le 02, 11, 3. Le pH de la station 01 à augmenté de la fin de l'été jusqu'en 1er septembre avec la plus grande valeur du pH pour fortement baissé de 62,5% jusqu'en fin novembre. Sur la station 08 on observe une baisse j'usqu'au premier septembre pour en suite augmenté avant de baissé jusqu'à la fin de l'été. La station 02 et 11 ont le plus bas pH.
+
+
 
 
 
 ##Graphique de la variation de la Turbidité sur chacun des stations en 2022
-```{r}
+```{r, echo=F, message=F, warning=F}
 Turbg2022=ggplot(aes(y=Turbidity_NTU, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2022) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
   geom_line() + 
   geom_point() +
-  scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
-                                              as.Date("2001-10-01"), as.Date("2001-11-01"),
-                                             as.Date("2001-12-01"))) +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2022") +
   theme_bw()
 Turbg2022
 ``` 
 Commentaire du graphique:
  
-
+Tout les pH ont augmenté sur tout les stations durant les saisons sauf à la station 04. Le pH au niveau des autre stations sont uniforme et assandant.les stations 01 et 08 ont connus une augmentation continuel ayant les plus grands pH, surtout la station 8 à observé. La saison de la fin d'été au début de l'automne (1er sept) sur tout les station le pH a augmenté sauf à la station 03. Lors de la saison d'automne (octobre en fin novembre) à tout les station le pH à augmenté sauf à la station 04. 
 
 
 ##Graphique de la variation de la Turbidité sur chacun des stations entre period: 2001_2002
-```{r}
+```{r, echo=F, message=F, warning=F}
 TurbPeriod01=ggplot(aes(y=Turbidity_NTU, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Period1) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
   geom_line() + 
   geom_point() +
-  scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
-                                              as.Date("2001-10-01"), as.Date("2001-11-01"),
-                                             as.Date("2001-12-01"))) +
-  ggtitle("2022") +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B")+
+  ggtitle("2001_2002") +
   theme_bw()
 TurbPeriod01
 ```
 
 Commentaire:
 
-
+Le pH a plus varié en 2001 lors de la première période qu'à l'an 2002. le pH de la station 01 à extrainement augmenté le premier octobre 2001. le pH à varié entre 0 et 45 en 2001 et entre 0 et 10 en 2002 soit une différence de 35 log.les pH en 2001 ont augmenté et baissé durant les deux saison à la station 08, 09 et 11 contrairement en 2002 ou seul les station 08 et 12 qui ont varié. la station 8 à aussi augmenté avant de baissé et la station 11  baissé avants d'augmenté.
 
 
 
 ##Graphique de la variation de la Turbidité sur chacun des stations entre period: 2021_2022
-```{r}
+```{r, echo=F, message=F, warning=F}
 TurbPeriod02=ggplot(aes(y=Turbidity_NTU, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Period2) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
   geom_line() + 
   geom_point() +
-  scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
-                                              as.Date("2001-10-01"), as.Date("2001-11-01"),
-                                             as.Date("2001-12-01"))) +ggtitle("2001_2002") +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y") + ggtitle("2021_2022") +
   theme_bw()
 TurbPeriod02
 ```
 
 Commentaire:
 
-
+le pH le plus élevé est celle de la station 01 en 2021 et la station 08 en 2022. Sur la deuxieme periode ce sont les meme station qui on leurs turbidités plus élevé. La turbidité de l'eau est très minimes à cause de la vriation de 0 à 6 NTU.
 
 
 
 
 ##Pour crée un graphique qui montre les ligne de variation de tout les dates(periode) entre la variable et tous les stations
-```{r}
+
+```{r, echo=F, message=F, warning=F}
 scatterplot(Period1$Turbidity_NTU~Period1$Date | Period1$Station2,
             smooth=F)
 ```
 #Couleur ################
-```{r}
+
+## Couleur variabilité spatiale 
+```{r, echo=F, message=F, warning=F}
+boxplot(Pok2001.2022$Colour_TCU ~ Pok2001.2022$Station)
+```
+
+```{r, echo=F, message=F, warning=F}
+
+
+ggplot(aes(y=Colour_TCU, x=Station2, fill=Period), data=Pok2001.2022) + geom_boxplot() +
+
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la couleur à 20ans entre les deux Period")
+```
+
+J'ai voulu exclu une valeur celle de la station 01 qui est plus éloigné en prennant moi de 190 mais je remarque que trois valeurs ont été exclu doc je peux dis que cette sendance est correcte. et ca n'a rien changer à l'allure de la des graphiques.
+
+dim(Pok2001.2022)
+sub1cou=subset(Pok2001.2022, Colour_TCU<190)
+dim(sub1cou)
+
+
+Commentaire:
+
+
+La teneur de la couleur de l'eau augmente sur les stations  graduellement de la station 04 jusqu'à la station 05.
+
+Les couleurs n'ont pas vraiment augmenté sur tout les autres stations en 2001-2002 et 20ans après mais uniquement sur les stations 07 et 05.
+
+
+La couleur au niveau des stations 05 et 07 sont très élevé 20ans après les couleurs obtenu en 2001-2002. A ces memes stations les données indique une très grande variabilité de la couleur.
+
+La couleurs de l'eau a la station 08 indique une grande variabilité en 2001-2002 de plus qu'en 2021-2022.
+
+
+On observe plus de valeur abbérentes sur les stations 04, 02, 01, 10 et 07 en 2001-2002 et aussi plus de valeur abbérentes sur les stations 04, 06, 03, 12, 10 et 11 en 2021-2022.
+
+La plus grande valeur abbérentes est observé sur la station 01 en 2001-2002. 
+
+la teneur de la couleur varie entre 0 et 200 NTU.
+
+Par rapport au recommandation des normes canadienne pour la qualité des eaux la couleur d'une eau naturelle est situé en dessous de 5mg/l pour les eaux très limpide et 1200 mg/l pour les eaux sombres et tourbeusess. 
+
+Dans le cas de notre rivière on peux qualifié la nature de cette eau de propre car elle présente une teneur sombre de 16,66% sur les stations 07 et 05 en 2021-2022 et une teneur de 6,25% sombre en 2001-2002. 
+
+Par rapport au autre station ont peut les qualifiés d'eau limpide
+
+L'Eau en 2001-2002 est plus limpide qu'en 2021-2022.
+
+
+##Graphique de la variation de la Couleur sur chacun des stations en 2001
+```{r, echo=F, message=F, warning=F}
 Coulg2001=ggplot(aes(y=Colour_TCU, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2001) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
   geom_line() + 
   geom_point() +
-  scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
-                                              as.Date("2001-10-01"), as.Date("2001-11-01"),
-                                             as.Date("2001-12-01"))) +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
   ggtitle("2001") +
   theme_bw()
 Coulg2001
+
+Year2001$Date
+subset(Year2001, Date=="2001-08-31", select=c("Station", "Colour_TCU"))
+
+
 ```
 
  
 Commentaire du graphique:
  
-
+ La couleur de l'eau est plus élevé à la station 01 et cela le premier octobre. les stations 05, 07 et 08 à la fin de l'automne en novembre on les teuneurs plus élevé. le reste des station.La couleur sur cette station varie entre 0 et 200, ou 09 stations varient entre 0 et 30 TCU.
 
 
 	 
 
-##Graphique de la variation de la turbidité sur chacun des stations en 2002
-```{r}
+##Graphique de la variation de la Couleur sur chacun des stations en 2002
+
+```{r, echo=F, message=F, warning=F}
 Coulg2002=ggplot(aes(y=Colour_TCU, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2002) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
   geom_line() + 
   geom_point() +
-  scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
-                                              as.Date("2001-10-01"), as.Date("2001-11-01"),
-                                             as.Date("2001-12-01"))) +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2002") +
   theme_bw()
 Coulg2002
 ``` 
 Commentaire du graphique:
  
+la station 02 à la plus faible teneur en couleur et tout les autres stations varient entre 0 et 30 TCU. Les station dont la teneur de la ccouleur à grandement varié sont les stations 12, 05, et 07. ces trois stations ont une teneur qui varient entre 20 et 80. la plus grande teneur est celle de la station 05, qui varie entre 80 et 75 TCU avec une grande baisse en septembre pour remonter en pique.
 
 
-
-##Graphique de la variation de la Turbidité sur chacun des stations en 2021
-```{r}
+##Graphique de la variation de la Couleur sur chacun des stations en 2021
+```{r, echo=F, message=F, warning=F}
 Coulg2021=ggplot(aes(y=Colour_TCU, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2021) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
   geom_line() + 
   geom_point() +
-  scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
-                                              as.Date("2001-10-01"), as.Date("2001-11-01"),
-                                             as.Date("2001-12-01"))) +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2021") +
   theme_bw()
 Coulg2021
 ```
  
 Commentaire du graphique:
  
+Les plus grandes teneur en couleur sont les station 05 et 07 qui varient entre 0 et 180 TCU. La station 02 à la plus faible teneur en courleur. Les station 05 et 07 ont augmenté en pique en septembre jusqu'en octobre pour legerement baissé.
 
 
-
-##Graphique de la variation de la Turbidité sur chacun des stations en 2022
-```{r}
+##Graphique de la variation de la Couleur sur chacun des stations en 2022
+```{r, echo=F, message=F, warning=F}
 Coulg2022=ggplot(aes(y=Colour_TCU, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2022) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
   geom_line() + 
   geom_point() +
-  scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
-                                              as.Date("2001-10-01"), as.Date("2001-11-01"),
-                                             as.Date("2001-12-01"))) +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2022") +
   theme_bw()
 Coulg2022
 ``` 
 Commentaire du graphique:
  
+Toujour la couleur lada station 05 et 07 ont les plus grande teneur en couleur. Elle ont aussi augmenté de septembre jusqu'en novembre. la station 08 aussi à legement augmenté d'aout jusqu'en novembre. la teneur a varié entre 0 et 150 TCU. la station 02 a toujour la plus faible teneur en couleur.
 
 
-
-##Graphique de la variation de la Turbidité sur chacun des stations entre period: 2001_2002
-```{r}
+##Graphique de la variation de la Couleur sur chacun des stations  entre period: 2001_2002
+```{r, echo=F, message=F, warning=F}
 CoulPeriod01=ggplot(aes(y=Colour_TCU, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Period1) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
   geom_line() + 
   geom_point() +
-  scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
-                                              as.Date("2001-10-01"), as.Date("2001-11-01"),
-                                             as.Date("2001-12-01"))) +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
   ggtitle("2001_2002") +
   theme_bw()
 CoulPeriod01
@@ -1042,25 +1369,542 @@ CoulPeriod01
 
 Commentaire:
 
+La teneur en couleur la plus grande est celle de la station 01 en octobre 2001. durans la periodes 01 ce sont les stations 05,07 et 08 qui ont grandement varié. ces trois station on plus augmenté en 2001 qu'en 2002. en 2002 ils ont aussi augmenté mais moins qu'en 2002.
 
 
 
-
-##Graphique de la variation de la Turbidité sur chacun des stations entre period: 2021_2022
-```{r}
+##Graphique de la variation de la Couleur sur chacun des stations entre period: 2021_2022
+```{r, echo=F, message=F, warning=F}
 CoulPeriod02=ggplot(aes(y=Colour_TCU, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Period2) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
   geom_line() + 
   geom_point() +
-  scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
-                                              as.Date("2001-10-01"), as.Date("2001-11-01"),
-                                             as.Date("2001-12-01"))) +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2021_2022") +
   theme_bw()
 CoulPeriod02
 ```
 
 Commentaire:
+
+Durant toutes la periodes 02 les stations 05 et 07 sont les plus élevé que tout les autre station et cela de septembre en octobre pour juste légerement baissé en novembre. En 2022 elles sont les plus qui ont augmenter mais moins qu'en 2021. la station 08 à augmenter continuellement de 2021 en 2022 mais un peu moin que les stations 05 et 07. (un phénomène en est surement la cause entre septembre et novembre de ces années à voir ...)
+
+
+
+
+##Pour crée un graphique qui montre les ligne de variation de tout les dates(periode) entre la variable et tous les stations
+```{r, echo=F, message=F, warning=F}
+scatterplot(Period1$Colour_TCU~Period1$Date | Period1$Station2,
+            smooth=F)
+```
+
+#Carbone organique dissous ####################
+
+## Carbone organique dissous variabilité spatiale 
+```{r, echo=F, message=F, warning=F}
+boxplot(Pok2001.2022$Carbon_Total_Organic_mg_L ~ Pok2001.2022$Station)
+```
+
+```{r, echo=F, message=F, warning=F}
+
+ggplot(aes(y=Carbon_Total_Organic_mg_L, x=Station2, fill=Period), data=Pok2001.2022) + geom_boxplot() +
+
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  du Carbone Organique dissous à 20ans entre les deux Period")
+```
+
+Commentaire:
+
+La teneur en carbone organique dissous est faible en 2001-2002 qu'en 2021-2022. 
+
+La teneur en carbone organique dissous est plus élevé sur les stations 01, 08, 07 et 05 en 2021-2022 de plus que 20ans en arrière.
+
+
+La teneur en COD indique une plus grande variabilité aux stations 01 et 08 en 2001-2002 de plus que 20ans plus tard.
+
+alors ue sur les stations 11, 07 et 05 ils indique une plus grande variabilité en 2021-2022 que 20ans en arrière.
+
+Des moustaches plus longues indiquent une plus grande variabilité dans les données.
+
+
+Les moustaches m'indiquent une plus grande variabilité des données sur les stations 07, 05 dans les deux periodes et plus en 2001-2002 sur la station 08 et aussi plus sur la stations 12 et 11 en 2021-2021
+
+
+Les valeurs abbérentes s'observe plus en 2001-2002 sur les stations 04, 02, 10 et 07 ce qui indique des anomaliess ou une variabilité extrême sur ces station à cette période.
+
+
+
+```{r, echo=F, message=F, warning=F}
+CTOg2001=ggplot(aes(y=Carbon_Total_Organic_mg_L, x=Date, 
+                group=Station2, shape=Station2, color=Station2), data=Year2001) + 
+  scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2001") +
+  theme_bw()
+CTOg2001
+```
+
+ 
+Commentaire du graphique:
+ 
+La teneur en CTO a continuellement augmenté  de aout à novembre à a station 08. Les plus grande teneur ont été enregistré d'octobre en Novembre. La station 04 à la plus faible teneur en CTO sauf en octobre. la plus forte teneur est la station 07.
+
+
+	 
+
+##Graphique de la variation du Carbon Total Organic sur chacun des stations en 2002
+```{r, echo=F, message=F, warning=F}
+CTOg2002=ggplot(aes(y=Carbon_Total_Organic_mg_L, x=Date, 
+                group=Station2, shape=Station2, color=Station2), data=Year2002) + 
+  scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2002") +
+  theme_bw()
+CTOg2002
+``` 
+Commentaire du graphique:
+ 
+La teneur en CTO à varié entre 0 et 12 mg/l et la plus forte teneur est enrégistré sur les stations 05, 07 et 08. Ces trois station on baisé de teneur d'aout en septembre et fortement augmenté (75%) de septembre jusqu'en novembre. Ces trois station sont à garder à l'oeil (meme chose pour la couleur). La station 02 et 04 a la plus faible teneur (lui aussi à garder à l'oeil meme chose avec la couleur). la plus forte teneur est la station 07.
+
+
+##Graphique de la variation du Carbon Total Organic sur chacun des stations en 2021
+```{r, echo=F, message=F, warning=F}
+CTOg2021=ggplot(aes(y=Carbon_Total_Organic_mg_L, x=Date, 
+                group=Station2, shape=Station2, color=Station2), data=Year2021) + 
+  scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2021") +
+  theme_bw()
+CTOg2021
+```
+ 
+Commentaire du graphique:
+ 
+Comme au précedant la station 04 et 02 on les plus basse teneur en CTO. Et les plus élevé les stations 05 et 07. De Septembre en octobre ils ont augmenté en pique pour en suite légement baissé en novembre. La teneur en CTO varie ici entre 0 et 18 mg/l. la plus forte teneur est la station 07.
+
+
+##Graphique de la variation du Carbon Total Organic sur chacun des stations en 2022
+```{r, echo=F, message=F, warning=F}
+CTOg2022=ggplot(aes(y=Carbon_Total_Organic_mg_L, x=Date, 
+                group=Station2, shape=Station2, color=Station2), data=Year2022) + 
+  scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2022") +
+  theme_bw()
+CTOg2022
+``` 
+Commentaire du graphique:
+ 
+La plus faibe teneur est celle de la station 02. les stations 05,07 et 08  ont les plus grande teneur en CTO et ont continuelement augmenté D'aout en novembre. la plus forte teneur est la station 07.
+
+
+##Graphique de la variation du Carbon Total Organic sur chacun des stations entre period: 2001_2002
+```{r, echo=F, message=F, warning=F}
+CTOPeriod01=ggplot(aes(y=Carbon_Total_Organic_mg_L, x=Date, 
+                group=Station2, shape=Station2, color=Station2), data=Period1) + 
+  scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2001_2002") +
+  theme_bw()
+CTOPeriod01
+```
+
+Commentaire:
+
+EN periode 01 la teneur en CTO à augmenté plus en 2001 qu'en 2002. En 2001 la teneur à augmenté d'octobre en novembre. et en 2002  la teneur à augmenté de septembre en novembre. cela s'observe sur les stations 07, 05 et 08.
+
+
+
+##Graphique de la variation du Carbon Total Organic sur chacun des stations entre period: 2021_2022
+```{r, echo=F, message=F, warning=F}
+CTOPeriod02=ggplot(aes(y=Carbon_Total_Organic_mg_L, x=Date, 
+                group=Station2, shape=Station2, color=Station2), data=Period2) + 
+  scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2021_2022") +
+  theme_bw()
+CTOPeriod02
+```
+
+Commentaire:
+
+Les plus grande teneur ont été observé sur les stations 07 et 05. en 2021 la teneur était plus élevé à la station 07 qu'en 2022. à la station 05 la teneur était plus élevé en 2022 qu'en 2021.Sur les deux station en 2021 la teneur est monté en pique de septembre en octobre pour légèrement baissé en novembre, mais en 2022 la teneur à augmenté d'aout en novembre.
+
+
+
+
+##Pour crée un graphique qui montre les ligne de variation de tout les dates(periode) entre la variable et tous les stations
+```{r, echo=F, message=F, warning=F}
+scatterplot(Period1$Carbon_Total_Organic_mg_L~Period1$Date | Period1$Station2,
+            smooth=F)
+```
+
+
+
+
+# E_coli 
+
+## E_coli variabilité spatiale 
+```{r, echo=F, message=F, warning=F}
+boxplot(Pok2001.2022$E_coli_MPN_100.mL ~ Pok2001.2022$Station)
+```
+
+```{r, echo=F, message=F, warning=F}
+
+dim(Pok2001.2022)
+sub1ecoli=subset(Pok2001.2022, E_coli_MPN_100.mL<1500)
+dim(sub1ecoli)
+
+ggplot(aes(y=E_coli_MPN_100.mL, x=Station2, fill=Period), data=sub1ecoli) + 
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),
+        axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold")) +
+  ggtitle("Variation  des E_coli à 20 ans entre les deux Period")
+
+```
+
+Commentaire: 
+
+
+
+La teneur en bacterie E_coli sont plus élevé uniquement sur les stations  10, 07 et 05 en 2001-2002 et ont une présence très négligeableen ces meme station en 2021-2022.
+
+sur tout les station en 2021-2022 les la teneur en E_Coli sont très faible.
+
+Les E_colis présente une tres grande variabilité sur la station 10, 07 et 05.
+
+Des moustaches plus longues indiquent une plus grande variabilité dans les données.
+
+les E_coli ont une longue variabilité trop élevé sur la station 10 et une longue variabilité élevé et faible sur la station 07.
+
+Beaucoup de valeurs aberrantes peuvent indiquer des anomalies ou une variabilité extrême dans certaines stations ou périodes.
+
+Les E_coli présentent beaucoup de valeurs abbérentes trops élevé prèsque sur tout les stations ce qui nous indique peut etre une anomalies ou une variabilité extrême dans autres station ou la concentration des E_coli  sont tres élevé.
+
+
+
+
+```{r, echo=F, message=F, warning=F}
+CTOg2001=ggplot(aes(y=E_coli_MPN_100.mL, x=Date, 
+                group=Station2, shape=Station2, color=Station2), data=Year2001) + 
+  scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2001") +
+  theme_bw()
+CTOg2001
+```
+
+ 
+Commentaire du graphique:
+ 
+La concentration des E_coli à varié en 2002 entre 0 et 2000mg/l. La concentration des E_coli à la station 07 est la plus élevé en aout jusqu'en novembre. Mais en octobre la concentration à augmenté en pique à tout les stations.la station 01 a la concentration la plus élevé de 2000 mg/l cette saison. 
+(pourquoi la concentration augment à tout les stationsn en oct 2001 et qu'e s'est il passé pour qu'on ait ces valeurs)
+
+
+	 
+
+##Graphique de la variation du Carbon Total Organic sur chacun des stations en 2002
+```{r, echo=F, message=F, warning=F}
+CTOg2002=ggplot(aes(y=E_coli_MPN_100.mL, x=Date, 
+                group=Station2, shape=Station2, color=Station2), data=Year2002) + 
+  scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2002") +
+  theme_bw()
+CTOg2002
+
+
+
+``` 
+Commentaire du graphique:
+ 
+La concentration des E_coli ont augmenté et baissé sur les stations 07, 10 et 05 lors de la saison du fin d'été à la saison de fin d'automne.La concentration la plus élevé est celle de la station 10 en aout pour complètement baisser jusqu'a la fin de l'automne. En aout comme sur tout les autre station la concentration était faible avant d'augmenter jusqu'a 300mg/l en septembre pour baisser jusqu'en novembre à la station 05. A la station 07 elle continue à augmenté d'aout en octobre jusqua attein la concentration la plus élevé d'environs 700mg/l pour fortement baisser jusqu'en novembre (en dessous de 100mg/l). La concentration des E_coli à varié en 2002 entre 0 et 200mg/l.
+
+
+
+##Graphique de la variation du Carbon Total Organic sur chacun des stations en 2021
+```{r, echo=F, message=F, warning=F}
+CTOg2021=ggplot(aes(y=E_coli_MPN_100.mL, x=Date, 
+                group=Station2, shape=Station2, color=Station2), data=Year2021) + 
+  scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2021") +
+  theme_bw()
+CTOg2021
+```
+ 
+Commentaire du graphique:
+ 
+La concentration des E_coli sont comprise entre 0 et 230mg/l. La plus grande concentration est cele de la station 02 qui a augmenté en pique en septembre pour avoir la valeur la plus élevé d'environs 235mg/l pour ensuite baisser jusqu'avoir la plus basse concentration en novembre. la plus basse concentration est celle de la station 04.
+
+
+
+
+##Graphique de la variation du Carbon Total Organic sur chacun des stations en 2022
+```{r, echo=F, message=F, warning=F}
+CTOg2022=ggplot(aes(y=E_coli_MPN_100.mL, x=Date, 
+                group=Station2, shape=Station2, color=Station2), data=Year2022) + 
+  scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2022") +
+  theme_bw()
+CTOg2022
+``` 
+Commentaire du graphique:
+ 
+La concentration des E_coli sont comprise entre 0 et 1050mg/l. La plus grande concentration est observé sur les station 10 et 06 en septembre. La station 10 à la plus forte concentration d'environ 1000mg/l à coté de la station 06 qui à environs 
+ mg/l. la concentration est faible sur tout les autres station mais en septembre ils ont tous variées.
+
+
+
+##Graphique de la variation du Carbon Total Organic sur chacun des stations entre period: 2001_2002
+```{r, echo=F, message=F, warning=F}
+CTOPeriod01=ggplot(aes(y=E_coli_MPN_100.mL, x=Date, 
+                group=Station2, shape=Station2, color=Station2), data=Period1) + 
+  scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2001_2002") +
+  theme_bw()
+CTOPeriod01
+```
+
+Commentaire:
+
+LA concentration est très élevé en  rapport a 
+ par rapport à l'an 2002 on observe une mutiplication par deux de la concentration en 2002. En 2001 la concentration à varié entre0 et 2000mg/l et en 2002 entre 0 et 750mg/l c'est à dit la concentration des E_coli en 2001 on doublement baisser en 2002. Ces grandes augmentation ont été observé lors de la saison d'automne en octobre 2001 et en septembre en 2002
+
+
+
+##Graphique de la variation du Carbon Total Organic sur chacun des stations entre period: 2021_2022
+```{r, echo=F, message=F, warning=F}
+CTOPeriod02=ggplot(aes(y=E_coli_MPN_100.mL, x=Date, 
+                group=Station2, shape=Station2, color=Station2), data=Period2) + 
+  scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2021_2022") +
+  theme_bw()
+CTOPeriod02
+```
+
+Commentaire:
+
+Contriarement à la période précedent 2001-2002, la concentration 
+cette periode à augmenté de 2021 en 2022. En 2021 En 2021 la concentration est comprise entre 0 et 250mg/l et cette augmentation est enregistré au début de la saison d'automne en septembre. en 2022 la concentration à quadiplé (comprise entre 0 et 1050mg/L) et cette augmentation s'est observé aussi au début de la saison d'automne en septembre.
+
+
+
+
+##Pour crée un graphique qui montre les ligne de variation de tout les dates(periode) entre la variable et tous les stations
+```{r, echo=F, message=F, warning=F}
+scatterplot(Period1$E_coli_MPN_100.mL~Period1$Date | Period1$Station2,
+            smooth=F)
+```
+
+# Phosphore 
+
+## Phosphore variabilité spatiale 
+```{r, echo=F, message=F, warning=F}
+boxplot(Pok2001.2022$Phosphorus_Total_mg_L ~ Pok2001.2022$Station)
+```
+
+```{r, echo=F, message=F, warning=F}
+
+#dim(Pok2001.2022)
+#sub1ecoli=subset(Pok2001.2022, Phosphorus_Total_mg_L<1500)
+#dim(sub1ecoli)
+
+ggplot(aes(y=Phosphorus_Total_mg_L, x=Station2, fill=Period), data=sub1ecoli) + 
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),
+        axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold")) +
+  ggtitle("Variation  du phosphore à 20 ans entre les deux Period")
+
+```
+
+Commentaire: 
+
+Le phosphore est plus faible sur tous les stations à la période de 2001-2002 et plus élevé 20ans après sur tout les stations.
+
+le phospjore de la station 10 est extrènement élevé à la deuxième période et ce plus que celle de toutes les autre stations.
+
+Le phosphore de la station 01 est très n.gligeable à la période 02.
+
+Le phosphore à la plus grande variabilité sur la station 10 en 2021, plus grand de tout les deux periode. Elle présente aussi une grande variabilité des données forte.
+
+les données de la période 02 présente plus de valeur abbérente, et ce sur les station 04 0201 08 et 11.
+
+le phosphore à varié entre 0 et 0,06 mg/l
+
+
+
+
+
+
+
+
+```{r, echo=F, message=F, warning=F}
+Phosg2001=ggplot(aes(y=Phosphorus_Total_mg_L, x=Date, 
+                group=Station2, shape=Station2, color=Station2), data=Year2001) + 
+  scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2001") +
+  theme_bw()
+Phosg2001
+```
+
+ 
+Commentaire du graphique:
+ 
+Le phosphore présente la plus grande valeur sur la station 12 en octobre et on on observe une penchant qui augmente sur prèsque tout les stations a cette meme date de la saison.
+
+
+
+
+	 
+
+##Graphique de la variation du Carbon Total Organic sur chacun des stations en 2002
+```{r, echo=F, message=F, warning=F}
+Phosg2002=ggplot(aes(y=Phosphorus_Total_mg_L, x=Date, 
+                group=Station2, shape=Station2, color=Station2), data=Year2002) + 
+  scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2002") +
+  theme_bw()
+Phosg2002
+
+
+
+``` 
+Commentaire du graphique:
+ 
+Le phosphore de la station 10 et 08  sont les plus élevé à la fin de l'été en aout. Il varie entre 0,005 et 0,020 mg/l. Le phosphore sur tout les stations ont baissé  d'aut en novembre.
+
+
+
+
+
+
+##Graphique de la variation du Carbon Total Organic sur chacun des stations en 2021
+```{r, echo=F, message=F, warning=F}
+Phosg2021=ggplot(aes(y=Phosphorus_Total_mg_L, x=Date, 
+                group=Station2, shape=Station2, color=Station2), data=Year2021) + 
+  scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2021") +
+  theme_bw()
+Phosg2021
+```
+ 
+Commentaire du graphique:
+ 
+
+Le phosphore de la station 10 est la plus élevé de tout les stations de l'été en automne. Lest autres station n'ont pas vraiment varié.
+
+
+
+
+
+
+##Graphique de la variation du Carbon Total Organic sur chacun des stations en 2022
+```{r, echo=F, message=F, warning=F}
+Phosg2022=ggplot(aes(y=Phosphorus_Total_mg_L, x=Date, 
+                group=Station2, shape=Station2, color=Station2), data=Year2022) + 
+  scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2022") +
+  theme_bw()
+Phosg2022
+``` 
+Commentaire du graphique:
+ 
+Le phosphore de la station 10 en cette années est aussi élevé que cette années que celle de toutes les autre stations et cela de l'été à l'automne. 
+
+le phosphore sur les autres stations sont prèsque identique
+
+
+
+
+
+
+
+
+##Graphique de la variation du Carbon Total Organic sur chacun des stations entre period: 2001_2002
+```{r, echo=F, message=F, warning=F}
+PhosPeriod01=ggplot(aes(y=Phosphorus_Total_mg_L, x=Date, 
+                group=Station2, shape=Station2, color=Station2), data=Period1) + 
+  scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2001_2002") +
+  theme_bw()
+PhosPeriod01
+```
+
+Commentaire:
+
+Le phosphore de la période 01 à la plus haute et faible teneur en 2002. le phosphore à plus baissé en 2002 qu'en 2001.  
+
+
+
+
+
+##Graphique de la variation du Carbon Total Organic sur chacun des stations entre period: 2021_2022
+```{r, echo=F, message=F, warning=F}
+PhosPeriod02=ggplot(aes(y=Phosphorus_Total_mg_L, x=Date, 
+                group=Station2, shape=Station2, color=Station2), data=Period2) + 
+  scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2021_2022") +
+  theme_bw()
+PhosPeriod02
+```
+
+Commentaire:
+
+
+La station 10 sur toute la péeriode 02 à la plus grande teneur en phosphore. sur toute la période le phosphore de la station 10 à augmenté de aout en septembre et ensuite baissé jusqu.en novembre.
+
+La station 02 présente une allure de la station la plus faible de toutes la période.
 
 
 
@@ -1068,21 +1912,54 @@ Commentaire:
 
 
 ##Pour crée un graphique qui montre les ligne de variation de tout les dates(periode) entre la variable et tous les stations
-```{r}
-scatterplot(Period1$Colour_TCU~Period1$Date | Period1$Station2,
+```{r, echo=F, message=F, warning=F}
+scatterplot(Period1$Phosphorus_Total_mg_L~Period1$Date | Period1$Station2,
             smooth=F)
 ```
 
-#Carbone organique dissous
-```{r}
-CTOg2001=ggplot(aes(y=Carbon_Total_Organic_mg_L, x=Date, 
+
+
+# Azote 
+
+## Azote variabilité spatiale 
+```{r, echo=F, message=F, warning=F}
+boxplot(Pok2001.2022$E_coli_MPN_100.mL ~ Pok2001.2022$Station)
+```
+
+```{r, echo=F, message=F, warning=F}
+
+dim(Pok2001.2022)
+sub1ecoli=subset(Pok2001.2022, E_coli_MPN_100.mL<1500)
+dim(sub1ecoli)
+
+ggplot(aes(y=E_coli_MPN_100.mL, x=Station2, fill=Period), data=sub1ecoli) + 
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),
+        axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold")) +
+  ggtitle("Variation  des E_coli à 20 ans entre les deux Period")
+
+```
+
+Commentaire: 
+
+
+
+
+
+
+
+
+
+
+```{r, echo=F, message=F, warning=F}
+CTOg2001=ggplot(aes(y=E_coli_MPN_100.mL, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2001) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
   geom_line() + 
   geom_point() +
-  scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
-                                              as.Date("2001-10-01"), as.Date("2001-11-01"),
-                                             as.Date("2001-12-01"))) +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2001") +
   theme_bw()
 CTOg2001
 ```
@@ -1093,36 +1970,44 @@ Commentaire du graphique:
 
 
 
+
+
 	 
 
-##Graphique de la variation de la turbidité sur chacun des stations en 2002
-```{r}
-CTOg2002=ggplot(aes(y=Carbon_Total_Organic_mg_L, x=Date, 
+##Graphique de la variation du Carbon Total Organic sur chacun des stations en 2002
+```{r, echo=F, message=F, warning=F}
+CTOg2002=ggplot(aes(y=E_coli_MPN_100.mL, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2002) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
   geom_line() + 
   geom_point() +
-  scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
-                                              as.Date("2001-10-01"), as.Date("2001-11-01"),
-                                             as.Date("2001-12-01"))) +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2002") +
   theme_bw()
 CTOg2002
+
+
+
 ``` 
 Commentaire du graphique:
  
 
 
 
-##Graphique de la variation de la Turbidité sur chacun des stations en 2021
-```{r}
-CTOg2021=ggplot(aes(y=Carbon_Total_Organic_mg_L, x=Date, 
+
+
+
+
+
+##Graphique de la variation du Carbon Total Organic sur chacun des stations en 2021
+```{r, echo=F, message=F, warning=F}
+CTOg2021=ggplot(aes(y=E_coli_MPN_100.mL, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2021) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
   geom_line() + 
   geom_point() +
-  scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
-                                              as.Date("2001-10-01"), as.Date("2001-11-01"),
-                                             as.Date("2001-12-01"))) +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2021") +
   theme_bw()
 CTOg2021
 ```
@@ -1132,16 +2017,22 @@ Commentaire du graphique:
 
 
 
-##Graphique de la variation de la Turbidité sur chacun des stations en 2022
-```{r}
-CTOg2022=ggplot(aes(y=Carbon_Total_Organic_mg_L, x=Date, 
+
+
+
+
+
+
+
+##Graphique de la variation du Carbon Total Organic sur chacun des stations en 2022
+```{r, echo=F, message=F, warning=F}
+CTOg2022=ggplot(aes(y=E_coli_MPN_100.mL, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2022) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
   geom_line() + 
   geom_point() +
-  scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
-                                              as.Date("2001-10-01"), as.Date("2001-11-01"),
-                                             as.Date("2001-12-01"))) +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2022") +
   theme_bw()
 CTOg2022
 ``` 
@@ -1150,16 +2041,20 @@ Commentaire du graphique:
 
 
 
-##Graphique de la variation de la Turbidité sur chacun des stations entre period: 2001_2002
-```{r}
-CTOPeriod01=ggplot(aes(y=Carbon_Total_Organic_mg_L, x=Date, 
+
+
+
+
+
+##Graphique de la variation du Carbon Total Organic sur chacun des stations entre period: 2001_2002
+```{r, echo=F, message=F, warning=F}
+CTOPeriod01=ggplot(aes(y=E_coli_MPN_100.mL, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Period1) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
   geom_line() + 
   geom_point() +
-  scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
-                                              as.Date("2001-10-01"), as.Date("2001-11-01"),
-                                             as.Date("2001-12-01"))) +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2001_2002") +
   theme_bw()
 CTOPeriod01
 ```
@@ -1170,16 +2065,19 @@ Commentaire:
 
 
 
-##Graphique de la variation de la Turbidité sur chacun des stations entre period: 2021_2022
-```{r}
-CTOPeriod02=ggplot(aes(y=Carbon_Total_Organic_mg_L, x=Date, 
+
+
+
+
+## Graphique de la variation du Carbon Total Organic sur chacun des stations entre period: 2021_2022
+```{r, echo=F, message=F, warning=F}
+CTOPeriod02=ggplot(aes(y=E_coli_MPN_100.mL, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Period2) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
   geom_line() + 
   geom_point() +
-  scale_x_date(date_labels = "%d %b", breaks=c(as.Date("2001-08-01"), as.Date("2001-09-01"),
-                                              as.Date("2001-10-01"), as.Date("2001-11-01"),
-                                             as.Date("2001-12-01"))) +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2021_2022") +
   theme_bw()
 CTOPeriod02
 ```
@@ -1191,9 +2089,13 @@ Commentaire:
 
 
 
+
+
+
+
 ##Pour crée un graphique qui montre les ligne de variation de tout les dates(periode) entre la variable et tous les stations
-```{r}
-scatterplot(Period1$Carbon_Total_Organic_mg_L~Period1$Date | Period1$Station2,
+```{r, echo=F, message=F, warning=F}
+scatterplot(Period1$E_coli_MPN_100.mL~Period1$Date | Period1$Station2,
             smooth=F)
 ```
 
@@ -1205,18 +2107,18 @@ scatterplot(Period1$Carbon_Total_Organic_mg_L~Period1$Date | Period1$Station2,
 #Dureté
 #Examiner les données
 
-```{r, fig=T}
+```{r, fig=T, echo=F, message=F, warning=F}
 hist(Pok2001.2022$Hardness_as_CaCO3_mg_L)
 ```
 Comparer 2001-2002 à 2021-2022
-```{r}
+```{r, echo=F, message=F, warning=F}
 boxplot(Pok2001.2022$Hardness_as_CaCO3_mg_L ~ Pok2001.2022$Period)
 ```
 Les valeurs de dureté en 2021-2022 sont légèrement inférieures à celles de 2001-2002.
 
 Obtenir des statistiques par période avec la fonction "tapply"
 
-```{r}
+```{r, echo=F, message=F, warning=F}
 tapply(Pok2001.2022$Hardness_as_CaCO3_mg_L, Pok2001.2022$Period, summary)
 ```
 En moyenne, la dureté en 2021-2022 (44 mg CaCO3/L) est plus faible qu'en
@@ -1226,7 +2128,7 @@ biologiques, physiques, chimiques, sociologiques, psychologiques ou autres
 (hypothèse alterne H1)?
 
 ### Vérifier les conditions d'application d'un test de t
-```{r}
+```{r, echo=F, message=F, warning=F}
 shapiro.test(Pok2001.2022$Hardness_as_CaCO3_mg_L)
 qqnorm(Pok2001.2022$Hardness_as_CaCO3_mg_L)
 qqline(Pok2001.2022$Hardness_as_CaCO3_mg_L)
@@ -1243,7 +2145,7 @@ il nous faut un test de t "apparié" (diapo 79).
 
 # Créer deux groupes de même taille
 # car le test de t suppose des groupes de même taille.
-```{r}
+```{r, echo=F, message=F, warning=F}
 Hard2001.2002=subset(Pok2001.2022, Period=="2001-2002", 
                      select="Hardness_as_CaCO3_mg_L")
 class(Hard2001.2002)
@@ -1251,7 +2153,7 @@ dim(Hard2001.2002) # 102 rangées x 1 colonne
 ```
 
 Ne prendre que les 96 premières rangées pour que la série soit d'égale longueur au groupe 2021-2022
-```{r}
+```{r, echo=F, message=F, warning=F}
 groupe1Hard=Hard2001.2002[1:96,]
 groupe1Hard
 length(groupe1Hard)
@@ -1277,7 +2179,7 @@ le même objet que "Station 1 du 28 juillet 2022".
 
 Répétons alors le test t sans l’option "paired", et donc sans tronquer nos données.
 
-```{r}
+```{r, echo=F, message=F, warning=F}
 
 t.test(Pok2001.2022$Hardness_as_CaCO3_mg_L~Pok2001.2022$Period)
 
@@ -1293,7 +2195,7 @@ utilisés sur des rangs avec très peu de conditions à respecter. Le
 désavantage est que ces tests sont moins puissants (moins aptes à
 détecter une différence réel.
 
-```{r}
+```{r, echo=F, message=F, warning=F}
 
 # Obtenir de l'aide sur une fonction
 
@@ -1307,7 +2209,7 @@ wilcox.test(Pok2001.2022$Hardness_as_CaCO3_mg_L~Pok2001.2022$Period)
 
 ### Tester les différences entre stations avec l'ANOVA
 
-```{r}
+```{r, echo=F, message=F, warning=F}
 
 boxplot(Pok2001.2022$Hardness_as_CaCO3_mg_L ~ Pok2001.2022$Station2)
 
@@ -1317,7 +2219,7 @@ Les différences observées entre les moyennes de dureté par stations sont-elle
 au hasard de l’échantillonnage (hypothèse nulle) ou bien à un
 processus (hypothèse alterne)? Essayons l’analyse de variance avec la fonction aov.                                                        
 
-```{r}
+```{r, echo=F, message=F, warning=F}
 
 # D’abord vérifier les conditions
 # ... à faire....
@@ -1335,7 +2237,7 @@ summary(modelaov1)
 
 
 Lister les noms de variables
-```{r}
+```{r, echo=F, message=F, warning=F}
 names(Pok2001.2022)
 
 plot(Pok2001.2022$Hardness_as_CaCO3_mg_L~Pok2001.2022$AlkalinityCaCO3_mg_L)
@@ -1343,386 +2245,24 @@ plot(Pok2001.2022$Hardness_as_CaCO3_mg_L~Pok2001.2022$AlkalinityCaCO3_mg_L)
 cor.test(Pok2001.2022$Hardness_as_CaCO3_mg_L, Pok2001.2022$AlkalinityCaCO3_mg_L,
 method=c('pearson'))
 ```
+ Commentaire:
+
+Une médiane plus élevée indique une valeur d'oxygène dissous plus élevée.
+
+Une boîte plus large indique une plus grande variabilité de l'oxygène dissous.
+
+Des moustaches plus longues indiquent une plus grande variabilité dans les données.
+
+Beaucoup de valeurs aberrantes peuvent indiquer des anomalies ou une variabilité extrême dans certaines stations ou périodes.
+
+```{r}
+env=subset(Pok2001.2022, select=c("Turbidity_NTU", "pH_units", "Conductivity_microS_cm", "Colour_TCU", "Phosphorus_Total_mg_L", "Oxyg_dissous_YSI_mg_L", "E_coli_MPN_100.mL"))
+dim(env)
+pairs(env)
+
+```
+
+
  Corrélation de rang (plus robuste, mais moins puissant)
 
-```{r}
-cor.test(Pok2001.2022$Hardness_as_CaCO3_mg_L, Pok2001.2022$AlkalinityCaCO3_mg_L,
-method=c('spearman'))
-```
-
-Avertissement sur les cas ex-aequo.
-help(cor.test)
-
-
-
-## Fluore
-
-```{r Fluoride, eval=F}
-
-# Lister les valeurs de la variable:
-Pok2001.2022$Fluoride_mg_L
-
-# Convertir les cas sous la limite de détection à la moitié de la limite:
-Pok2001.2022$Fluoride2_mg_L=ifelse(Pok2001.2022$Fluoride_mg_L==0.1, 0.05, Pok2001.2022$Fluoride_mg_L)
-class(Pok2001.2022$Fluoride2_mg_L)
-subset(Pok2001.2022, select=c(Station, Date, Fluoride_mg_L ,Fluoride2_mg_L))
-
-summary(Pok2001.2022$Fluoride_mg_L);summary(Pok2001.2022$Fluoride2_mg_L)
-# Noter la moyenne plus faible pour la variable 2.
-
-```
-
-### Fluore: box-plot par période
-
-```{r, fig=T}
-
-ggplot(aes(y=Fluoride2_mg_L, x=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-```
-
-### Fluore: box-plot par période et station
-
-```{r, fig=T}
-
-ggplot(aes(y=Fluoride2_mg_L, x=Station2, fill=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-
-```
-
-### Fluore à Maltempec
-
-```{r}
-
-Fluore2001.2002=ggplot(aes(y=Fluoride2_mg_L, x=Date), data=Malt) + 
-  geom_line(color="blue") + geom_point(color="blue", size=3) +
-  ggtitle("Concentration de fluore, station POK-11 Maltempec 2001 à 2022") +
-   scale_x_date(date_labels="%b %Y", breaks = scales::breaks_pretty(11),
-                limits = as.Date(c('2001-07-01','2002-12-01'))) +
-     theme(axis.text=element_text(size=14), axis.title=element_text(size=14))
-Fluore2001.2002
-
-Fluore2021.2022=ggplot(aes(y=Fluoride2_mg_L, x=Date), data=Malt) + 
-  geom_line(color="blue") + geom_point(color="blue", size=3) +
-  ggtitle("Concentration de fluore, station POK-11 Maltempec 2001 à 2022") +
-   scale_x_date(date_labels="%b %Y", breaks = scales::breaks_pretty(11),
-                limits = as.Date(c('2021-07-01','2022-12-01'))) +
-     theme(axis.text=element_text(size=14), axis.title=element_text(size=14))
-Fluore2021.2022
-
-# Placer côte à côte les graphiques avec la fonction "ggarrange"
-ggarrange(Fluore2001.2002, Fluore2021.2022, nrow=1, ncol=2)
-
-```
-
-## Oxygène dissous à la station Maltempec
-
-```{r, echo=T, eval=F}
-Pok2001.2022$Oxyg_dissous_YSI_mg_L
-
-Malt$Oxyg_dissous_YSI_mg_L
-
-subset(Malt, select=c(Station, Station2, Date, Oxyg_dissous_YSI_mg_L))
-
-ggplot(aes(y=Oxyg_dissous_YSI_mg_L, x=Date, group=1), data=Malt) + 
-  geom_point() +
-  geom_line() +
-   ggtitle("Concentration d'oxygène dissous, station POK-11 Maltempec 2001 à 2022") +
-  scale_x_date(date_labels="%Y", breaks = scales::breaks_pretty(10)) +
-  theme(axis.text=element_text(size=14), axis.title=element_text(size=14))
-
-```
-
-## Sulfate
-
-```{r Sulfate}
-
-Pok2001.2022$Sulfate2_mg.L=ifelse(Pok2001.2022$Sulfate2_mg.L==1, 0.5, Pok2001.2022$Sulfate2_mg.L)
-summary(Pok2001.2022$Sulfate2_mg.L)
-head(subset(Pok2001.2022,select=c(Sulfate_mg.L,Sulfate2_mg.L)))
-summary(Pok2001.2022$Sulfate2_mg.L)
-
-ggplot(aes(y=Sulfate2_mg.L, x=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-
-ggplot(aes(y=Sulfate2_mg.L, x=Station2, fill=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-
-```
-
-## Ammonia (seulement en 2001 et 2002)
-
-```{r Ammonia}
-
-Pok2001.2022$Ammonia2.N._mg.L=ifelse(Pok2001.2022$Ammonia2.N._mg.L==0.05, 0.025, Pok2001.2022$Ammonia2.N._mg.L)
-Pok2001.2022$Ammonia2.N._mg.L=ifelse(Pok2001.2022$Ammonia2.N._mg.L==0.01, 0.005, Pok2001.2022$Ammonia2.N._mg.L)
-subset(Pok2001.2022,select=c(Ammonia..as.N._mg.L,Ammonia2.N._mg.L))
-# sapply(Moncton, function(x)(sum(is.na(x)))) # NA counts
-# List cases where Ammonia is not lower than detection limit
-subset(Pok2001.2022,!grepl("<", Pok2001.2022$Ammonia..as.N._mg.L) & !is.na(Pok2001.2022$Ammonia2.N._mg.L),select=c(Year, Ammonia..as.N._mg.L,Ammonia2.N._mg.L))
-tamm=subset(Pok2001.2022,!grepl("<", Pok2001.2022$Ammonia..as.N._mg.L) & !is.na(Pok2001.2022$Ammonia2.N._mg.L))
-dim(tamm)
-
-summary(Pok2001.2022$Ammonia2.N._mg.L)
-
-sum(is.na(Pok2001.2022$Ammonia2.N._mg.L  ))
-dim(Pok2001.2022)
-# sapply(Pok2001.2022, function(x)(sum(is.na(x)))) # NA counts
-
-ggplot(aes(y=Ammonia2.N._mg.L, x=Station2, fill=Period), data=tamm) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold")) +
-    ggtitle("Seulement 21 données (2001-2002) sont supérieures à la limite de détection")
-
-# Un.ionized...20ºC_mg.L
-# Nitrate...Nitrite..as.N._mg.L
-# Nitrite..as.N._mg.L
-# Nitrate..as.N._mg.L
-```
-## Nitrite et nitrate (2022 seulement)
-
-```{r NOx}
-
-Pok2001.2022$NOx_mg.L=ifelse(Pok2001.2022$NOx_mg.L==0.05, 0.025, Pok2001.2022$NOx_mg.L)
-subset(Pok2001.2022,select=c(Year, Nitrate...Nitrite..as.N._mg.L, NOx_mg.L))
-subset(Pok2001.2022,select=c(Nitrate...Nitrite..as.N._mg.L, NOx_mg.L))[sample(x=seq(1,length(Pok2001.2022),1), size=5),]
-summary(Pok2001.2022$NOx_mg.L)
-dim(subset(Pok2001.2022,NOx_mg.L>0,03))
-
-ggplot(aes(y=NOx_mg.L, x=Station2, fill=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold")) +
-    ggtitle("Neuf valeurs (sur 48) sont sous la limite de détection de 0,05; elles sont replacées par 0,025")
-
-```
-
-## Phosphorus
-
-```{r Phosphorus2}
-Pok2001.2022$Phosphorus2_mg.L=ifelse(Pok2001.2022$Phosphorus2_mg.L==0.005, 0.0025, Pok2001.2022$Phosphorus2_mg.L)
-subset(Pok2001.2022,select=c(Phosphorus...Total_mg.L,Phosphorus2_mg.L))[sample(x=seq(1,length(Pok2001.2022),1), size=5),]
-summary(Pok2001.2022$Phosphorus2_mg.L)
-
-ggplot(aes(y=Phosphorus2_mg.L, x=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-
-ggplot(aes(y=Phosphorus2_mg.L, x=Station2, fill=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold")) + ylab("Phosphore total (mg/L)")
-
-```
- 
-## E.coli 2001-2021
-
-```{r E.coli}
-
-Pok2001.2022$E.Coli2.MPN.100.mL=ifelse(Pok2001.2022$E.Coli2.MPN.100.mL==10, 5, Pok2001.2022$E.Coli2.MPN.100.mL)
-subset(Pok2001.2022,select=c(E..Coli..MPN.100.mL.,E.Coli2.MPN.100.mL))[sample(x=seq(1,length(Pok2001.2022),1), size=5),]
-summary(Pok2001.2022$E.Coli2.MPN.100.mL)
-
-# Noter que la valeur de 2000 est en fait > 2000
-# par(mar = c(15, 4, 4, 2) + 0.1) 
-# summary(Pok2001.2022$Station2)
-# levels(Pok2001.2022$Station2)
-# boxplot(Pok2001.2022$E.Coli2.MPN.100.mL~Pok2001.2022$Date)
-# as.character(Pok2001.2022$Station2)
-
-# par(mar = c(7, 4, 2, 2) + 0.1) 
-# boxplot(Pok2001.2022$E.Coli2.MPN.100.mL~Pok2001.2022$Station2, las=2)
-# library("ggplot2") # to use ggplot
-
-ggplot(aes(y=E.Coli2.MPN.100.mL, x=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-
-ggplot(aes(y=E.Coli2.MPN.100.mL, x=Station2, fill=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-```
-## Carbon...Total.Organic_mg.L
-```{r Carboneorg}
-
-Pok2001.2022$Carbone2.org_mg.L=ifelse(Pok2001.2022$Carbone2.org_mg.L==1, 0.5, Pok2001.2022$Carbone2.org_mg.L)
-subset(Pok2001.2022,select=c(Carbon...Total.Organic_mg.L,Carbone2.org_mg.L))[sample(x=seq(1,length(Pok2001.2022),1), size=5),]
-summary(Pok2001.2022$Carbone2.org_mg.L)
-subset(Pok2001.2022,is.na(Carbone2.org_mg.L), select=c(Station,Date, Carbon...Total.Organic_mg.L, Carbone2.org_mg.L))
-
-ggplot(aes(y=Carbone2.org_mg.L, x=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-
-ggplot(aes(y=Carbone2.org_mg.L, x=Station2, fill=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-
-```
-
-## Colour_TCU
-
-```{r Couleur}
-
-
-subset(Pok2001.2022,select=c(Colour_TCU,Couleur2_TCU))[sample(x=seq(1,length(Pok2001.2022),1), size=5),]
-summary(Pok2001.2022$Couleur2_TCU)
-
-ggplot(aes(y=Couleur2_TCU, x=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold")) +
-   ggtitle("Recommandations pour la qualité de l'eau potable au Canada < 15 TCU")
-
-ggplot(aes(y=Couleur2_TCU, x=Station2, fill=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold")) +
-   ggtitle("Recommandations pour la qualité de l'eau potable au Canada < 15 TCU")
-
-```
-
-## Turbidity_NTU
-
-```{r Turbidity}
-
-summary(Pok2001.2022$Turbidity_NTU)
-
-ggplot(aes(y=Turbidity_NTU, x=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold")) +
-  scale_y_continuous(limits=c(0,10)) +
-  ggtitle("Une valeur à 45 en 2001-2002")
-
-ggplot(aes(y=Turbidity_NTU, x=Station2, fill=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold")) +
-  scale_y_continuous(limits=c(0,10)) +
-  ggtitle("Une valeur à 45 en 2001-2002") 
-
-```
-
-## pH
-
-```{r pH}
-
-summary(Pok2001.2022$pH_units)
-
-ggplot(aes(y=pH_units, x=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold")) 
-ggplot(aes(y=pH_units, x=Station2, fill=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-
-```
-
-## Total dissolved solids
-
-"Overall average concentration for total dissolved solids in the Miramichi River Basin is 22 mg/L" Chadwick 1995: 29.
-
-```{r TDS}
-summary(Pok2001.2022$TDS..calc._mg.L)
-
-ggplot(aes(y=TDS..calc._mg.L, x=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold")) +
-        ggtitle("Solides totaux dissous (mg/L)")
-
-ggplot(aes(y=TDS..calc._mg.L, x=Station2, fill=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-```
-
-## Aluminium
-```{r Aluminium}
-summary(Pok2001.2022$Aluminum_mg.L)
-
-ggplot(aes(y=Aluminum_mg.L, x=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold")) +
-  ggtitle("La concentration maximale acceptable (CMA) d'aluminium total dans l'eau potable est de 2,9 mg/L")
-
-ggplot(aes(y=Aluminum_mg.L, x=Station2, fill=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold")) +
-  ggtitle("La concentration maximale acceptable (CMA) d'aluminium total dans l'eau potable est de 2,9 mg/L")
-
-```
-## Fer
-
-```{r Fe2}
-summary(Pok2001.2022$Iron_mg.L)
-
-ggplot(aes(y=Iron_mg.L, x=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold")) +
-  ggtitle("«Au Canada, la concentration de fer dans les eaux de surface est généralement inférieure à 10 mg/L» ")
-
-ggplot(aes(y=Iron_mg.L, x=Station2, fill=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold")) +
-  ggtitle("«Au Canada, la concentration de fer dans les eaux de surface est généralement inférieure à 10 mg/L» ")
-```
-
-## Oxygène dissous
-```{r O2}
-Pok2001.2022$Oxyg_dissous_YSI_mg_L
-summary(Pok2001.2022$Oxyg_dissous_YSI_mg_L)
-
-ggplot(aes(y=Oxyg_dissous_YSI_mg_L, x=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold")) 
-
-ggplot(aes(y=Oxyg_dissous_YSI_mg_L, x=Station2, fill=Period), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-```
-
-```{r}
-boxplot(Pok2001.2022$Hardness_as_CaCO3_mg_L ~ Pok2001.2022$Year)
-
-ggplot(aes(y=Hardness_as_CaCO3_mg_L, x=DateSampled, fill=Year), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-
-ggplot(aes(y=Hardness_as_CaCO3_mg_L, x=DateSampled, fill=Year), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-
-Pok2001.2022$Station
-
-Pok4=subset(Pok2001.2022, Station=="Pok-04")
-dim(Pok4)
-ggplot(aes(y=Hardness_as_CaCO3_mg_L, x=DateSampled, fill="Pok amont 04"), data=Pok4) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-
-plot(Pok4$Hardness_as_CaCO3_mg_L ~ Pok4$Date, type="b")
-
-Period01=subset(Pok2001.2022, Period=="2001-2002")
-dim(Period01)
-
-plot(Period01$Hardness_as_CaCO3_mg_L ~ Period01$Date, type="b")
-
-names(Pok4)
-
-class(Pok4$Date)
-
-# Créer une variable "Period" qui désigne la période 2001-2002 ou 2021-2022.
-Pok2001.2022$Period[Pok2001.2022$Year==2001] <- "2001-2002"
-Pok2001.2022$Period[Pok2001.2022$Year==2002] <- "2001-2002"
-Pok2001.2022$Period[Pok2001.2022$Year==2021] <- "2021-2022"
-Pok2001.2022$Period[Pok2001.2022$Year==2022] <- "2021-2022"
-Pok2001.2022$Period=as.factor(Pok2001.2022$Period)
-
-summary(Pok2001.2022$Period)
-
-ggplot(aes(y=Hardness_as_CaCO3_mg_L, x=Year, fill="Pok amont 04"), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-
-"Pok amont 04"
-ggplot(aes(y=Hardness_as_CaCO3_mg_L, x=Year, fill="Branche sud aval 03"), data=Pok2001.2022) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-```
+# RÉFÉRENCES
