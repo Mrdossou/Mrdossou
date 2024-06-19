@@ -47,9 +47,9 @@ installed.packages()
 
 ```{r Charger_data, include=F, message=F, warning=F}
 
-#setwd("C:/Users/mrdos/OneDrive/Documents/Shippagan_mai_aout_2024/Analyse_R_sum/Github")
-#getwd()
-#list.files()
+# setwd("C:/Users/mrdos/OneDrive/Documents/Shippagan_mai_aout_2024/Analyse_R_sum/Github")
+# getwd()
+# list.files()
 
 # setwd("C:/Users/mrdos/OneDrive/Documents/Shippagan_mai_aout_2024/Analyse_R_sum/Github_Pr")
 getwd()
@@ -387,25 +387,34 @@ Parmi les nombreux facteurs qui influences la qualité des eaux de surface dans 
 
 ## Description du site à l'étude:
 
-La rivière Pokemouche est située au nord-est du Nouveau-Brunswick, dans le bassin versant de la péninsule acadienne. Elle s'étend sur une longueur d'environ 41 kilomètres avec une superficie d'environ 20,8 km². L'entourage de la région est constitué d’un mélange de zones urbaines, agricoles et naturelles. La rivière Pokemouche est généralement alimentée par les précipitations, la fonte des neiges et les eaux de ruissèlement, avec des débits saisonniers qui varient de manière très considérable. Elle traverse plusieurs terres par son étendue, notamment des zones boisées, des terres agricoles et des zones urbaines, ce qui peut impacter la qualité de l’eau. Nous avons aussi l’agriculture, l’industrie et l’urbanisation qui sont des activités dans le bassin versant qui peuvent aussi influencer la qualité de l’eau de la rivière. Le suivi de la qualité de l'eau de la rivière Pokemouche a été effectué en deux temps, en 2001-2002 et en 2021-2022 soit 20ans après. Nos données ont été collectées à partir de 12 stations de surveillance réparties tout au long de la rivière, de l’amont à l’aval suivant le sens de l’écoulement de la rivières (de l’Est à l’Ouest), avec des prélèvements effectués 4 à 5 fois par an pour observer le dessin de la variation saisonnière (été vs automne) et celle observé en 20 ans plus tard. 
+La rivière Pokemouche est située au nord-est du Nouveau-Brunswick, dans le bassin versant de la péninsule acadienne. Elle s'étend sur une longueur d'environ 41 kilomètres avec une superficie d'environ 20,8 km². L'entourage de la région est constitué d’un mélange de zones urbaines, agricoles et naturelles. La rivière Pokemouche est généralement alimentée par les précipitations, la fonte des neiges et les eaux de ruissèlement, avec des débits saisonniers qui varient de manière très considérable. Elle traverse plusieurs terres par son étendue, notamment des zones boisées, des terres agricoles et des zones urbaines, ce qui peut impacter la qualité de l’eau. Nous avons aussi l’agriculture, l’industrie et l’urbanisation qui sont des activités dans le bassin versant qui peuvent aussi influencer la qualité de l’eau de la rivière. 
+
+Le suivi de la qualité de l'eau de la rivière Pokemouche a été effectué ~~en deux temps, en 2001-2002 et en 2021-2022 soit 20 ans après~~ __à douze stations situées pour la plupart à l'embouchure des tributaires de la branche principale. Le choix des stations a été déterminé par l'équipe du Cgerp lors de sa fondation en 2001, et le premier rapport du groupe ne donne pas de détails sur les raisons qui ont motivé l'emplacement des stations [@cgerp_comite_2003]__. Nos données ont été collectées à partir de 12 stations de surveillance réparties tout au long de la rivière, de l’amont à l’aval suivant le sens de l’écoulement de la rivières (de l’est à l’ouest), avec des prélèvements effectués 4 à 5 fois par an pour observer le dessin de la variation saisonnière (été vs automne) et celle observé en 20 ans plus tard.
+
+AP 2024-06-19 Parler à Jean-Luc pour en savoir plus sur ce qui a guidé la sélection des
+stations.
+
+![](./Pokemouche_12_stations.jpg)
 
 ## Le bassin dans son ensemble
 
-Un bassin hydrographique, encore appelé bassin versant, est une surface géographique délimitée par des courants et des lignes d’eau, se déversant les unes dans les autres, constituée d’un point plus haut qui est l’amont et d’un point le plus bas qui est l’aval. Au Nouveau-Brunswick, le règlement sur la classification des eaux se regroupe en eaux souterraines et eaux de surface. Nous distinguons les cours d’eau comme les rivières et leurs tributaires ; les lacs, les étangs, les réservoirs et les eaux des milieux humides. Nous pouvons y ajouter aussi des eaux estuariennes qui sont des zones stratégiques où une rivière rencontre et dilue l’eau marine, et l’eau dans les terres humides associée à ces estuaires (GNB, Classification des eaux du N-B, 2002). Le bassin hydrographique de la rivière Pokemouche peut être divisé en 12 sous-bassins versants. Le bassin hydrographique de la péninsule acadienne couvre environ 504 kilomètres carrés, avec une superficie de 44,316 hectares. 75% de ces terres sont des terres privées et 25% représentent l’ensemble des terres de l’État. Le bassin hydrographique de la rivière Pokemouche abrite à peu près 13,000 personnes composées de deux villages, Paquetville et St-Isidore, dans une zone profondément rurale. Dans le bassin, les populations sont des pêcheurs, des travailleurs dans les tourbières, des agriculteurs et des propriétaires de terres boisées (Rapport CGERP, 2003).
+Un bassin hydrographique, encore appelé bassin versant, est une surface géographique délimitée par des courants et des lignes d’eau, se déversant les unes dans les autres, constituée d’un point plus haut qui est l’amont et d’un point le plus bas qui est l’aval ( __référence__ ). Au Nouveau-Brunswick, le règlement sur la classification des eaux ( __référence__ ) se regroupe en eaux souterraines et eaux de surface. Nous distinguons les cours d’eau comme les rivières et leurs tributaires ; les lacs, les étangs, les réservoirs et les eaux des milieux humides. Nous pouvons y ajouter aussi des eaux estuariennes qui sont des zones stratégiques où une rivière rencontre et dilue l’eau marine, et l’eau dans les terres humides associée à ces estuaires (GNB, Classification des eaux du N-B, 2002). 
+
+Le bassin hydrographique de la rivière Pokemouche __couvre environ 504 km^2^ et__ peut être divisé en 12 sous-bassins versants. ~~Le bassin hydrographique de la péninsule acadienne couvre environ 504 kilomètres carrés, avec une superficie de 44,316 hectares.~~ 75% de ces terres sont des terres privées et 25% représentent l’ensemble des terres de l’État ( _référence__ ). Le bassin hydrographique de la rivière Pokemouche abrite à peu près 13,000 personnes composées de deux villages, Paquetville et St-Isidore, dans une zone profondément rurale. Dans le bassin, les populations sont des pêcheurs, des travailleurs dans les tourbières, des agriculteurs et des propriétaires de terres boisées [@cgerp_comite_2003].
 
 ## Description de la disposition des stations
 
-Les stations sont disposées stratégiquement, réparties de l'amont à l’aval et sur toute l'étendue de la rivière afin de permettre d'avoir une vision de la variation et de l'évolution de la qualité de l'eau sur toute sa longueur. Au total, nous disposons de 12 stations, la plupart étant situées sur les différents ruisseaux qui se déversent dans le cours d'eau de la rivière Pokemouche. 
+Les stations sont disposées ~~stratégiquement~~, réparties de l'amont à l’aval et sur toute l'étendue de la rivière afin de permettre d'avoir une vision de la variation et de l'évolution de la qualité de l'eau sur toute sa longueur. Au total, nous disposons de 12 stations, la plupart étant situées sur les différents ruisseaux qui se déversent dans le cours d'eau de la rivière Pokemouche. 
 
-Nos données à l’étude ont été échantillonnées en 2001-2002 et en 2021-2022 en été et en automne, sur ces 12 stations soit le 1er août, le 1er septembre, le 1er octobre et le 1er novembre. Cet été 2024, nous allons collecter davantage de données liées à la composition du territoire, les données géospatiales, quelque données physico-chimique et poursser les annalyses statistiques.
+~~Nos données~~ Les rivières ~~à l’étude~~ ont été échantillonnées  quatre fois par année en 2001, 2002, 2021, 2022 ~~en été et en automne~~, sur ces 12 stations soit le 1er août, le 1er septembre, le 1er octobre et le 1er novembre. ~~Cet été 2024, nous allons collecter davantage de données liées à la composition du territoire, les données géospatiales, quelque données physico-chimique et poursser les annalyses statistiques.~~
+
+__AP 2024-06-19 Expliqure au lecteur l'ordre dans lequel tu présentes les stations. Toujours suivre le même ordre pour ne pas fatiguer le lecteur.__ 
 
 ### Station 06 :
 
 La station 06 est alimentée par le ruisseau Morisson, qui est d'ordre trois (03). À cette station, on note un fond sableux ; la berge est érodée et grugée par l'eau du ruisseau. Cela est souvent dû à des facteurs tels que l'écoulement, la variation saisonnière, la composition du sol, etc. La berge de la station 06 est entourée de graminées et d'arbustes. Un peu plus loin sur la berge, on peut voir des groseilles pousser, ainsi que des conifères et des épinettes.Sa largeur est de 4,3m.
 
 La station 06 se trouve aussi dans une zone de culture de bleuetière, où un vaste territoire a été déboisé, une autre pour la culture et une autre en forêt naturelle. Sur la station six (06) avait été installé le barrage de castor et un pont construit sur la station qui sert de passage, mais qui a été détruit ainsi que le barrage. D'un autre côté, le fond là où la largeur du ruisseau se réduit, l'eau a un fond rempli de gravier. On a des dépots de particules dans le fond de notre ruisseau. On a la présence d'érosion sur la station avec une session très travaillés pour l'infrastructure routière. La surface de notre ruisseau est  plainnement à lair libre.
-
-
 
 ### Station 04:
 
@@ -540,6 +549,11 @@ En général, tous ces paramètres sont essentiels pour évaluer la qualité de 
 
 # RÉSULTATS ET DISCUSSION
 
+AP 2024-06-19 Dans la description des variations, toujours essayer de suivre le
+même patron: 1) un énoncé ou deux sur la variabilité entre stations et entre périodes 
+(box-plot); 2) un énoncé sur la variabilité saisonnière (graphique des campagnes);
+3) un énconé sur les recommandations canadiennes; 4) un énoncé sur les valeurs
+obervées comparées au recommandations canadiennes.
 
 ## Température, variabilité spatiale
 
@@ -573,7 +587,7 @@ On observe plus de valeurs abérrantes et uniqument sur les stations en 2001_200
 
 ### Graphique de la variation de la Température sur chacun des station en 2001
 
-```{r, echo=F, message=F, warning=F}
+```{r, eval=F, echo=F, message=F, warning=F}
 Tempg2001=ggplot(aes(y=Temp_eau_YSI_degC, x=Date, group=Station2, shape=Station2, color=Station2 ), data=Year2001) + scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
   geom_line() + 
   geom_point() +
@@ -1517,7 +1531,7 @@ Commentaire:
 le pH le plus élevé est celle de la station 01 en 2021 et la station 08 en 2022. Sur la deuxieme periode ce sont les meme station qui on leurs turbidités plus élevé. La turbidité de l'eau est très minimes à cause de la vriation de 0 à 6 NTU.
 
 
-```{r, echo=F, message=F, warning=F, include=F}
+```{r, eval=F, echo=F, message=F, warning=F, include=F}
 
 
 scatterplot(Period1$Turbidity_NTU~Period1$Date | Period1$Station2,
@@ -1534,7 +1548,7 @@ ggarrange(Turbg2001, Turbg2002, Turbg2021, Turbg2022, ncol=2, nrow=2)
 
 ### Autre manière de voir les variations saisonnières sur quatre années: 
 
-```{r, echo=F}
+```{r, echo=F, message=F, warning=F}
 
 Turbg2001_2022=ggplot(aes(y=Turbidity_NTU , x=Campagne), data=Pok2001.2022) + 
   scale_shape_manual(values=1:nlevels(Pok2001.2022$Station2)) +
@@ -1549,10 +1563,10 @@ Turbg2001_2022
 
 Supprimer points déviants en créant un subset
 
-```{r turbLT10a, echo=F}
-dim(Pok2001.2022)
+```{r turbLT10a, echo=F,message=F, warning=F}
+# dim(Pok2001.2022)
 turbLT10=subset(Pok2001.2022, Turbidity_NTU<10)
-dim(turbLT10)
+# dim(turbLT10)
 # Deux points ont été exclus
 # Reprendre le même code mais changer "data=Pok2001.2022" pour "data=turbLT10"
 TurbgLT10=ggplot(aes(y=Turbidity_NTU , x=Campagne), data=turbLT10) + 
@@ -1568,7 +1582,7 @@ TurbgLT10
 
 Supprimer points déviants en modifiant l'axe des Y
 
-```{r turbLT10b, echo=F}
+```{r turbLT10b, echo=F, message=F, warning=F}
 
 TurbgLT10b=ggplot(aes(y=Turbidity_NTU , x=Campagne), data=Pok2001.2022) + 
   scale_shape_manual(values=1:nlevels(Pok2001.2022$Station2)) +
@@ -1869,7 +1883,7 @@ Les valeurs abbérentes s'observe plus en 2001-2002 sur les stations 04, 02, 10 
 
 
 
-```{r, echo=F, message=F, warning=F}
+```{r, eval=F, echo=F, message=F, warning=F}
 CTOg2001=ggplot(aes(y=Carbon_Total_Organic_mg_L, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2001) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
@@ -2075,7 +2089,7 @@ Les E_coli présentent beaucoup de valeurs abbérentes trops élevé prèsque su
 
 
 
-```{r, echo=F, message=F, warning=F}
+```{r, eval=F, echo=F, message=F, warning=F}
 Ecolig2001=ggplot(aes(y=E.coli_MPN_100.mL, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2001) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
@@ -2294,7 +2308,7 @@ le phosphore à varié entre 0 et 0,06 mg/l
 
 
 
-```{r, echo=F, message=F, warning=F}
+```{r, eval=F, echo=F, message=F, warning=F}
 Phosg2001=ggplot(aes(y=Phosphorus_Total_mg_L, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2001) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
@@ -2572,9 +2586,9 @@ Le nitrate de la station 10 baisse en pique d'aout en octobre pour legerement ha
 
 
 
-  ## Graphique de la variation de l'Azote Organic sur chacun des stations en 2021
+### Graphique de la variation de l'Azote Organic sur chacun des stations en 2021
 
-```{r, echo=F, message=F, warning=F}
+```{r, eval=F, echo=F, message=F, warning=F}
 Nitrateg2021=ggplot(aes(y=Nitrate_as_N_mg_L, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2021) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
@@ -2592,16 +2606,9 @@ Le nitrate de la station 10 à la plus forte teneur d'aout en novembre.
 La station 05 était constatnt de aout en septembre et ensuite augmentéjusqu'en novembre.
 Le nitrate de la station 07 est toujour la plus faible.
 
+### Graphique de la variation de l'Azote sur chacun des stations en 2022
 
-
-
-
-
-
-
-  ## Graphique de la variation de l'Azote sur chacun des stations en 2022
-
-```{r, echo=F, message=F, warning=F}
+```{r, eval=F, echo=F, message=F, warning=F}
 Nitrateg2022=ggplot(aes(y=Nitrate_as_N_mg_L, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Year2022) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
@@ -2624,9 +2631,9 @@ Le station 05  est la deuxieme plus élevé et qui à légèrement baissé.
 
 
 
-  ## Graphique de la variation de l'Azote sur chacun des stations entre period: 2001_2002
+### Graphique de la variation de l'Azote sur chacun des stations entre period: 2001_2002
 
-```{r, echo=F, message=F, warning=F}
+```{r, eval=F, echo=F, message=F, warning=F}
 NitratePeriod01=ggplot(aes(y=Nitrate_as_N_mg_L, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Period1) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
@@ -2648,9 +2655,9 @@ Le nitrate a plus baisser en 2002 qu'en 2001 et la plus forte valeur est enrégi
 
 
 
-  ## Graphique de la variation de l'Azote sur chacun des stations entre period: 2021_2022
+### Graphique de la variation de l'Azote sur chacun des stations entre period: 2021_2022
 
-```{r, echo=F, message=F, warning=F}
+```{r, eval=F, echo=F, message=F, warning=F}
 NitratePeriod02=ggplot(aes(y=Nitrate_as_N_mg_L, x=Date, 
                 group=Station2, shape=Station2, color=Station2), data=Period2) + 
   scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
@@ -2670,13 +2677,7 @@ Le nitrate en 2022 à plus augmenté qu'en 2021 sur la station 10.
 Le nitrate sur la station 05 à augmenté en 2021 et à legerement baissé en 2022.
 
 
-
-
-
-
-```{r, echo=F, message=F, warning=F, include=F}
-
-## Pour crée un graphique qui montre les ligne de variation de tout les dates(periode) entre la variable et tous les stations
+```{r, eval=F, echo=F, message=F, warning=F, include=F}
 
 
 scatterplot(Period1$Nitrate_as_N_mg_L~Period1$Date | Period1$Station2,
@@ -2685,7 +2686,7 @@ scatterplot(Period1$Nitrate_as_N_mg_L~Period1$Date | Period1$Station2,
 
 
 
-  # Les 04 graph en un pour la COnductivité
+### Les 04 graph en un pour le nitrate
 
 ```{r, eval=F}
 
