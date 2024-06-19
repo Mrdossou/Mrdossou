@@ -11,9 +11,8 @@ editor_options:
 bibliography: rbilbio.bib
 ---
 
-
-
 ```{r Charger_librairies, include=F, message=F, warning=F}
+
 
 library("ggpubr") # pour la fonction ggarrange 
 library("ggplot2")
