@@ -8,7 +8,7 @@ output:
     toc_float: true
 editor_options:
   chunk_output_type: console
-# bibliography: rbilbio.bib
+bibliography: rbilbio.bib
 ---
 
 
@@ -18,7 +18,6 @@ editor_options:
 library("ggpubr") # pour la fonction ggarrange 
 library("ggplot2")
 library("car")
-#1
 
 # ggpubr qui permet de rassembler plusieurs plots
 library("ggplot2") # to do sophisticated ("high-level") plots
@@ -35,7 +34,7 @@ installed.packages()
 # .libPaths() # where libraries read from.
 
 # or...
-.packages(all.available = TRUE) # to list all packages installed
+# .packages(all.available = TRUE) # to list all packages installed
 # ... but not necessarily loaded with command "library"
 
 # system.file(package='stats') # to check where is package
@@ -55,6 +54,7 @@ installed.packages()
 # setwd("C:/Users/mrdos/OneDrive/Documents/Shippagan_mai_aout_2024/Analyse_R_sum/Github_Pr")
 getwd()
 list.files()
+list.files(all.files=T, pattern="RData")
 
 Pok2001.2022=read.csv2("Qualite_eau_CGERP_2001-2022.csv")
 dim(Pok2001.2022) # 198 et 80
@@ -666,11 +666,7 @@ Commentaire du graphique 2021_2022:
 La temp a baissé aucours des deux saisons. la plus basse temp a été observé  en 2022 et la plus haute en 2021. En 2022 la temp a baisé de 11% par rapport a la temp en 2021. En 2021 les temp ont varié entre 17,5 et 6. En 2022 entre 4 et 16.
 
 
-
-
-
-
-```{r, echo=F, message=F, warning=F}
+```{r, echo=F, message=F, warning=F, include=F}
 
 # Pour crée un graphique qui montre les ligne de variation de tout les dates(periode) entre la variable et tous les stations
 
@@ -681,16 +677,15 @@ scatterplot(Period1$Temp_eau_YSI_degC~Period1$Date | Period1$Station2,
 
 ### Les 04 graph en un pour la Température.
 
-```{r, eval=F}
+```{r, eval=F, echo=F}
 ggarrange(Tempg2001, Tempg2002, Tempg2021, Tempg2022, ncol=2, nrow=2)
 ```
 
 ### Autre manière de voir les variations saisonnières sur quatre années: 
 traiter la date comme "Campagne no" (voir la création de la variable 
-
 "Campagne" au début du script).
 
-```{r}
+```{r, echo=F}
 
 Tempg2001_2022=ggplot(aes(y=Temp_eau_YSI_degC, x=Campagne), data=Pok2001.2022) + 
   scale_shape_manual(values=1:nlevels(Pok2001.2022$Station2)) +
@@ -728,7 +723,7 @@ La station 12 est à ciel ouvert et sur un côté à un territoire déboisé et 
 
 ### variabilité spatiale : Oxygène dissous
 
-```{r, echo=F, message=F, warning=F}
+```{r, echo=F, include=T, message=F, warning=F}
 
 # boxplot(Pok2001.2022$Oxyg_dissous_YSI_mg_L ~  Pok2001.2022$Station)
 
@@ -863,7 +858,7 @@ On remarque que la variation periodique de 2021 à 2022 est comprise entre 7mg/L
 
 
 
-```{r, echo=F, message=F, warning=F}
+```{r, echo=F, message=F, warning=F, include=F}
 
 # Pour crée un graphique qui montre les ligne de variation de tout les dates(periode) entre la variable et tous les stations et aussi entre les variable
 
@@ -878,7 +873,7 @@ Graphique de bas niveau: syntax simple, mais possibilités plus limitées Plutô
 
 ### Les 04 graph en un pour l'oxygène dissous.
 
-```{r, eval=F}
+```{r, eval=F, echo=F}
 ggarrange(O2g2001, O2g2002, O2g2021, O2g2022, ncol=2, nrow=2)
 ```
 
@@ -892,7 +887,7 @@ Pok2001.2022$Campagne
 Pok2001.2022$Station2
 ```
 
-```{r}
+```{r, echo=F}
 
 O2g2001_2022b=ggplot(aes(y=Oxyg_dissous_YSI_mg_L, x=Campagne), data=Pok2001.2022) + 
   scale_shape_manual(values=1:nlevels(Pok2001.2022$Station2)) +
@@ -1105,9 +1100,7 @@ La conductivité de la station 4 a la plus basse conductivité de la période. E
 
 
 
-```{r, echo=F, message=F, warning=F}
-
-## Pour crée un graphique qui montre les ligne de variation de tout les dates(periode) entre la variable et tous les stations
+```{r, echo=F, message=F, warning=F, include=F}
 
 scatterplot(Period1$Conductivity_microS_cm~Period1$Date | Period1$Station2,
             smooth=F)
@@ -1115,7 +1108,7 @@ scatterplot(Period1$Conductivity_microS_cm~Period1$Date | Period1$Station2,
 
 ### Les 04 graph en un pour la COnductivité
 
-```{r, eval=F}
+```{r, echo=F, eval=F}
 ggarrange(Condg2001, Condg2002, Condg2021, Condg2022, ncol=2, nrow=2)
 ```
 
@@ -1124,7 +1117,7 @@ traiter la date comme "Campagne no" (voir la création de la variable
 
 "Campagne" au début du script).
 
-```{r}
+```{r, echo=F}
 
 Condg2001_2022=ggplot(aes(y=Conductivity_microS_cm , x=Campagne), data=Pok2001.2022) + 
   scale_shape_manual(values=1:nlevels(Pok2001.2022$Station2)) +
@@ -1155,7 +1148,7 @@ La station 04, étant la tête du ruisseau et aussi une rivière d'ordre 3, est 
 
 La station 01 (Br sud amont) est un ruisseau d'ordre 4, ce qui peut influencer la conductivité de l'eau à cette station. L'eau de cette station est aussi trouble avec des matières organiques déposées dans le fond de l'eau et d'un fond très vaseux. Elle est aussi sans doute influencée par l'autoroute à côté et les roches facilement dégradables qui sont sur les berges. 
 
-##  pH
+##  pH !!!!!!!!!!!!!!!!! À CORRIGER !!!!!!!!!!!!!!!!!!!
 
 ### pH variabilité spatiale 
 
@@ -1321,14 +1314,8 @@ Commentaire:
 
 Le pH en 2021 aaugment a la fin de l’été pour en suite baissé  et augmenté à la fin de l’automne sauf le cas de la station 08 qui baisse de la fin de l’été jusqu’en octobre pour augmenté à la fin de l’automne. En 2022 l’éffet est contraire qu’en 2021, le pH augment de la fin de l’été jusqu’au 1er septembre pour baisséjusqu’à la fin de l’automne sauf à la station 04 ou deja depuis la fin de l’été le pH baisse jusqu’a la fin de l’automne.
 
+```{r, echo=F, message=F, warning=F, include=F}
 
-
-
-
-
-```{r, echo=F, message=F, warning=F}
-
-## Pour crée un graphique qui montre les ligne de variation de tout les dates(periode) entre la variable et tous les stations
 
 scatterplot(Period1$pH_units~Period1$Date | Period1$Station2,
             smooth=F)
@@ -1338,7 +1325,7 @@ scatterplot(Period1$pH_units~Period1$Date | Period1$Station2,
 
 ### Les 04 graph en un pour la COnductivité
 
-```{r, eval=F}
+```{r, echo=F, eval=F}
 
 ggarrange(pHg2001, pHg2002, pHg2021, pHg2022, ncol=2, nrow=2)
 
@@ -1346,10 +1333,9 @@ ggarrange(pHg2001, pHg2002, pHg2021, pHg2022, ncol=2, nrow=2)
 
 ### Autre manière de voir les variations saisonnières sur quatre années: 
 traiter la date comme "Campagne no" (voir la création de la variable 
-
 "Campagne" au début du script).
 
-```{r}
+```{r, echo=F}
 
 pHg2001_2022=ggplot(aes(y=pH_units , x=Campagne), data=Pok2001.2022) + 
   scale_shape_manual(values=1:nlevels(Pok2001.2022$Station2)) +
@@ -1531,32 +1517,24 @@ Commentaire:
 le pH le plus élevé est celle de la station 01 en 2021 et la station 08 en 2022. Sur la deuxieme periode ce sont les meme station qui on leurs turbidités plus élevé. La turbidité de l'eau est très minimes à cause de la vriation de 0 à 6 NTU.
 
 
+```{r, echo=F, message=F, warning=F, include=F}
 
-
-
-```{r, echo=F, message=F, warning=F}
-## Pour crée un graphique qui montre les ligne de variation de tout les dates(periode) entre la variable et tous les stations
 
 scatterplot(Period1$Turbidity_NTU~Period1$Date | Period1$Station2,
             smooth=F)
 ```
 
-
-
 ### Les 04 graph en un pour la COnductivité
 
-```{r, eval=F}
+```{r, echo=F, eval=F}
 
 ggarrange(Turbg2001, Turbg2002, Turbg2021, Turbg2022, ncol=2, nrow=2)
 
 ```
 
 ### Autre manière de voir les variations saisonnières sur quatre années: 
-traiter la date comme "Campagne no" (voir la création de la variable 
 
-"Campagne" au début du script).
-
-```{r}
+```{r, echo=F}
 
 Turbg2001_2022=ggplot(aes(y=Turbidity_NTU , x=Campagne), data=Pok2001.2022) + 
   scale_shape_manual(values=1:nlevels(Pok2001.2022$Station2)) +
@@ -1566,6 +1544,41 @@ Turbg2001_2022=ggplot(aes(y=Turbidity_NTU , x=Campagne), data=Pok2001.2022) +
 Turbg2001_2022
 
 ```
+
+#### Supprimer points, méthode 1
+
+Supprimer points déviants en créant un subset
+
+```{r turbLT10a, echo=F}
+dim(Pok2001.2022)
+turbLT10=subset(Pok2001.2022, Turbidity_NTU<10)
+dim(turbLT10)
+# Deux points ont été exclus
+# Reprendre le même code mais changer "data=Pok2001.2022" pour "data=turbLT10"
+TurbgLT10=ggplot(aes(y=Turbidity_NTU , x=Campagne), data=turbLT10) + 
+  scale_shape_manual(values=1:nlevels(Pok2001.2022$Station2)) +
+  geom_line(aes(color=Station2, linetype=Station2)) + 
+  geom_point(aes(color=Station2, shape=Station2)) +
+   theme_bw()
+TurbgLT10
+
+```
+
+#### Supprimer points déviants, méthode 2
+
+Supprimer points déviants en modifiant l'axe des Y
+
+```{r turbLT10b, echo=F}
+
+TurbgLT10b=ggplot(aes(y=Turbidity_NTU , x=Campagne), data=Pok2001.2022) + 
+  scale_shape_manual(values=1:nlevels(Pok2001.2022$Station2)) +
+  geom_line(aes(color=Station2, linetype=Station2)) + 
+  geom_point(aes(color=Station2, shape=Station2)) +
+  ylim(0,10) + theme_bw()
+TurbgLT10b
+
+```
+
 
 Commentaire du graphique des quatre années :
 
@@ -1580,16 +1593,6 @@ La station 04 a la plus faible turbidité lors de la période 01 et la station 0
 Remarque :
 
 La turbidité est élevée à toutes les stations en octobre 2001, mais sur la station 01, pourquoi cette hausse en pic ? Je sais que l'eau de la station est trouble en 2024 et qu'elle est près de l'autoroute et avec des roches altérables sur le bord. Alors qu'est-ce qui s'est passé en 2001 sur cette station et surtout sur toutes les stations, même si elles sont peut-être négligeables par rapport à celle de la station 01. Et le fait que toutes les stations ont subi une tendance à cette période me permet de dire que cela n'est pas dû à des erreurs de mesure.
-
-
-
-
-
-
-
-
-
-
 
 
 ## Couleur
@@ -1768,7 +1771,7 @@ Durant toutes la periodes 02 les stations 05 et 07 sont les plus élevé que tou
 
 
 
-```{r, echo=F, message=F, warning=F}
+```{r, echo=F, message=F, warning=F, include=F}
 ## Pour crée un graphique qui montre les ligne de variation de tout les dates(periode) entre la variable et tous les stations
 
 scatterplot(Period1$Colour_TCU~Period1$Date | Period1$Station2,
@@ -1779,7 +1782,7 @@ scatterplot(Period1$Colour_TCU~Period1$Date | Period1$Station2,
 
 ### Les 04 graph en un pour la COnductivité
 
-```{r, eval=F}
+```{r, echo=F, eval=F}
 
 ggarrange(Coulg2001, Coulg2002, Coulg2021, Coulg2022, ncol=2, nrow=2)
 
@@ -1790,7 +1793,7 @@ traiter la date comme "Campagne no" (voir la création de la variable
 
 "Campagne" au début du script).
 
-```{r}
+```{r, echo=F}
 
 Coulg2001_2022=ggplot(aes(y=Colour_TCU , x=Campagne), data=Pok2001.2022) + 
   scale_shape_manual(values=1:nlevels(Pok2001.2022$Station2)) +
@@ -1977,7 +1980,7 @@ Les plus grande teneur ont été observé sur les stations 07 et 05. en 2021 la 
 
 
 
-```{r, echo=F, message=F, warning=F}
+```{r, echo=F, message=F, warning=F, include=F}
 
 ## Pour crée un graphique qui montre les ligne de variation de tout les dates(periode) entre la variable et tous les stations
 
@@ -1999,7 +2002,7 @@ traiter la date comme "Campagne no" (voir la création de la variable
 
 "Campagne" au début du script).
 
-```{r}
+```{r, echo=F}
 
 CTOg2001_2022=ggplot(aes(y=Carbon_Total_Organic_mg_L , x=Campagne), data=Pok2001.2022) + 
   scale_shape_manual(values=1:nlevels(Pok2001.2022$Station2)) +
@@ -2024,14 +2027,15 @@ Remarque :
 
 Toutes les stations présentent une même tendance d'augmentation à ces dates, cela peut donc être dû à un phénomène territorial mais plus aux facteurs météorologiques ou climatiques à cause de la répétition de la même tendance sur toutes les stations.
 
+## Contribution du carbone à la couleur
+
+```{r carbone_couleur, echo=F, fig.cap = "Couleur en fonction de la concentration de carbone organique pour les 12 stations et 16 dates d'échantillonnage"}
 
 
+scatterplot(Pok2001.2022$Colour_TCU+1 ~ Pok2001.2022$Carbon_Total_Organic_mg_L+1,
+            log="xy")
 
-
-
-
-
-
+```
 
 ## E_coli 
 
@@ -2053,8 +2057,6 @@ ggplot(aes(y=E.coli_MPN_100.mL, x=Station2, fill=Period), data=sub1ecoli) +
 ```
 
 Commentaire: 
-
-
 
 La teneur en bacterie E_coli sont plus élevé uniquement sur les stations  10, 07 et 05 en 2001-2002 et ont une présence très négligeableen ces meme station en 2021-2022.
 
@@ -2193,7 +2195,7 @@ Contriarement à la période précedent 2001-2002, la concentration
 cette periode à augmenté de 2021 en 2022. En 2021 En 2021 la concentration est comprise entre 0 et 250mg/l et cette augmentation est enregistré au début de la saison d'automne en septembre. en 2022 la concentration à quadiplé (comprise entre 0 et 1050mg/L) et cette augmentation s'est observé aussi au début de la saison d'automne en septembre.
 
 
-```{r, eval=F, echo=F, message=F, warning=F}
+```{r, eval=F, echo=F, message=F, warning=F, include=F}
 
 ## Pour crée un graphique qui montre les ligne de variation de tout les dates(periode) entre la variable et tous les stations
 
@@ -2212,11 +2214,9 @@ ggarrange(Ecolig2001, Ecolig2002, Ecolig2021, Ecolig2022, ncol=2, nrow=2)
 ```
 
 ### Autre manière de voir les variations saisonnières sur quatre années: 
-traiter la date comme "Campagne no" (voir la création de la variable 
 
-"Campagne" au début du script).
 
-```{r}
+```{r, echo=F}
 
 Ecolig2001_2022=ggplot(aes(y=E.coli_MPN_100.mL , x=Campagne), data=Pok2001.2022) + 
   scale_shape_manual(values=1:nlevels(Pok2001.2022$Station2)) +
@@ -2437,7 +2437,7 @@ La station 02 présente une allure de la station la plus faible de toutes la pé
 
 
 
-```{r, echo=F, message=F, warning=F}
+```{r, echo=F, message=F, warning=F, include=F}
 
 ## Pour crée un graphique qui montre les ligne de variation de tout les dates(periode) entre la variable et tous les stations
 
@@ -2458,7 +2458,7 @@ ggarrange(Phosg2001, Phosg2002, Phosg2021, Phosg2022, ncol=2, nrow=2)
 
 Traiter la date comme "Campagne no" (voir la création de la variable "Campagne" au début du script).
 
-```{r}
+```{r, echo=F}
 
 Phosg2001_2022=ggplot(aes(y=Phosphorus_Total_mg_L , x=Campagne), data=Pok2001.2022) + 
   scale_shape_manual(values=1:nlevels(Pok2001.2022$Station2)) +
@@ -2674,7 +2674,7 @@ Le nitrate sur la station 05 à augmenté en 2021 et à legerement baissé en 20
 
 
 
-```{r, echo=F, message=F, warning=F}
+```{r, echo=F, message=F, warning=F, include=F}
 
 ## Pour crée un graphique qui montre les ligne de variation de tout les dates(periode) entre la variable et tous les stations
 
@@ -2696,7 +2696,7 @@ ggarrange(Nitrateg2001, Nitrateg2002, Nitrateg2021, Nitrateg2022, ncol=2, nrow=2
 ### Autre manière de voir les variations saisonnières sur quatre années: 
 
 
-```{r}
+```{r, echo=F}
 
 Nitrateg2001_2022=ggplot(aes(y=Nitrate_as_N_mg_L , x=Campagne), data=Pok2001.2022) + 
   scale_shape_manual(values=1:nlevels(Pok2001.2022$Station2)) +
