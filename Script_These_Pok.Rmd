@@ -11,6 +11,12 @@ editor_options:
 bibliography: rbilbio.bib
 ---
 
+```{r Effacer_tout}
+# Supprimer tous les objets en mémoire avant d'exécuter le script
+rm(list=ls(all=TRUE)) # to erase, remove, delete objects from environment
+oldpar=par(no.readonly=TRUE) # to keep original graphical parameters
+```
+
 
 
 ```{r Charger_librairies, include=F, message=F, warning=F}
@@ -22,13 +28,13 @@ library("car")
 # ggpubr qui permet de rassembler plusieurs plots
 library("ggplot2") # to do sophisticated ("high-level") plots
 library("stats") # 
-rm(list=ls(all=TRUE)) # to erase, remove, delete objects from environment
-oldpar=par(no.readonly=TRUE) # to keep original graphical parameters
+
 # library() # list available libraries (not necessarily loaded)
 # library(lib.loc=.Library)
-library("car")
+library("car") # pour la fonction "scatterplot"
+library("psych") # pour la fonction "describe"
 
-installed.packages() 
+# installed.packages() 
 # (.packages()) # to list loaded libraries at startup.
 
 # .libPaths() # where libraries read from.
@@ -45,13 +51,19 @@ installed.packages()
 
 
 
-```{r Charger_data, include=F, message=F, warning=F}
+
+```{r Charger_chimie, include=F, message=F, warning=F}
 
 # setwd("C:/Users/mrdos/OneDrive/Documents/Shippagan_mai_aout_2024/Analyse_R_sum/Github")
 # getwd()
 # list.files()
 
+# Répertoire pour Gaël
 # setwd("C:/Users/mrdos/OneDrive/Documents/Shippagan_mai_aout_2024/Analyse_R_sum/Github_Pr")
+
+# Répertoire pour Alain
+setwd("/media/alain/ap2To/UMCS_bak/Documents/SUPERVISION/Gael/github_Gael")
+
 getwd()
 list.files()
 list.files(all.files=T, pattern="RData")
@@ -60,7 +72,6 @@ Pok2001.2022=read.csv2("Qualite_eau_CGERP_2001-2022.csv")
 dim(Pok2001.2022) # 198 et 80
 str(Pok2001.2022)
 ```
-
 
 
 
@@ -301,6 +312,241 @@ levels(Pok2001.2022$Station2)
 levels(Pok2001.2022$Period)
 ```
 
+
+```{r Charger_longueur}
+# Charger les données de longueurs et d'ordre des tributaires
+# Nom du fichier original: 
+
+ordres=read.csv2("Pokemouche_longueurs_ordres.csv")
+dim(ordres) # 12 x 24
+ordres$Station=as.factor(ordres$Station)
+str(ordres)
+describe(ordres)
+
+# Ordre1_m_amont: Longueur totale (m) de tous les cours d’eau d'ordre 1 en amont de la station
+# Somme_ordre_1-5: longueur totale (m) de tous les cours d'eau (ordre 1 à 5) en amont de la station
+# Dist_amont_station_m: le parcours entre la station et le point en amont le plus reculé
+#   tel que mesuré par AP avec qGIS.
+# Longueur_totale_m_ordre1: longueur totale (m) de tous les cours d'eau d'ordre 1 
+#    dans le sous-bassin versant
+
+```
+
+```{r Carte_stations}
+# summary(ordres$Long)
+plot(ordres$Long, ordres$Lat, pch="", xlim=c(2590000, 2623000))
+text(ordres$Long, ordres$Lat,  ordres$Station)
+grid()
+
+
+pairs(subset(ordres, select=c(Long,
+  Ordre1_m_amont, Ordre2_m_amont, Ordre3_m_amont, Ordre4_m_amont, Ordre5_m_amont,
+  Somme_ordre_1.5)))
+
+pairs(subset(ordres, select=c(Lat,
+  Ordre1_m_amont, Ordre2_m_amont, Ordre3_m_amont, Ordre4_m_amont, Ordre5_m_amont,
+  Somme_ordre_1.5)))
+
+# Tendance à l'augmentation de la longueur des cours d'eau d'ordre 3
+# de l'ouest vers l'est (dans le sens du courant):
+plot(ordres$Long, ordres$Ordre3_m_amont, pch="", xlim=c(2590000, 2623000))
+text(ordres$Long, ordres$Ordre3_m_amont, ordres$Station)
+
+
+
+```
+
+
+```{r Charger_caract_bv}
+# 2024-06-20 à la maison
+# Charger le fichier que Manar a produit des caractéristiques des bassins versants
+# Nom du fichier original: 
+# https://liveumoncton-my.sharepoint.com/personal/alain_umoncton_ca/Documents
+# /Pokemouche_2021_CGERP_%C3%A9chantillonnage_20_ans/travail%20stage%20excel.xlsx
+caract.bv=read.csv2("caract_bv.csv")
+dim(caract.bv) # 12 rangées x 319 colonnes
+str(caract.bv)
+caract.bv$Station=as.factor(caract.bv$Station)
+class(caract.bv$Station)
+levels(caract.bv$Station)
+
+strwrap(" AP 2024-06-20
+Les 'couches' (fichiers géomatiques) disponibles du ministère du N.-B., sur le site geonb.ca
+incluent 'Forest' (F, forêt), 'Non Forest' (NF, tout ce qui n'est pas considéré comme de la forêt),
+Water (WA, plans d'eau) et Wetland (WL, terres humides). Ces quatre couches de polygones (surfaces)
+sont cencés couvrir tout le territoire et devraient être mutuellement exclusives.
+
+Comme nous avons rencontré des problèmes de chevauchement entre les couches F et NF, Émilie
+et Kyle nous a proposé de travailler avec les fichiers 'Landbase' qui combinent dans un seul
+fichier les quatre couches F, NF, WA, WL. Ce fichier Landbase contient une variable supplémentaire
+par rapport aux couches initiales: CAT qui désignent si l'élément (rangée du tableau attributaire)
+provient de F, NF, WL ou WA.
+        ")
+
+# Cibler les variables prioritaires et les placer dans un ordre commode:
+names(caract.bv)
+caract.bv2=subset(caract.bv, 
+ select=c(Station, sup_km2_sbv, sup_drainee_km2_sbv, longueur_route_km_sbv,
+          WA_km2_supdrainee_2020,  WL_km2_supdrainee_2020, NF_km2_supdrainee_2020, FO_km2_supdrainee_2020,
+          
+          AGR_km2_supdrainee_2020, IND_km2_supdrainee_2020, INF_km2_supdrainee_2020, SET_km2_supdrainee_2020,
+          REC_km2_supdrainee_2020, WIL_km2_supdrainee_2020,
+          
+          C_km2_supdrainee_2020, F_km2_supdrainee_2020, N_km2_supdrainee_2020, 
+          B_km2_supdrainee_2020, NULL_km2_supdrainee_2020,
+          
+          WA_km2_supdrainee_1990, WL_km2_supdrainee_1990, NF_km2_supdrainee_1990, FO_km2_supdrainee_1990,
+          
+          AGR_km2_supdrainee_1990, IND_km2_supdrainee_1990, INF_km2_supdrainee_1990, SET_km2_supdrainee_1990, 
+          # REC et WIL manquants en 1990
+          C_km2_supdrainee_1990, F_km2_supdrainee_1990, N_km2_supdrainee_1990, 
+          B_km2_supdrainee_1990, NULL_km2_supdrainee_1990))
+
+# N'y a-t-il pas REC et WIL en 1990?
+
+plot(subset(caract.bv2, select=c(AGR_km2_supdrainee_2020,AGR_km2_supdrainee_1990)))
+grid()
+# Les superficies agricoles sont plus grandes en 2020 qu'en 1990...
+dim(caract.bv2) # 12 x 32
+describe(caract.bv2)
+
+# La superficie qui draîne vers la station en fonction de la superficie totale:
+plot(caract.bv2$sup_km2_sbv, caract.bv2$sup_drainee_km2_sbv,pch="", xlim=c(0,120))
+text(caract.bv2$sup_km2_sbv, caract.bv2$sup_drainee_km2_sbv,  caract.bv2$Station)
+
+plot(caract.bv2$sup_km2_sbv, caract.bv2$longueur_route_km_sbv,pch="", xlim=c(0,120))
+text(caract.bv2$sup_km2_sbv, caract.bv2$longueur_route_km_sbv,  caract.bv2$Station)
+
+subset(caract.bv2, select=c(Station, longueur_route_km_sbv))
+
+
+plot(caract.bv2$sup_km2_sbv, caract.bv2$WL_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_km2_sbv, caract.bv2$WL_km2_supdrainee_2020,  caract.bv2$Station)
+
+# Couche Landbase, CAT=Forest
+plot(caract.bv2$sup_km2_sbv, caract.bv2$FO_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_km2_sbv, caract.bv2$FO_km2_supdrainee_2020,  caract.bv2$Station)
+
+# Couche Landbase, CAT=Non Forest
+plot(caract.bv2$sup_km2_sbv, caract.bv2$NF_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_km2_sbv, caract.bv2$NF_km2_supdrainee_2020,  caract.bv2$Station)
+
+# Couche Landbase, CAT=Non-Forest, variable=PLU (Primary Land Use)
+# AGR	Terre surtout utilisée pour cultiver des produits agricoles 
+#     et des produits non ligneux ainsi que les champs et pâturages
+# DND	Terre surtout utilisée pour l'entraînement et les exercices de la Défense nationale
+# IND	Terre surtout utilisée à des fins industrielles, notamment les installations de traitement
+# INF	Terre surtout utilisée pour le transport, les communications et/ou les services publics
+# REC	Terre surtout utilisée pour les activités sportives, récréatives, culturelles et/ou de divertissement
+# SET	Terre surtout utilisée à des fins résidentielles en milieu urbain ou rural
+# WIL	Terre où il est impossible de cultiver des arbres et qui ne subit pas l'incidence de l'activité humaine
+
+plot(caract.bv2$sup_km2_sbv, caract.bv2$AGR_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_km2_sbv, caract.bv2$AGR_km2_supdrainee_2020,  caract.bv2$Station)
+
+plot(caract.bv2$sup_km2_sbv, caract.bv2$IND_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_km2_sbv, caract.bv2$IND_km2_supdrainee_2020,  caract.bv2$Station)
+# Pok-05 se démarque par des superficies plus grande d'industrie par rapport aux autres.
+
+plot(caract.bv2$sup_km2_sbv, caract.bv2$INF_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_km2_sbv, caract.bv2$INF_km2_supdrainee_2020,  caract.bv2$Station)
+
+plot(caract.bv2$sup_km2_sbv, caract.bv2$SET_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_km2_sbv, caract.bv2$SET_km2_supdrainee_2020,  caract.bv2$Station)
+
+plot(caract.bv2$sup_km2_sbv, caract.bv2$REC_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_km2_sbv, caract.bv2$REC_km2_supdrainee_2020,  caract.bv2$Station)
+# La variable REC contient beaucoup de zéros.
+
+plot(caract.bv2$sup_km2_sbv, caract.bv2$WIL_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_km2_sbv, caract.bv2$WIL_km2_supdrainee_2020,  caract.bv2$Station)
+# La variable WIL contient beaucoup de zéros.
+
+# Couche Landbase, CAT=Forest, variable ORIG
+# Origine du peuplement (B, C, F, N, W)
+# B	Burn		Brûlis
+# C	Clear cut (not partial cut)		Coupe à blanc (pas une coupe partielle)
+# F	Field		Champ
+# N	Natural Succession		Succession naturelle
+# W	Windthrow	2015	Chablis
+# M	Mining	2015	Mine
+# G	Windthrow	2015	Chablis
+
+plot(caract.bv2$sup_km2_sbv, caract.bv2$C_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_km2_sbv, caract.bv2$C_km2_supdrainee_2020,  caract.bv2$Station)
+
+plot(caract.bv2$sup_km2_sbv, caract.bv2$F_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_km2_sbv, caract.bv2$F_km2_supdrainee_2020,  caract.bv2$Station)
+
+plot(caract.bv2$sup_km2_sbv, caract.bv2$N_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_km2_sbv, caract.bv2$N_km2_supdrainee_2020,  caract.bv2$Station)
+
+plot(caract.bv2$sup_km2_sbv, caract.bv2$B_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_km2_sbv, caract.bv2$B_km2_supdrainee_2020,  caract.bv2$Station)
+
+plot(caract.bv2$sup_km2_sbv, caract.bv2$NULL_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_km2_sbv, caract.bv2$NULL_km2_supdrainee_2020,  caract.bv2$Station)
+# Vérifier avec Emily ou Kyle ce que contient NULL
+
+plot(caract.bv2$sup_km2_sbv, caract.bv2$NULL_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_km2_sbv, caract.bv2$NULL_km2_supdrainee_2020,  caract.bv2$Station)
+
+
+
+```
+
+```{r Merge1}
+# Joindre le tableau des longueurs à celui des caractéristiques territoriales
+
+dim(ordres) # 12 x 24
+dim(caract.bv2) # 12 x 32
+
+summary(ordres$Station)
+summary(caract.bv2$Station)
+
+bv1=merge(ordres,caract.bv2, by="Station", all=TRUE)
+dim(bv1) # 12 x 55
+24+32-1
+
+```
+
+```{r Relations_ordre_caract}
+# names(bv1)
+summary(bv1$sup_km2_sbv)
+
+subset(bv1, select=c(Station, sup_km2_sbv, Longueur_totale_m_sous_bassin))
+
+plot(bv1$sup_km2_sbv, bv1$Longueur_totale_m_sous_bassin, pch="", xlim=c(20,40))
+text(bv1$sup_km2_sbv, bv1$Longueur_totale_m_sous_bassin,  bv1$Station)
+# Pok-07 est plus sec (moins bien irrigué) que les autres bassins 
+# relativement à la taille du bassin (comme Pok-04).
+# TODO Calculer les valeurs de longueurs pour POK3: 
+# Manar s'en occupe.
+
+```
+
+
+```{r Merge2}
+
+# Joindre Pok2001.2022 (données de chimie) à bv1 (données de territoire)
+
+dim(Pok2001.2022) # 192 x 86
+class(Pok2001.2022$Station)
+levels(Pok2001.2022$Station)
+summary(Pok2001.2022$Station)
+
+dim(caract.bv) # 12 x 319
+chimie.bv=merge(Pok2001.2022, caract.bv, by="Station", all=TRUE)
+dim(chimie.bv) # 192 x 404
+86 + 319 - 1
+Pok2001.2022 <- chimie.bv
+dim(Pok2001.2022) # 192 x 403
+
+# Supprimer les objets devenus inutiles
+
+rm(ordres, caract.bv, caract.bv2, bv1, chimie.bv, test, test2)
+
+```
 
 
 ```{r Sous_groupes, tributaires, echo=F, eval=F, warning=F}
@@ -876,8 +1122,7 @@ On remarque que la variation periodique de 2021 à 2022 est comprise entre 7mg/L
 
 # Pour crée un graphique qui montre les ligne de variation de tout les dates(periode) entre la variable et tous les stations et aussi entre les variable
 
-scatterplot(Period1$Oxyg_dissous_YSI_mg_L~Period1$Date | Period1$Station2,
-            smooth=F)
+scatterplot(Period1$Oxyg_dissous_YSI_mg_L~Period1$Date | Period1$Station2,  smooth=F)
 
 scatterplot(Pok2001.2022$Oxyg_dissous_YSI_mg_L~Pok2001.2022$Temp_eau_YSI_degC | Pok2001.2022$Year, smooth=F)
 ```
@@ -896,7 +1141,7 @@ ggarrange(O2g2001, O2g2002, O2g2021, O2g2022, ncol=2, nrow=2)
 Traiter la date comme "Campagne no" (voir la création de la variable 
 "Campagne" au début du script).
 
-```{r, include=F}
+```{r, eval=F, include=F}
 Pok2001.2022$Campagne
 Pok2001.2022$Station2
 ```
