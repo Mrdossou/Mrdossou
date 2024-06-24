@@ -363,8 +363,11 @@ text(ordres$Long, ordres$Ordre3_m_amont, ordres$Station)
 # Nom du fichier original: 
 # https://liveumoncton-my.sharepoint.com/personal/alain_umoncton_ca/Documents
 # /Pokemouche_2021_CGERP_%C3%A9chantillonnage_20_ans/travail%20stage%20excel.xlsx
-caract.bv=read.csv2("caract_bv.csv")
+caract.bv=read.csv2("caract_bv2.csv")
+# caract_bv2.csv est la version qui contient les valeurs pour Pok-03
+# après que j'eu signalé leurs absences à Manar.
 dim(caract.bv) # 12 rangées x 319 colonnes
+# 12 x 321 au 2024-06-24
 str(caract.bv)
 caract.bv$Station=as.factor(caract.bv$Station)
 class(caract.bv$Station)
@@ -384,7 +387,7 @@ provient de F, NF, WL ou WA.
         ")
 
 # Cibler les variables prioritaires et les placer dans un ordre commode:
-names(caract.bv)
+# names(caract.bv)
 caract.bv2=subset(caract.bv, 
  select=c(Station, sup_km2_sbv, sup_drainee_km2_sbv, longueur_route_km_sbv,
           WA_km2_supdrainee_2020,  WL_km2_supdrainee_2020, NF_km2_supdrainee_2020, FO_km2_supdrainee_2020,
@@ -402,6 +405,7 @@ caract.bv2=subset(caract.bv,
           C_km2_supdrainee_1990, F_km2_supdrainee_1990, N_km2_supdrainee_1990, 
           B_km2_supdrainee_1990, NULL_km2_supdrainee_1990))
 
+dim(caract.bv2) # 12 x 32
 # N'y a-t-il pas REC et WIL en 1990?
 
 plot(subset(caract.bv2, select=c(AGR_km2_supdrainee_2020,AGR_km2_supdrainee_1990)))
@@ -414,11 +418,17 @@ describe(caract.bv2)
 plot(caract.bv2$sup_km2_sbv, caract.bv2$sup_drainee_km2_sbv,pch="", xlim=c(0,120))
 text(caract.bv2$sup_km2_sbv, caract.bv2$sup_drainee_km2_sbv,  caract.bv2$Station)
 
+caract.bv2$fraction.drainee=caract.bv2$sup_drainee_km2_sbv/caract.bv2$sup_km2_sbv 
+subset(caract.bv2, select=c(Station, sup_km2_sbv, sup_drainee_km2_sbv,fraction.drainee))
+summary(caract.bv2$fraction.drainee)
+# Les stations sont localisées généralement au point où environ 66% de la 
+# superficie du bassin est drainée (donc plutôt en aval, ce qui donne une 
+# bonne idée de l'influence du bassin)
+
 plot(caract.bv2$sup_km2_sbv, caract.bv2$longueur_route_km_sbv,pch="", xlim=c(0,120))
 text(caract.bv2$sup_km2_sbv, caract.bv2$longueur_route_km_sbv,  caract.bv2$Station)
 
 subset(caract.bv2, select=c(Station, longueur_route_km_sbv))
-
 
 plot(caract.bv2$sup_km2_sbv, caract.bv2$WL_km2_supdrainee_2020, pch="", xlim=c(0,120))
 text(caract.bv2$sup_km2_sbv, caract.bv2$WL_km2_supdrainee_2020,  caract.bv2$Station)
@@ -441,25 +451,26 @@ text(caract.bv2$sup_km2_sbv, caract.bv2$NF_km2_supdrainee_2020,  caract.bv2$Stat
 # SET	Terre surtout utilisée à des fins résidentielles en milieu urbain ou rural
 # WIL	Terre où il est impossible de cultiver des arbres et qui ne subit pas l'incidence de l'activité humaine
 
-plot(caract.bv2$sup_km2_sbv, caract.bv2$AGR_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_km2_sbv, caract.bv2$AGR_km2_supdrainee_2020,  caract.bv2$Station)
+plot(caract.bv2$sup_drainee_km2_sbv, caract.bv2$AGR_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$AGR_km2_supdrainee_2020,  caract.bv2$Station)
+# Pour Pok-05, environ 4 km2 d'AGR pour une superficie de 20 km2, soit 1/5 ou 20%.
 
-plot(caract.bv2$sup_km2_sbv, caract.bv2$IND_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_km2_sbv, caract.bv2$IND_km2_supdrainee_2020,  caract.bv2$Station)
+plot(caract.bv2$sup_drainee_km2_sbv, caract.bv2$IND_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$IND_km2_supdrainee_2020,  caract.bv2$Station)
 # Pok-05 se démarque par des superficies plus grande d'industrie par rapport aux autres.
 
-plot(caract.bv2$sup_km2_sbv, caract.bv2$INF_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_km2_sbv, caract.bv2$INF_km2_supdrainee_2020,  caract.bv2$Station)
+plot(caract.bv2$sup_drainee_km2_sbv, caract.bv2$INF_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$INF_km2_supdrainee_2020,  caract.bv2$Station)
 
-plot(caract.bv2$sup_km2_sbv, caract.bv2$SET_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_km2_sbv, caract.bv2$SET_km2_supdrainee_2020,  caract.bv2$Station)
+plot(caract.bv2$sup_drainee_km2_sbv, caract.bv2$SET_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$SET_km2_supdrainee_2020,  caract.bv2$Station)
 
-plot(caract.bv2$sup_km2_sbv, caract.bv2$REC_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_km2_sbv, caract.bv2$REC_km2_supdrainee_2020,  caract.bv2$Station)
+plot(caract.bv2$sup_drainee_km2_sbv, caract.bv2$REC_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$REC_km2_supdrainee_2020,  caract.bv2$Station)
 # La variable REC contient beaucoup de zéros.
 
-plot(caract.bv2$sup_km2_sbv, caract.bv2$WIL_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_km2_sbv, caract.bv2$WIL_km2_supdrainee_2020,  caract.bv2$Station)
+plot(caract.bv2$sup_drainee_km2_sbv, caract.bv2$WIL_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$WIL_km2_supdrainee_2020,  caract.bv2$Station)
 # La variable WIL contient beaucoup de zéros.
 
 # Couche Landbase, CAT=Forest, variable ORIG
@@ -472,25 +483,23 @@ text(caract.bv2$sup_km2_sbv, caract.bv2$WIL_km2_supdrainee_2020,  caract.bv2$Sta
 # M	Mining	2015	Mine
 # G	Windthrow	2015	Chablis
 
-plot(caract.bv2$sup_km2_sbv, caract.bv2$C_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_km2_sbv, caract.bv2$C_km2_supdrainee_2020,  caract.bv2$Station)
+plot(caract.bv2$sup_drainee_km2_sbv, caract.bv2$C_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$C_km2_supdrainee_2020,  caract.bv2$Station)
+# AP 2024-06-24 Comment expliquer que Pok-03 présente de grandes superficies coupées
+# alors que les bassin en amont en ont si peu
 
-plot(caract.bv2$sup_km2_sbv, caract.bv2$F_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_km2_sbv, caract.bv2$F_km2_supdrainee_2020,  caract.bv2$Station)
+plot(caract.bv2$sup_drainee_km2_sbv, caract.bv2$F_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$F_km2_supdrainee_2020,  caract.bv2$Station)
 
-plot(caract.bv2$sup_km2_sbv, caract.bv2$N_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_km2_sbv, caract.bv2$N_km2_supdrainee_2020,  caract.bv2$Station)
+plot(caract.bv2$sup_drainee_km2_sbv, caract.bv2$N_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$N_km2_supdrainee_2020,  caract.bv2$Station)
 
-plot(caract.bv2$sup_km2_sbv, caract.bv2$B_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_km2_sbv, caract.bv2$B_km2_supdrainee_2020,  caract.bv2$Station)
+plot(caract.bv2$sup_drainee_km2_sbv, caract.bv2$B_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$B_km2_supdrainee_2020,  caract.bv2$Station)
 
-plot(caract.bv2$sup_km2_sbv, caract.bv2$NULL_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_km2_sbv, caract.bv2$NULL_km2_supdrainee_2020,  caract.bv2$Station)
+plot(caract.bv2$sup_drainee_km2_sbv, caract.bv2$NULL_km2_supdrainee_2020, pch="", xlim=c(0,120))
+text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$NULL_km2_supdrainee_2020,  caract.bv2$Station)
 # Vérifier avec Emily ou Kyle ce que contient NULL
-
-plot(caract.bv2$sup_km2_sbv, caract.bv2$NULL_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_km2_sbv, caract.bv2$NULL_km2_supdrainee_2020,  caract.bv2$Station)
-
 
 
 ```
