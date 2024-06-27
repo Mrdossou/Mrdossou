@@ -11,8 +11,8 @@ editor_options:
 bibliography: rbilbio.bib
 ---
 
-
 ```{r Effacer_tout}
+# Dernière modification 2024-06-27 15:04
 # Supprimer tous les objets en mémoire avant d'exécuter le script
 rm(list=ls(all=TRUE)) # to erase, remove, delete objects from environment
 oldpar=par(no.readonly=TRUE) # to keep original graphical parameters
@@ -21,8 +21,6 @@ oldpar=par(no.readonly=TRUE) # to keep original graphical parameters
 
 
 ```{r Charger_librairies, include=F, message=F, warning=F}
-
-
 
 library("ggpubr") # pour la fonction ggarrange 
 library("ggplot2")
@@ -54,12 +52,6 @@ library(DataExplorer)
 # .packages(all.available = TRUE) # to list all packages installed
 # ... but not necessarily loaded with command "library"
 
-
-# setwd("C:/Users/mrdos/OneDrive/Documents/Shippagan_mai_aout_2024/Analyse_R_sum/Github")
-# getwd()
-# list.files()
-
-
 # system.file(package='stats') # to check where is package
 # find.package("utils")
 # (.packages()) # to list loaded libraries
@@ -69,19 +61,17 @@ library(DataExplorer)
 
 
 
+```{r Charger_chimie, include=F, message=F, warning=F}
 
-
-```{r Charger_data, include=F, message=F, warning=F}
-# Répertoire pour Gaël
-setwd("C:/Users/mrdos/OneDrive/Documents/Shippagan_mai_aout_2024/Analyse_R_sum/Github_Pr")
-
-# Répertoire pour Alain
-# setwd("/media/alain/ap2To/UMCS_bak/Documents/SUPERVISION/Gael/github_Gael")
 # setwd("C:/Users/mrdos/OneDrive/Documents/Shippagan_mai_aout_2024/Analyse_R_sum/Github")
 # getwd()
 # list.files()
 
+# Répertoire pour Gaël
 # setwd("C:/Users/mrdos/OneDrive/Documents/Shippagan_mai_aout_2024/Analyse_R_sum/Github_Pr")
+
+# Répertoire pour Alain
+setwd("/media/alain/ap2To/UMCS_bak/Documents/SUPERVISION/Gael/github_Gael")
 
 getwd()
 list.files()
@@ -92,7 +82,12 @@ dim(Pok2001.2022) # 198 et 80
 str(Pok2001.2022)
 ```
 
-
+```{r Variable_Date, include=F, message=F, warning=F}
+# Créer la nouvelle variable "Date" au format "date".
+Pok2001.2022$Date=format(as.Date(Pok2001.2022$DateSampled,format="%Y-%m-%d"))
+Pok2001.2022$Date=as.Date(Pok2001.2022$Date)
+summary(Pok2001.2022$Date)
+```
 
 
 ```{r Uniformiser_variables, include=F, message=F, warning=F}
@@ -140,7 +135,6 @@ Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="POK-12"] <- "Pok-12"
 head(Pok2001.2022$Station)
 ```
 
-
 ```{r Station_facteur, include=F, message=F, warning=F}
 # Convertir le type de la variable "Station" en type "facteur"
 Pok2001.2022$Station=as.factor(Pok2001.2022$Station)
@@ -168,12 +162,10 @@ Pok2001.2022$Station2[Pok2001.2022$Station=="Pok-12"] <- "Dempsey 12"
 
 
 
-
 ```{r Ordonner_tableau, include=F, message=F, warning=F}
 # Ordonner les valeurs de la variables "Station2" de l'amont vers l'aval:
 
 strwrap("AP 2024-06-04 Le bloc suivant ordonne les stations de l'ouest vers l'est (dans le sens du courant). C'est l'ordre qui est affiché quand on fait des graphiques de type box-plot. On pourrait (on devrait) choisir d'autres manières d'ordonner les stations, par exemple, en fonction de la distance entre la station et la tête du ruisseau.")
-
 
 Pok2001.2022$Station2=ordered(Pok2001.2022$Station2,
 levels=c("Pok amont 04",      "Suggary 02",          "Morrison 06", 
@@ -186,10 +178,7 @@ summary(Pok2001.2022$Station2)
 
 
 
-
 ```{r Fonctions, eval=F, include=F, message=F, warning=F}
-
-
 # Pour lister les noms de variables (en-têtes des colonnes):
 names(Pok2001.2022)
 
@@ -207,14 +196,6 @@ head(Pok2001.2022$DateSampled)
 head(Pok2001.2022$DateSampled2)
 head(Pok2001.2022$Datesampled3)
 
-
-# Pour connaître le type de variable
-class(Pok2001.2022$DateSampled)
-class(Pok2001.2022$Station2)
-class(Pok2001.2022$Date)
-
-
-
 # Pour connaître le type de variable
 class(Pok2001.2022$DateSampled)
 class(Pok2001.2022$Station2)
@@ -223,18 +204,7 @@ class(Pok2001.2022$Date)
 ```
 
 
-
-
-```{r Variable_Date, include=F, message=F, warning=F}
-# Créer la nouvelle variable "Date" au format "date".
-Pok2001.2022$Date=format(as.Date(Pok2001.2022$DateSampled,format="%Y-%m-%d"))
-Pok2001.2022$Date=as.Date(Pok2001.2022$Date)
-summary(Pok2001.2022$Date)
-```
-
-
-```{r Trier_tableau, include=F}
-
+```{r Trier_tableau, eval=T, include=F}
 # Trier le tableau selon la station et la date
 class(Pok2001.2022$Station2)
 summary(Pok2001.2022$Station2)
@@ -306,7 +276,6 @@ class(Pok2001.2022$Date)
 # Pok2001.2022$Date
 ```
 
-
 ```{r Variable_year, include=F, message=F, warning=F}
 # Extraire les éléments d'année et en faire une variable "Year"   
 # https://stackoverflow.com/questions/36568070/extract-year-from-date
@@ -329,7 +298,6 @@ Pok2001.2022$Period=as.factor(Pok2001.2022$Period)
 
 summary(Pok2001.2022$Period)
 ```
-
 
 ```{r Campagne, include=F}
 # Créer une variable CampagneNo
@@ -375,7 +343,6 @@ table(Pok2001.2022$Date)
 levels(Pok2001.2022$Station2)
 levels(Pok2001.2022$Period)
 ```
-
 
 
 ```{r Charger_longueur}
@@ -737,9 +704,7 @@ summary(Malt$Date)
 
 strwrap("Faire de même pour les onze autres stations (pendant l'été 2024).")
 
-
 ```
-
 
 
 
@@ -771,7 +736,6 @@ dim(Period1)
 # Créer un tableau avec les données de la période 2 seulement 2021_2022:
 Period2=subset(Pok2001.2022, Period=="2021-2022")
 dim(Period2)
-
 ```
 
 ```{r analyses_chimie_bv_meteo}
@@ -938,9 +902,7 @@ Le bassin hydrographique de la rivière Pokemouche __couvre environ 504 km^2^ et
 
 Les stations sont disposées ~~stratégiquement~~, réparties de l'amont à l’aval et sur toute l'étendue de la rivière afin de permettre d'avoir une vision de la variation et de l'évolution de la qualité de l'eau sur toute sa longueur. Au total, nous disposons de 12 stations, la plupart étant situées sur les différents ruisseaux qui se déversent dans le cours d'eau de la rivière Pokemouche. 
 
-
 ~~Nos données~~ Les rivières ~~à l’étude~~ ont été échantillonnées  quatre fois par année en 2001, 2002, 2021, 2022 ~~en été et en automne~~, sur ces 12 stations soit le 1er août, le 1er septembre, le 1er octobre et le 1er novembre. ~~Cet été 2024, nous allons collecter davantage de données liées à la composition du territoire, les données géospatiales, quelque données physico-chimique et poursser les annalyses statistiques.~~
-
 
 __AP 2024-06-19 Expliqure au lecteur l'ordre dans lequel tu présentes les stations. Toujours suivre le même ordre pour ne pas fatiguer le lecteur.__ 
 
@@ -1029,11 +991,9 @@ Le comité de gestion environnementale de la rivière Pokemouche a effectué les
 
 Les analyses ont été faites dans les laboratoires... en suivant la méthode... La limite de détection des paramètres...
 
-
 ## Description des paramètres physico-chimiques à l'étude
 
 Parmi les 56 paramètres qui ont fait l'objet d'un suivi, nous allons décrire les plus importants, soit ceux qui influencent le plus la qualité de l’eau de notre rivière et dont j’aimerais étudier la variation. Ces paramètres sont répartis en trois groupes différents, dont les paramètres physico-chimiques comme la température, le pH, la turbidité (NTU), la conductivité, l’oxygène dissous, les nutriments, etc. Les paramètres biologiques, tels que les coliformes fécaux, et les métaux comme le plomb (Pb), le cadmium (Cd), le mercure (Hg), et le zinc (Zn), etc. (Bricha, S., Ounine, K., Oulkheir, S., El Haloui, N., & Attarassi, B. 2007).
-
 
 ### La température: 
 
@@ -1431,9 +1391,7 @@ ggarrange(O2g2001, O2g2002, O2g2021, O2g2022, ncol=2, nrow=2)
 Traiter la date comme "Campagne no" (voir la création de la variable 
 "Campagne" au début du script).
 
-
 ```{r, eval=F, include=F}
-
 Pok2001.2022$Campagne
 Pok2001.2022$Station2
 ```
