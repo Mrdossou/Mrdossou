@@ -35,6 +35,13 @@ library("car") # pour la fonction "scatterplot"
 library("psych") # pour la fonction "describe"
 library("ggfortify", warn.conflicts=T) 
 # to do sophisticated ("high-level") plots, namely "autoplot"
+# install.packages("skimr")
+library("skimr")
+# "skimr" permet d'obtenir des stats et des mini-histogrammes
+# install.packages("DataExplorer")
+library(DataExplorer)
+# "DataExplorer" pour obtenir un rapport html des statistiques de base
+
 # installed.packages() 
 # (.packages()) # to list loaded libraries at startup.
 
@@ -74,12 +81,19 @@ dim(Pok2001.2022) # 198 et 80
 str(Pok2001.2022)
 ```
 
-
+```{r Variable_Date, include=F, message=F, warning=F}
+# Créer la nouvelle variable "Date" au format "date".
+Pok2001.2022$Date=format(as.Date(Pok2001.2022$DateSampled,format="%Y-%m-%d"))
+Pok2001.2022$Date=as.Date(Pok2001.2022$Date)
+summary(Pok2001.2022$Date)
+```
 
 
 ```{r Uniformiser_variables, include=F, message=F, warning=F}
 
-# Uniformiser la variable "AnalysisSurfaceWater" et l'attribuer à la nouvelle variable "Station":
+# Uniformiser la variable "AnalysisSurfaceWater" 
+# (qui prend parfois des majuscules et d'autres fois des minuscules) 
+# et l'attribuer à la nouvelle variable "Station":
 
 Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="Pok-1"] <- "Pok-01"
 Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="POK-1"] <- "Pok-01"
@@ -120,13 +134,12 @@ Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="POK-12"] <- "Pok-12"
 head(Pok2001.2022$Station)
 ```
 
-
-
 ```{r Station_facteur, include=F, message=F, warning=F}
 # Convertir le type de la variable "Station" en type "facteur"
 Pok2001.2022$Station=as.factor(Pok2001.2022$Station)
 summary(Pok2001.2022$Station)
 ```
+
 
 
 ```{r Variable_Station2, include=F, message=F, warning=F}
@@ -146,6 +159,8 @@ Pok2001.2022$Station2[Pok2001.2022$Station=="Pok-11"] <- "Malt 11"
 Pok2001.2022$Station2[Pok2001.2022$Station=="Pok-12"] <- "Dempsey 12"
 ```
 
+
+
 ```{r Ordonner_tableau, include=F, message=F, warning=F}
 # Ordonner les valeurs de la variables "Station2" de l'amont vers l'aval:
 
@@ -162,7 +177,7 @@ summary(Pok2001.2022$Station2)
 
 
 
-```{r Fonctions, include=F, message=F, warning=F}
+```{r Fonctions, eval=F, include=F, message=F, warning=F}
 # Pour lister les noms de variables (en-têtes des colonnes):
 names(Pok2001.2022)
 
@@ -188,23 +203,15 @@ class(Pok2001.2022$Date)
 ```
 
 
-
-
-```{r Variable_Date, include=F, message=F, warning=F}
-# Créer la nouvelle variable "Date" au format "date".
-Pok2001.2022$Date=format(as.Date(Pok2001.2022$DateSampled,format="%Y-%m-%d"))
-Pok2001.2022$Date=as.Date(Pok2001.2022$Date)
-summary(Pok2001.2022$Date)
-```
-
-
-```{r Trier_tableau, include=F}
+```{r Trier_tableau, eval=T, include=F}
 # Trier le tableau selon la station et la date
 class(Pok2001.2022$Station2)
 summary(Pok2001.2022$Station2)
 # Trier le tableau selon la station et la date
-Pok2001.2022=Pok2001.2022[order(Pok2001.2022$Date,Pok2001.2022$Station),]
-dim(Pok2001.2022)
+Pok2001.2022=Pok2001.2022[order(Pok2001.2022$Station2,Pok2001.2022$Date),]
+Pok2001.2022[1:5,1:5]
+dim(Pok2001.2022) 
+# 198 x 83 au 2024-06-26
 
 ```
 
@@ -239,34 +246,34 @@ et les manipulations sont fiables.")
 
 test=aggregate(Pok2001.2022, by=list(Station=Pok2001.2022$Station,
                                      Date=Pok2001.2022$Date,
-                                     Station2=Pok2001.2022$Station2),                                               FUN="mean", na.rm=TRUE)
-dim(test) # 192, comme attentdu:
+                                     Station2=Pok2001.2022$Station2), FUN="mean", na.rm=TRUE)
+dim(test) # 192, comme attendu:
 12 * 4 * 4
 # str(test)
-# Vérifier que les valeurs sont les mêmes (sauf pour les doublons):
-Pok2001.2022[1:5, 1:8]
-test[1:5, 1:8]
+# Vérifier que les autres valeurs sont les mêmes (sauf pour les doublons):
+subset(Pok2001.2022,select=c(Station, Date, Sodium_mg_L, Potassium_mg_L))[1:5,]
+subset(test,select=c(Station, Date, Sodium_mg_L, Potassium_mg_L))[1:5,]
 
 # SUPPRIMER LES VARIABLES CRÉÉES EN TROP (DOUBLONS)
-
 names(test)
-test[,c(3,85)]
-test[,c(2,86)]
-test[,c(1:3)]
+
+test[1:5,c(2,84)]
+test[1:5,c(1,85)]
+test[1:5,c(3,86)]
+
+# Supprimer les colonnes 84 (Date.1), 85 (Station.1) et 86 (Station2.1)
 test2=test[,-c(84:86)]
 dim(test2)
-
-
+# 192 x 83
+names(test2)
 # Accepter le résultat:
 Pok2001.2022 <- test2
 dim(Pok2001.2022)
 names(Pok2001.2022)
 str(Pok2001.2022)
 class(Pok2001.2022$Date)
+# Pok2001.2022$Date
 ```
-
-
-
 
 ```{r Variable_year, include=F, message=F, warning=F}
 # Extraire les éléments d'année et en faire une variable "Year"   
@@ -276,10 +283,6 @@ summary(Pok2001.2022$Year)
 class(Pok2001.2022$Year)
 table(Pok2001.2022$Year,Pok2001.2022$Station)
 
-Pok2001.2022$Year
-Pok2001.2022$Station
-Pok2001.2022[1:5,1:10]
-# names(Pok2001.2022)
 ```
 
 
@@ -293,6 +296,33 @@ Pok2001.2022$Period[Pok2001.2022$Year==2022] <- "2021-2022"
 Pok2001.2022$Period=as.factor(Pok2001.2022$Period)
 
 summary(Pok2001.2022$Period)
+```
+
+```{r Campagne, include=F}
+# Créer une variable CampagneNo
+table(Pok2001.2022$Date,Pok2001.2022$Year)
+# 2001
+Pok2001.2022$Campagne[Pok2001.2022$Date=="2001-08-01"] <- 1
+Pok2001.2022$Campagne[Pok2001.2022$Date=="2001-08-28"] <- 2
+Pok2001.2022$Campagne[Pok2001.2022$Date=="2001-09-26"] <- 3
+Pok2001.2022$Campagne[Pok2001.2022$Date=="2001-10-31"] <- 4
+# 2002
+Pok2001.2022$Campagne[Pok2001.2022$Date=="2002-07-29"] <- 5
+Pok2001.2022$Campagne[Pok2001.2022$Date=="2002-08-28"] <- 6
+Pok2001.2022$Campagne[Pok2001.2022$Date=="2002-10-02"] <- 7
+Pok2001.2022$Campagne[Pok2001.2022$Date=="2002-10-31"] <- 8
+# 2021
+Pok2001.2022$Campagne[Pok2001.2022$Date=="2021-07-28"] <- 9
+Pok2001.2022$Campagne[Pok2001.2022$Date=="2021-08-31"] <- 10
+Pok2001.2022$Campagne[Pok2001.2022$Date=="2021-10-05"] <- 11
+Pok2001.2022$Campagne[Pok2001.2022$Date=="2021-10-28"] <- 12
+# 2022
+Pok2001.2022$Campagne[Pok2001.2022$Date=="2022-07-28"] <- 13
+Pok2001.2022$Campagne[Pok2001.2022$Date=="2022-09-01"] <- 14
+Pok2001.2022$Campagne[Pok2001.2022$Date=="2022-10-03"] <- 15
+Pok2001.2022$Campagne[Pok2001.2022$Date=="2022-11-01"] <- 16
+Pok2001.2022$Campagne
+
 ```
 
 
@@ -322,6 +352,8 @@ ordres=read.csv2("Pokemouche_longueurs_ordres.csv")
 dim(ordres) # 12 x 24
 ordres$Station=as.factor(ordres$Station)
 str(ordres)
+# Attention à ajouter des décimales dans Excel pour que les valeurs soient
+# considérées comme des valeurs numériques et non des entiers.
 describe(ordres)
 
 # Ordre1_m_amont: Longueur totale (m) de tous les cours d’eau d'ordre 1 en amont de la station
@@ -339,21 +371,25 @@ plot(ordres$Long, ordres$Lat, pch="", xlim=c(2590000, 2623000))
 text(ordres$Long, ordres$Lat,  ordres$Station)
 grid()
 
+```
 
+```{r relations_long}
 pairs(subset(ordres, select=c(Long,
   Ordre1_m_amont, Ordre2_m_amont, Ordre3_m_amont, Ordre4_m_amont, Ordre5_m_amont,
   Somme_ordre_1.5)))
+```
 
+```{r relations_lat}
 pairs(subset(ordres, select=c(Lat,
   Ordre1_m_amont, Ordre2_m_amont, Ordre3_m_amont, Ordre4_m_amont, Ordre5_m_amont,
   Somme_ordre_1.5)))
+```
 
+```{r longueur3_long}
 # Tendance à l'augmentation de la longueur des cours d'eau d'ordre 3
 # de l'ouest vers l'est (dans le sens du courant):
 plot(ordres$Long, ordres$Ordre3_m_amont, pch="", xlim=c(2590000, 2623000))
 text(ordres$Long, ordres$Ordre3_m_amont, ordres$Station)
-
-
 
 ```
 
@@ -367,7 +403,8 @@ text(ordres$Long, ordres$Ordre3_m_amont, ordres$Station)
 caract.bv=read.csv2("caract_bv2.csv")
 # caract_bv2.csv est la version qui contient les valeurs pour Pok-03
 # après que j'eu signalé leurs absences à Manar.
-dim(caract.bv) # 12 rangées x 319 colonnes
+dim(caract.bv) 
+# 12 rangées x 319 colonnes
 # 12 x 321 au 2024-06-24
 str(caract.bv)
 caract.bv$Station=as.factor(caract.bv$Station)
@@ -412,10 +449,8 @@ dim(caract.bv2) # 12 x 32
 plot(subset(caract.bv2, select=c(AGR_km2_supdrainee_2020,AGR_km2_supdrainee_1990)))
 grid()
 # Les superficies agricoles sont plus grandes en 2020 qu'en 1990...
-dim(caract.bv2) # 12 x 32
-describe(caract.bv2)
 
-# La superficie qui draîne vers la station en fonction de la superficie totale:
+# La superficie qui draine vers la station en fonction de la superficie totale:
 plot(caract.bv2$sup_km2_sbv, caract.bv2$sup_drainee_km2_sbv,pch="", xlim=c(0,120))
 text(caract.bv2$sup_km2_sbv, caract.bv2$sup_drainee_km2_sbv,  caract.bv2$Station)
 
@@ -509,14 +544,14 @@ text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$NULL_km2_supdrainee_2020,  carac
 # Joindre le tableau des longueurs à celui des caractéristiques territoriales
 
 dim(ordres) # 12 x 24
-dim(caract.bv2) # 12 x 32
+dim(caract.bv2) # 12 x 33
 
 summary(ordres$Station)
 summary(caract.bv2$Station)
 
 bv1=merge(ordres,caract.bv2, by="Station", all=TRUE)
-dim(bv1) # 12 x 55
-24+32-1
+dim(bv1) # 12 x 56
+24+33-1
 
 ```
 
@@ -538,19 +573,28 @@ text(bv1$sup_km2_sbv, bv1$Longueur_totale_m_sous_bassin,  bv1$Station)
 
 ```{r Merge2}
 
-# Joindre Pok2001.2022 (données de chimie) à bv1 (données de territoire)
+# Joindre Pok2001.2022 (données de chimie) à bv1 (données de territoire
+# comprenant les longueurs, ordres et couvertures)
 
-dim(Pok2001.2022) # 192 x 86
+dim(Pok2001.2022) 
+# 192 x 86
 class(Pok2001.2022$Station)
 levels(Pok2001.2022$Station)
 summary(Pok2001.2022$Station)
 
-dim(caract.bv) # 12 x 319
-chimie.bv=merge(Pok2001.2022, caract.bv, by="Station", all=TRUE)
-dim(chimie.bv) # 192 x 404
-86 + 319 - 1
+dim(bv1)
+# 12 x 56
+class(bv1$Station)
+levels(bv1$Station)
+summary(bv1$Station)
+
+chimie.bv=merge(Pok2001.2022, bv1, by="Station", all=TRUE)
+dim(chimie.bv) # 192 x 141
+86 + 56 - 1
+
+# Accepter le résultat:
 Pok2001.2022 <- chimie.bv
-dim(Pok2001.2022) # 192 x 403
+dim(Pok2001.2022) # 192 x 405
 
 # Supprimer les objets devenus inutiles
 
@@ -569,10 +613,10 @@ summary(meteo)
 meteo$Date<-as.Date(meteo$Date)
 class(meteo$Date)
 summary(meteo$Date)
+# skim(meteo)
+# DataExplorer::create_report(meteo)
+# skim et DataExplorer ne donnent rien de plus que "summary" ou "str"...
 
-plot(meteo$precip.tot.21jours ~ meteo$Date, type="b", pch="c", col=1, lty=1)
-points(meteo$precip.tot.14jours ~ meteo$Date, type="b", pch="b", col=2, lty=2)
-points(meteo$precip.tot.7jours ~ meteo$Date, type="b", pch="a", col=3, lty=3)
 ```
 
 ```{r meteo_gr_precip}
@@ -602,7 +646,7 @@ barplot(rbind(meteo$temp_min_C, meteo$temp_moy_C, meteo$temp_max_C),
 ```
 
 
-```{r meteo_gr_temp01}
+```{r meteo_gr_temp02}
 barplot(rbind(meteo$Tmax2jours, meteo$Tmax4jours, meteo$Tmax7jours), 
         col=c(1,2,3),
         beside=T,
@@ -615,6 +659,41 @@ strwrap("Manar a vérifié le 2024-06-26 sur le site d'Environnement Canada et a
         cette seule journée du 2022-07-28")
 
 ```
+
+```{r merge03}
+
+# Joindre les données de météo au tableau de chimie et territoire
+
+
+# subset(Pok2001.2022, is.na(Date),select=c("Date","Station"))
+# Il ne devrait pas manquer de dates
+
+summary(Pok2001.2022$Date)
+class(Pok2001.2022$Date)
+dim(Pok2001.2022)
+# 192 x 141
+
+summary(meteo$Date)
+class(meteo$Date)
+dim(meteo) # 16 x 57
+
+chimie.bv.meteo=merge(Pok2001.2022, meteo, by="Date", all=TRUE)
+
+dim(chimie.bv.meteo) 
+# 192 x 197 
+141 + 57 -1
+
+
+# Accepter le résultat
+Pok2001.2022 <- chimie.bv.meteo
+dim(Pok2001.2022)
+# 192 x 197
+# Sauvegarder le tableau dans le format RData
+# save(Pok2001.2022, file="Pok2001.2022.RData")
+# file.info("Pok2001.2022.RData")
+# 28,8 Ko
+```
+
 
 ```{r Sous_groupes, tributaires, echo=F, eval=F, warning=F}
 # Créer des sous-groupes par tributaire (à complèté si néccessaire)
@@ -658,37 +737,30 @@ Period2=subset(Pok2001.2022, Period=="2021-2022")
 dim(Period2)
 ```
 
+```{r analyses_chimie_bv_meteo}
+
+strwrap("2024-06-26 Le tableau complet des données de chimie, 
+        caractéristiques territoriales et météo est enfin assemblé
+        et prêt à être analysé.")
+
+ggplot(Pok2001.2022,aes(x=temp_moy_C,y=Temp_eau_YSI_degC)) +
+geom_point()
 
 
-```{r Campagne, include=F}
-# Créer une variable CampagneNo
-table(Pok2001.2022$Date,Pok2001.2022$Year)
-# 2001
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2001-08-01"] <- 1
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2001-08-28"] <- 2
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2001-09-26"] <- 3
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2001-10-31"] <- 4
-# 2002
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2002-07-29"] <- 5
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2002-08-28"] <- 6
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2002-10-02"] <- 7
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2002-10-31"] <- 8
-# 2021
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2021-07-28"] <- 9
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2021-08-31"] <- 10
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2021-10-05"] <- 11
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2021-10-28"] <- 12
-# 2022
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2022-07-28"] <- 13
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2022-09-01"] <- 14
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2022-10-03"] <- 15
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2022-11-01"] <- 16
-Pok2001.2022$Campagne
+ggplot(Pok2001.2022,aes(x=Temp_eau_YSI_degC,y=Conductivity_microS_cm)) +
+geom_point()
+
+sub2=subset(Pok2001.2022,!is.na(Temp_eau_YSI_degC),
+            select=c(Ordre1_m_amont, Ordre2_m_amont,Ordre3_m_amont,
+                    Temp_eau_YSI_degC, Conductivity_microS_cm, pH_units,SS_mg_L))
+
+dim(sub2)
+pairs(sub2)
 
 ```
 
 
-```{r Intro_PCA}
+```{r INTRO_PCA}
 
 # Montrer la ressemblance (ou la distance) entre les stations
 # en termes de température lors de la première campagne (2001-08-01)
@@ -702,11 +774,13 @@ str(y1)
 summary(y1)
 summary(y1$Temp_eau_YSI_degC)
 
-png("slide01_temp_1_axis.png", width=800, height=200, units="px", pointsize=12)
+# Utiliser png("titre"...) pour exporter un graphique.
+# Ne pas oublier d'éteindre le moteur graphique avec dev.off()
+# png("slide01_temp_1_axis.png", width=800, height=200, units="px", pointsize=12)
 plot(0, xlim = c(0, 30),  axes=FALSE, type = "n", xlab = "", ylab = "")
 axis(3, at = y1$Temp_eau_YSI_degC, labels = y1$Temp_eau_YSI_degC)
 axis(1, at = y1$Temp_eau_YSI_degC, labels = y1$Station, las=3)
-dev.off()
+# dev.off()
 
 # On peut dire que les station Pok-05 et Pok-04 se ressemblent.
 # Au contraire, les stations Pok-05 et Pok-12 ne se ressemblent pas...
@@ -714,18 +788,15 @@ dev.off()
 
 ```
 
-```{r}
-
-plot(y1$Temp_eau_YSI_degC, y1$Conductivity_microS_cm)
-text(y1$Temp_eau_YSI_degC, y1$Conductivity_microS_cm, y1$Station)
+```{r pH_vs_temp}
 
 # On considérant une 2e variable (2e dimenstion, 2e axe), on constate
 # que Pok-05 et Pok-01 sont aussi différents que Pok-05 et Pok-
 summary(y1$Temp_eau_YSI_degC)
-png("slide02_temp_pH.png", width=800, height=800, units="px", pointsize=18)
+# png("slide02_temp_pH.png", width=800, height=800, units="px", pointsize=18)
 plot(y1$Temp_eau_YSI_degC, y1$pH_units,pch="", xlim=c(7,28))
 text(y1$Temp_eau_YSI_degC, y1$pH_units, y1$Station)
-dev.off()
+# dev.off()
 
 # On pourrait répéter le processus avec 3 axes...
 # Montrer la projection d'un stylo ou tout autre objet
@@ -734,13 +805,13 @@ dev.off()
 
 ```
 
-```{r}
+```{r Couleur_vs_COT}
 # Couleur et carbone
 summary(y1$Carbon_Total_Organic_mg_L)
-png("slide03_couleur_COT.png", width=660, height=660, units="px", pointsize=18)
+# png("slide03_couleur_COT.png", width=660, height=660, units="px", pointsize=18)
 plot(y1$Carbon_Total_Organic_mg_L,y1$Colour_TCU,  pch="",xlim=c(0.5,3.5))
 text(y1$Carbon_Total_Organic_mg_L,y1$Colour_TCU, y1$Station)
-dev.off()
+# dev.off()
 cor(y1$Colour_TCU, y1$Carbon_Total_Organic_mg_L)
 cor(y1$Carbon_Total_Organic_mg_L, y1$Colour_TCU)
 # On pourrait créer un seul axe qui retiendrait 90% de l'info...
@@ -756,45 +827,47 @@ rownames(y1)=y1$Station
 y1pca=subset(y1,select=c(Colour_TCU,Carbon_Total_Organic_mg_L))
 pca1=prcomp(y1pca, scale=T)
 summary(pca1)
-png("slide04_pca_couleur_COT.png", width=700, height=700, units="px", pointsize=18)
+# png("slide04_pca_couleur_COT.png", width=700, height=700, units="px", pointsize=18)
 biplot(pca1)
-dev.off()
+# dev.off()
 # On retrouve le même groupement de stations le long du premier axe
 # qui renferme 97% de la variation conjointe.
 
 
 ```
 
-```{r}
+```{r PCA_5_params}
 y2pca=subset(y1,select=c("Temp_eau_YSI_degC", "Conductivity_microS_cm",
                    "pH_units", "Colour_TCU","Carbon_Total_Organic_mg_L"))
 pca2=prcomp(y2pca, scale=T)
 summary(pca2)
-png("slide05_pca_5_params.png", width=800, height=800, units="px", pointsize=18)
+# png("slide05_pca_5_params.png", width=800, height=800, units="px", pointsize=18)
 biplot(pca2)
-dev.off()
+# dev.off()
 
 # On pourra distinguer les années, saison ou stations lorsque le jeu de
 # données complet sera utilisé, grâce à "autoplot"
 autoplot(pca2, label=T, data=y1, 
          size=3, colour="Station", shape='Station', loadings=T, 
          loadings.label=T, loadings.label.size=4) +
- scale_shape_manual(values=1:nlevels(y1$Station)) 
-
-
- 
+ scale_shape_manual(values=1:nlevels(y1$Station)) +
   theme_bw() + 
   theme(legend.position = "bottom") + 
   ggtitle("ACP, 5 paramètres 2001-08-01")
+```
 
+```{r pH_vs_cond}
 
-
-autoplot(pigsPCA1Richibucto, label=T, data=pigs0Richibucto, size=3, colour="Stream", shape='Stream', loadings=T, loadings.label=T, loadings.label.size=4) + theme_bw() + theme(legend.position = "bottom")+ ggtitle("labels indicate Stream, median depth (cm)")
-
+strwrap("La précédente ACP suggère que le pH et la conductivité sont liés. 
+        Voyons voir avec un grahpique de dispersion.")
 
 
 plot(y1$Conductivity_microS_cm, y1$pH_units, pch="")
 text(y1$Conductivity_microS_cm, y1$pH_units, y1$Station)
+
+strwrap("Les eaux douces sont plus saturées en CO2 (respiration microbienne, etc.) et donc
+        plus acides ques les eaux marines où l'activité photosynthétique peut-être plus élevée...
+        À vérifier ou confirmer.")
 ```
 
 
