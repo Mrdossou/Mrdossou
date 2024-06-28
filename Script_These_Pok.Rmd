@@ -11,12 +11,9 @@ editor_options:
 bibliography: rbilbio.bib
 ---
 
-```{r Effacer_tout}
-# Dernière modification 2024-06-27 15:04
-# Supprimer tous les objets en mémoire avant d'exécuter le script
-rm(list=ls(all=TRUE)) # to erase, remove, delete objects from environment
-oldpar=par(no.readonly=TRUE) # to keep original graphical parameters
-```
+Tous les chunks jusqu'à "merge03" ne sont pas évalués (eval=F) puisque ceux-ci
+sont désormais inutiles après la création du fichier de données en format RData
+qui est chargé ci-dessous dans le chunk "charger_Pok2001.2022.RData".
 
 
 
@@ -37,10 +34,10 @@ library("psych") # pour la fonction "describe"
 library("ggfortify", warn.conflicts=T) 
 # to do sophisticated ("high-level") plots, namely "autoplot"
 # install.packages("skimr")
-library("skimr")
+# library("skimr")
 # "skimr" permet d'obtenir des stats et des mini-histogrammes
 # install.packages("DataExplorer")
-library(DataExplorer)
+# library(DataExplorer)
 # "DataExplorer" pour obtenir un rapport html des statistiques de base
 
 # installed.packages() 
@@ -58,11 +55,14 @@ library(DataExplorer)
 
 ```
 
+```{r Effacer_tout}
+# Dernière modification 2024-06-27 15:04
+# Supprimer tous les objets en mémoire avant d'exécuter le script
+rm(list=ls(all=TRUE)) # to erase, remove, delete objects from environment
+oldpar=par(no.readonly=TRUE) # to keep original graphical parameters
+```
 
-
-
-```{r Charger_chimie, include=F, message=F, warning=F}
-
+```{r set_dir}
 # setwd("C:/Users/mrdos/OneDrive/Documents/Shippagan_mai_aout_2024/Analyse_R_sum/Github")
 # getwd()
 # list.files()
@@ -71,18 +71,32 @@ library(DataExplorer)
 # setwd("C:/Users/mrdos/OneDrive/Documents/Shippagan_mai_aout_2024/Analyse_R_sum/Github_Pr")
 
 # Répertoire pour Alain
-setwd("/media/alain/ap2To/UMCS_bak/Documents/SUPERVISION/Gael/github_Gael")
+# setwd("/media/alain/ap2To/UMCS_bak/Documents/SUPERVISION/Gael/github_Gael")
+# Je préfère y aller par le menu au début d'une session d'analyse:
+# Session > Set Working Directory > To Source File Location
 
 getwd()
-list.files()
+# list.files()
 list.files(all.files=T, pattern="RData")
+```
+
+
+```{r charger_Pok2001.2022.RData}
+
+load("./Pok2001.2022.RData")
+
+```
+
+
+```{r Charger_chimie, eval=F, include=F, message=F, warning=F}
+
 
 Pok2001.2022=read.csv2("Qualite_eau_CGERP_2001-2022.csv")
 dim(Pok2001.2022) # 198 et 80
 str(Pok2001.2022)
 ```
 
-```{r Variable_Date, include=F, message=F, warning=F}
+```{r Variable_Date, eval=F, include=F, message=F, warning=F}
 # Créer la nouvelle variable "Date" au format "date".
 Pok2001.2022$Date=format(as.Date(Pok2001.2022$DateSampled,format="%Y-%m-%d"))
 Pok2001.2022$Date=as.Date(Pok2001.2022$Date)
@@ -90,7 +104,7 @@ summary(Pok2001.2022$Date)
 ```
 
 
-```{r Uniformiser_variables, include=F, message=F, warning=F}
+```{r Uniformiser_variables,  eval=F, include=F, message=F, warning=F}
 
 # Uniformiser la variable "AnalysisSurfaceWater" 
 # (qui prend parfois des majuscules et d'autres fois des minuscules) 
@@ -135,7 +149,7 @@ Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="POK-12"] <- "Pok-12"
 head(Pok2001.2022$Station)
 ```
 
-```{r Station_facteur, include=F, message=F, warning=F}
+```{r Station_facteur, eval=F, include=F, message=F, warning=F}
 # Convertir le type de la variable "Station" en type "facteur"
 Pok2001.2022$Station=as.factor(Pok2001.2022$Station)
 summary(Pok2001.2022$Station)
@@ -143,7 +157,7 @@ summary(Pok2001.2022$Station)
 
 
 
-```{r Variable_Station2, include=F, message=F, warning=F}
+```{r Variable_Station2,  eval=F, include=F, message=F, warning=F}
 
 # Créer la nouvelle variable "Station2" avec des variables plus parlantes:
 Pok2001.2022$Station2[Pok2001.2022$Station=="Pok-01"] <- "br. sud amont 01"
@@ -162,7 +176,7 @@ Pok2001.2022$Station2[Pok2001.2022$Station=="Pok-12"] <- "Dempsey 12"
 
 
 
-```{r Ordonner_tableau, include=F, message=F, warning=F}
+```{r Ordonner_tableau,  eval=F, include=F, message=F, warning=F}
 # Ordonner les valeurs de la variables "Station2" de l'amont vers l'aval:
 
 strwrap("AP 2024-06-04 Le bloc suivant ordonne les stations de l'ouest vers l'est (dans le sens du courant). C'est l'ordre qui est affiché quand on fait des graphiques de type box-plot. On pourrait (on devrait) choisir d'autres manières d'ordonner les stations, par exemple, en fonction de la distance entre la station et la tête du ruisseau.")
@@ -189,7 +203,7 @@ Pok2001.2022[1:5, 5:10]
 
 # Pour savoir de quoi est constituée la variable
 # Rechercher les variables comportant le mot "date":
-names(Pok2001.2022[grep("date",names(Pok2001.2022), ignore.case=T)])
+names(Pok2001.2022[grep("campagne",names(Pok2001.2022), ignore.case=T)])
 
 # On trouve trois variables avec le terme "date":
 head(Pok2001.2022$DateSampled)
@@ -204,7 +218,7 @@ class(Pok2001.2022$Date)
 ```
 
 
-```{r Trier_tableau, eval=T, include=F}
+```{r Trier_tableau,  eval=F, include=F}
 # Trier le tableau selon la station et la date
 class(Pok2001.2022$Station2)
 summary(Pok2001.2022$Station2)
@@ -216,7 +230,7 @@ dim(Pok2001.2022)
 
 ```
 
-```{r Doublons, include=F}
+```{r Doublons, eval=F, include=F}
 strwrap("Normalement le tableau devrait comprendre 12 stations x 4 années x 
 4 sorties/année = 192 objets stations-dates.")
 strwrap("Le fait que le fichier contient 198 rangées plutôt que 192 s'explique 
@@ -239,7 +253,7 @@ Doublons_Pok01_2002_10_31
 # Les valeurs se ressemblent. Prenons les moyennes avec la fonction "aggregate".
 ```
 
-```{r Aggregate, include=FALSE}
+```{r Aggregate,  eval=F, include=FALSE}
 strwrap("Les cinq doublons peuvent servir à vérifier la qualité des données: 
 si les mesures se ressemblent (par rapport à la variabilité entre dates et stations) 
 pour une station à une date, c'est que le instruments
@@ -276,7 +290,7 @@ class(Pok2001.2022$Date)
 # Pok2001.2022$Date
 ```
 
-```{r Variable_year, include=F, message=F, warning=F}
+```{r Variable_year, eval=F, include=F, message=F, warning=F}
 # Extraire les éléments d'année et en faire une variable "Year"   
 # https://stackoverflow.com/questions/36568070/extract-year-from-date
 Pok2001.2022$Year=as.factor(format(Pok2001.2022$Date, "%Y"))
@@ -288,7 +302,7 @@ table(Pok2001.2022$Year,Pok2001.2022$Station)
 
 
 
-```{r Variable_Period, include=F, message=F, warning=F}
+```{r Variable_Period,  eval=F, include=F, message=F, warning=F}
 # Créer une variable "Period" qui désigne la période 2001-2002 ou 2021-2022.
 Pok2001.2022$Period[Pok2001.2022$Year==2001] <- "2001-2002"
 Pok2001.2022$Period[Pok2001.2022$Year==2002] <- "2001-2002"
@@ -299,7 +313,7 @@ Pok2001.2022$Period=as.factor(Pok2001.2022$Period)
 summary(Pok2001.2022$Period)
 ```
 
-```{r Campagne, include=F}
+```{r Campagne,  eval=F, include=F}
 # Créer une variable CampagneNo
 table(Pok2001.2022$Date,Pok2001.2022$Year)
 # 2001
@@ -327,7 +341,7 @@ Pok2001.2022$Campagne
 ```
 
 
-```{r Structure_tableau, include=F,  message=F, warning=F}
+```{r Structure_tableau,  eval=F, include=F,  message=F, warning=F}
 # Comprendre la structure du tableau
 # Ce 06 juin on a maintenant pour chaque période 96 données enrégistrées.
 strwrap("La fonction ''table'' produit un tableau de contingence 
@@ -339,13 +353,13 @@ table(Pok2001.2022$Date)
 
 
  
-```{r Niveaux, include=F, message=F, warning=F}
+```{r Niveaux,  eval=F, include=F, message=F, warning=F}
 levels(Pok2001.2022$Station2)
 levels(Pok2001.2022$Period)
 ```
 
 
-```{r Charger_longueur}
+```{r Charger_longueur, eval=F}
 # Charger les données de longueurs et d'ordre des tributaires
 # Nom du fichier original: 
 
@@ -366,7 +380,7 @@ describe(ordres)
 
 ```
 
-```{r Carte_stations}
+```{r Carte_stations, eval=F}
 # summary(ordres$Long)
 plot(ordres$Long, ordres$Lat, pch="", xlim=c(2590000, 2623000))
 text(ordres$Long, ordres$Lat,  ordres$Station)
@@ -374,14 +388,24 @@ grid()
 
 ```
 
+```{r Carte_stations2}
+plot(Pok2001.2022$Long, Pok2001.2022$Lat, pch="", xlim=c(2590000, 2623000))
+text(Pok2001.2022$Long, Pok2001.2022$Lat,  Pok2001.2022$Station)
+grid()
+
+```
+
 ```{r relations_long}
-pairs(subset(ordres, select=c(Long,
+# Y a-t-il une tendance dans la longueur des chemins et la longitude?
+pairs(subset(Pok2001.2022, select=c(Long,
   Ordre1_m_amont, Ordre2_m_amont, Ordre3_m_amont, Ordre4_m_amont, Ordre5_m_amont,
   Somme_ordre_1.5)))
+
 ```
 
 ```{r relations_lat}
-pairs(subset(ordres, select=c(Lat,
+# Y a-t-il une tendance dans la longueur des chemins et la latitude?
+pairs(subset(Pok2001.2022, select=c(Lat,
   Ordre1_m_amont, Ordre2_m_amont, Ordre3_m_amont, Ordre4_m_amont, Ordre5_m_amont,
   Somme_ordre_1.5)))
 ```
@@ -389,13 +413,13 @@ pairs(subset(ordres, select=c(Lat,
 ```{r longueur3_long}
 # Tendance à l'augmentation de la longueur des cours d'eau d'ordre 3
 # de l'ouest vers l'est (dans le sens du courant):
-plot(ordres$Long, ordres$Ordre3_m_amont, pch="", xlim=c(2590000, 2623000))
-text(ordres$Long, ordres$Ordre3_m_amont, ordres$Station)
+plot(Pok2001.2022$Long, Pok2001.2022$Ordre3_m_amont, pch="", xlim=c(2590000, 2623000))
+text(Pok2001.2022$Long, Pok2001.2022$Ordre3_m_amont, Pok2001.2022$Station)
 
 ```
 
 
-```{r Charger_caract_bv}
+```{r Charger_caract_bv, eval=F}
 # 2024-06-20 à la maison
 # Charger le fichier que Manar a produit des caractéristiques des bassins versants
 # Nom du fichier original: 
@@ -411,7 +435,9 @@ str(caract.bv)
 caract.bv$Station=as.factor(caract.bv$Station)
 class(caract.bv$Station)
 levels(caract.bv$Station)
+```
 
+```{r graphiques_bv, eval=F}
 strwrap(" AP 2024-06-20
 Les 'couches' (fichiers géomatiques) disponibles du ministère du N.-B., sur le site geonb.ca
 incluent 'Forest' (F, forêt), 'Non Forest' (NF, tout ce qui n'est pas considéré comme de la forêt),
@@ -541,7 +567,7 @@ text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$NULL_km2_supdrainee_2020,  carac
 
 ```
 
-```{r Merge1}
+```{r Merge1, eval=F}
 # Joindre le tableau des longueurs à celui des caractéristiques territoriales
 
 dim(ordres) # 12 x 24
@@ -556,7 +582,7 @@ dim(bv1) # 12 x 56
 
 ```
 
-```{r Relations_ordre_caract}
+```{r Relations_ordre_caract, eval=F}
 # names(bv1)
 summary(bv1$sup_km2_sbv)
 
@@ -572,7 +598,7 @@ text(bv1$sup_km2_sbv, bv1$Longueur_totale_m_sous_bassin,  bv1$Station)
 ```
 
 
-```{r Merge2}
+```{r Merge2, eval=F}
 
 # Joindre Pok2001.2022 (données de chimie) à bv1 (données de territoire
 # comprenant les longueurs, ordres et couvertures)
@@ -603,7 +629,7 @@ rm(ordres, caract.bv, caract.bv2, bv1, chimie.bv, test, test2)
 
 ```
 
-```{r charger_meteo}
+```{r charger_meteo, eval=F}
 strwrap("Charger le fichier des données météo de la station Bas-Caraquet
         que Manar a préparé.")
 meteo=read.csv2("./meteo_Bac-Caraquet.csv")
@@ -620,7 +646,7 @@ summary(meteo$Date)
 
 ```
 
-```{r meteo_gr_precip}
+```{r meteo_gr_precip, eval=F}
 barplot(rbind(meteo$precip.tot.2jours,
               meteo$precip.tot.7jours, 
               meteo$precip.tot.14jours,
@@ -636,7 +662,7 @@ barplot(rbind(meteo$precip.tot.2jours,
 
 ```
 
-```{r meteo_gr_temp01}
+```{r meteo_gr_temp01, eval=F}
 barplot(rbind(meteo$temp_min_C, meteo$temp_moy_C, meteo$temp_max_C), 
         col=c(1,2,3),
         beside=T,
@@ -647,7 +673,7 @@ barplot(rbind(meteo$temp_min_C, meteo$temp_moy_C, meteo$temp_max_C),
 ```
 
 
-```{r meteo_gr_temp02}
+```{r meteo_gr_temp02, eval=F}
 barplot(rbind(meteo$Tmax2jours, meteo$Tmax4jours, meteo$Tmax7jours), 
         col=c(1,2,3),
         beside=T,
@@ -661,7 +687,7 @@ strwrap("Manar a vérifié le 2024-06-26 sur le site d'Environnement Canada et a
 
 ```
 
-```{r merge03}
+```{r merge03, eval=F}
 
 # Joindre les données de météo au tableau de chimie et territoire
 
@@ -708,7 +734,7 @@ strwrap("Faire de même pour les onze autres stations (pendant l'été 2024).")
 
 
 
-```{r Tableau_2001_etc, include=F, message=F, warning=F}
+```{r Tableau_2001_etc,  include=F, message=F, warning=F}
 # Créer un tableau par année
 Year2001=subset(Pok2001.2022, Year=="2001")
 dim(Year2001)
