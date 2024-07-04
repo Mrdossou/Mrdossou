@@ -2762,7 +2762,7 @@ strwrap("2024-06-26 relaction entre les ordres des rivières et les paramètres 
 
 # Somme des ordres de tous les ordres
 
-```{r analyses_Somme_ordre_1.5_vs_Paramètres}
+```{r analyses_S_ordreVSparamètres}
  
 strwrap("2024-06-26 relaction entre la somme de tous les ordres des rivières et les paramètres que j'analyse")
 
@@ -3759,6 +3759,61 @@ strwrap("2024-06-26 relaction entre les activités récréatives et les paramèt
 strwrap("2024-06-26 relaction entre les activités récréatives et les paramètres que j'analyse")
 
  # Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+  
+
+ scatterplot( REC_km2_supdrainee_2020 ~ Temp_eau_YSI_degC | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ Oxyg_dissous_YSI_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ Conductivity_microS_cm | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ pH_units | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ Turbidity_NTU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ Colour_TCU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ E.coli_MPN_100.mL | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ Phosphorus_Total_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ Nitrate_as_N_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+
+#scatterplot(Pok2001.2022$REC_km2_supdrainee_2020,Pok2001.2022$Colour_TCU,   
+#              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+
+ 
+```
+
+# les pourcentage de AGR 
+
+```{r analyses_les activités récréatives_vs_Paramètres}
+ #names(Pok2001.2022)
+
+Pok2001.2022$pctAGR_km2_supdrainee_1990 = ("sup_drainee_km2_sbv / sup_drainee_km2_sbv")
+
+ # 
 # Oxyg_dissous_YSI_mg_L
 # Conductivity_microS_cm
 # pH_units
