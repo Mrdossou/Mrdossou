@@ -68,7 +68,8 @@ oldpar=par(no.readonly=TRUE) # to keep original graphical parameters
 # list.files()
 
 # Répertoire pour Gaël
-# setwd("C:/Users/mrdos/OneDrive/Documents/Shippagan_mai_aout_2024/Analyse_R_sum/Github_Pr")
+setwd("~/Shippagan_mai_aout_2024/Analyse_R_sum/Ranalyse")
+
 
 # Répertoire pour Alain
 # setwd("/media/alain/ap2To/UMCS_bak/Documents/SUPERVISION/Gael/github_Gael")
@@ -86,641 +87,6 @@ list.files(all.files=T, pattern="RData")
 load("./Pok2001.2022.RData")
 
 ```
-
-
-```{r Charger_chimie, eval=F, include=F, message=F, warning=F}
-
-
-Pok2001.2022=read.csv2("Qualite_eau_CGERP_2001-2022.csv")
-dim(Pok2001.2022) # 198 et 80
-str(Pok2001.2022)
-```
-
-```{r Variable_Date, eval=F, include=F, message=F, warning=F}
-# Créer la nouvelle variable "Date" au format "date".
-Pok2001.2022$Date=format(as.Date(Pok2001.2022$DateSampled,format="%Y-%m-%d"))
-Pok2001.2022$Date=as.Date(Pok2001.2022$Date)
-summary(Pok2001.2022$Date)
-```
-
-
-```{r Uniformiser_variables,  eval=F, include=F, message=F, warning=F}
-
-# Uniformiser la variable "AnalysisSurfaceWater" 
-# (qui prend parfois des majuscules et d'autres fois des minuscules) 
-# et l'attribuer à la nouvelle variable "Station":
-
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="Pok-1"] <- "Pok-01"
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="POK-1"] <- "Pok-01"
-
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="Pok-2"] <- "Pok-02"
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="POK-2"] <- "Pok-02"
-
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="Pok-3"] <- "Pok-03"
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="POK-3"] <- "Pok-03"
-
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="Pok-4"] <- "Pok-04"
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="POK-4"] <- "Pok-04"
-
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="Pok-5"] <- "Pok-05"
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="POK-5"] <- "Pok-05"
-
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="Pok-6"] <- "Pok-06"
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="POK-6"] <- "Pok-06"
-
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="Pok-7"] <- "Pok-07"
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="POK-7"] <- "Pok-07"
-
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="Pok-8"] <- "Pok-08"
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="POK-8"] <- "Pok-08"
-
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="Pok-9"] <- "Pok-09"
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="POK-9"] <- "Pok-09"
-
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="Pok-10"] <- "Pok-10"
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="POK-10"] <- "Pok-10"
-
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="Pok-11"] <- "Pok-11"
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="POK-11"] <- "Pok-11"
-
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="Pok-12"] <- "Pok-12"
-Pok2001.2022$Station[Pok2001.2022$AnalysisSurfaceWater=="POK-12"] <- "Pok-12"
-
-head(Pok2001.2022$Station)
-```
-
-```{r Station_facteur, eval=F, include=F, message=F, warning=F}
-# Convertir le type de la variable "Station" en type "facteur"
-Pok2001.2022$Station=as.factor(Pok2001.2022$Station)
-summary(Pok2001.2022$Station)
-```
-
-
-
-```{r Variable_Station2,  eval=F, include=F, message=F, warning=F}
-
-# Créer la nouvelle variable "Station2" avec des variables plus parlantes:
-Pok2001.2022$Station2[Pok2001.2022$Station=="Pok-01"] <- "br. sud amont 01"
-Pok2001.2022$Station2[Pok2001.2022$Station=="Pok-02"] <- "Suggary 02"
-Pok2001.2022$Station2[Pok2001.2022$Station=="Pok-03"] <- "Branche sud aval 03"
-Pok2001.2022$Station2[Pok2001.2022$Station=="Pok-04"] <- "Pok amont 04"
-Pok2001.2022$Station2[Pok2001.2022$Station=="Pok-05"] <- "McConnell Six Rd 05"
-Pok2001.2022$Station2[Pok2001.2022$Station=="Pok-06"] <- "Morrison 06"
-Pok2001.2022$Station2[Pok2001.2022$Station=="Pok-07"] <- "Waugh sanct. 07"
-Pok2001.2022$Station2[Pok2001.2022$Station=="Pok-08"] <- "Sewell 08"
-Pok2001.2022$Station2[Pok2001.2022$Station=="Pok-09"] <- "Trout Val-Doucet 09"
-Pok2001.2022$Station2[Pok2001.2022$Station=="Pok-10"] <- "Pollard 10"
-Pok2001.2022$Station2[Pok2001.2022$Station=="Pok-11"] <- "Malt 11"
-Pok2001.2022$Station2[Pok2001.2022$Station=="Pok-12"] <- "Dempsey 12"
-```
-
-
-
-```{r Ordonner_tableau,  eval=F, include=F, message=F, warning=F}
-# Ordonner les valeurs de la variables "Station2" de l'amont vers l'aval:
-
-strwrap("AP 2024-06-04 Le bloc suivant ordonne les stations de l'ouest vers l'est (dans le sens du courant). C'est l'ordre qui est affiché quand on fait des graphiques de type box-plot. On pourrait (on devrait) choisir d'autres manières d'ordonner les stations, par exemple, en fonction de la distance entre la station et la tête du ruisseau.")
-
-Pok2001.2022$Station2=ordered(Pok2001.2022$Station2,
-levels=c("Pok amont 04",      "Suggary 02",          "Morrison 06", 
-         "br. sud amont 01",  "Branche sud aval 03", "Trout Val-Doucet 09", 
-         "Sewell 08",         "Dempsey 12",          "Pollard 10",
-         "Malt 11",           "Waugh sanct. 07",     "McConnell Six Rd 05"))
-
-summary(Pok2001.2022$Station2)
-```
-
-
-
-```{r Fonctions, eval=F, include=F, message=F, warning=F}
-# Pour lister les noms de variables (en-têtes des colonnes):
-names(Pok2001.2022)
-
-# Pour voir les premières lignes d'un tableau
-head(Pok2001.2022)
-# Pour voir les cinq premières lignes et les colonnes 5 à 10:
-Pok2001.2022[1:5, 5:10]
-
-# Pour savoir de quoi est constituée la variable
-# Rechercher les variables comportant le mot "date":
-names(Pok2001.2022[grep("campagne",names(Pok2001.2022), ignore.case=T)])
-
-# On trouve trois variables avec le terme "date":
-head(Pok2001.2022$DateSampled)
-head(Pok2001.2022$DateSampled2)
-head(Pok2001.2022$Datesampled3)
-
-# Pour connaître le type de variable
-class(Pok2001.2022$DateSampled)
-class(Pok2001.2022$Station2)
-class(Pok2001.2022$Date)
-
-```
-
-
-```{r Trier_tableau,  eval=F, include=F}
-# Trier le tableau selon la station et la date
-class(Pok2001.2022$Station2)
-summary(Pok2001.2022$Station2)
-# Trier le tableau selon la station et la date
-Pok2001.2022=Pok2001.2022[order(Pok2001.2022$Station2,Pok2001.2022$Date),]
-Pok2001.2022[1:5,1:5]
-dim(Pok2001.2022) 
-# 198 x 83 au 2024-06-26
-
-```
-
-```{r Doublons, eval=F, include=F}
-strwrap("Normalement le tableau devrait comprendre 12 stations x 4 années x 
-4 sorties/année = 192 objets stations-dates.")
-strwrap("Le fait que le fichier contient 198 rangées plutôt que 192 s'explique 
-par la présence de doublons. La fonction 'aggregate' permettra leur éliminiation.")
-strwrap("Nous avons 102 enregistrements (rangées) pour la période 2001-2002 et 96 
-pour la période 2021-2022 jusqu'au 04 juin.")
-
-# Montrer les doublons
-
-strwrap("La station Pok-10 a été échantillonnée cinq fois en 2001 (plutôt que quatre fois).
-Les stations 1 et 8 ont été échantillonnées chacune cinq fois en 2002.
-La station 2 a été échantillonnée cinq fois en 2001 et en 2002.
-Voyons comment diffèrent ces données.")
-
-table(Pok2001.2022$Date, Pok2001.2022$Station)
-Doublons_Pok01_2002_10_31=subset(Pok2001.2022, 
-                                 (Station=="Pok-01" & Date=="2002-10-31"))
-Doublons_Pok01_2002_10_31
-
-# Les valeurs se ressemblent. Prenons les moyennes avec la fonction "aggregate".
-```
-
-```{r Aggregate,  eval=F, include=FALSE}
-strwrap("Les cinq doublons peuvent servir à vérifier la qualité des données: 
-si les mesures se ressemblent (par rapport à la variabilité entre dates et stations) 
-pour une station à une date, c'est que le instruments
-et les manipulations sont fiables.")
-
-test=aggregate(Pok2001.2022, by=list(Station=Pok2001.2022$Station,
-                                     Date=Pok2001.2022$Date,
-                                     Station2=Pok2001.2022$Station2), FUN="mean", na.rm=TRUE)
-dim(test) # 192, comme attendu:
-12 * 4 * 4
-# str(test)
-# Vérifier que les autres valeurs sont les mêmes (sauf pour les doublons):
-subset(Pok2001.2022,select=c(Station, Date, Sodium_mg_L, Potassium_mg_L))[1:5,]
-subset(test,select=c(Station, Date, Sodium_mg_L, Potassium_mg_L))[1:5,]
-
-# SUPPRIMER LES VARIABLES CRÉÉES EN TROP (DOUBLONS)
-names(test)
-
-test[1:5,c(2,84)]
-test[1:5,c(1,85)]
-test[1:5,c(3,86)]
-
-# Supprimer les colonnes 84 (Date.1), 85 (Station.1) et 86 (Station2.1)
-test2=test[,-c(84:86)]
-dim(test2)
-# 192 x 83
-names(test2)
-# Accepter le résultat:
-Pok2001.2022 <- test2
-dim(Pok2001.2022)
-names(Pok2001.2022)
-str(Pok2001.2022)
-class(Pok2001.2022$Date)
-# Pok2001.2022$Date
-```
-
-```{r Variable_year, eval=F, include=F, message=F, warning=F}
-# Extraire les éléments d'année et en faire une variable "Year"   
-# https://stackoverflow.com/questions/36568070/extract-year-from-date
-Pok2001.2022$Year=as.factor(format(Pok2001.2022$Date, "%Y"))
-summary(Pok2001.2022$Year)
-class(Pok2001.2022$Year)
-table(Pok2001.2022$Year,Pok2001.2022$Station)
-
-```
-
-
-
-```{r Variable_Period,  eval=F, include=F, message=F, warning=F}
-# Créer une variable "Period" qui désigne la période 2001-2002 ou 2021-2022.
-Pok2001.2022$Period[Pok2001.2022$Year==2001] <- "2001-2002"
-Pok2001.2022$Period[Pok2001.2022$Year==2002] <- "2001-2002"
-Pok2001.2022$Period[Pok2001.2022$Year==2021] <- "2021-2022"
-Pok2001.2022$Period[Pok2001.2022$Year==2022] <- "2021-2022"
-Pok2001.2022$Period=as.factor(Pok2001.2022$Period)
-
-summary(Pok2001.2022$Period)
-```
-
-```{r Campagne,  eval=F, include=F}
-# Créer une variable CampagneNo
-table(Pok2001.2022$Date,Pok2001.2022$Year)
-# 2001
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2001-08-01"] <- 1
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2001-08-28"] <- 2
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2001-09-26"] <- 3
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2001-10-31"] <- 4
-# 2002
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2002-07-29"] <- 5
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2002-08-28"] <- 6
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2002-10-02"] <- 7
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2002-10-31"] <- 8
-# 2021
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2021-07-28"] <- 9
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2021-08-31"] <- 10
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2021-10-05"] <- 11
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2021-10-28"] <- 12
-# 2022
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2022-07-28"] <- 13
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2022-09-01"] <- 14
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2022-10-03"] <- 15
-Pok2001.2022$Campagne[Pok2001.2022$Date=="2022-11-01"] <- 16
-Pok2001.2022$Campagne
-
-```
-
-
-```{r Structure_tableau,  eval=F, include=F,  message=F, warning=F}
-# Comprendre la structure du tableau
-# Ce 06 juin on a maintenant pour chaque période 96 données enrégistrées.
-strwrap("La fonction ''table'' produit un tableau de contingence 
-        indiquant le nombre de rangées de données pour chaque combinaison:")
-table(Pok2001.2022$Date, Pok2001.2022$Year)
-table(Pok2001.2022$Station, Pok2001.2022$Year)
-table(Pok2001.2022$Date)
-```
-
-
- 
-```{r Niveaux,  eval=F, include=F, message=F, warning=F}
-levels(Pok2001.2022$Station2)
-levels(Pok2001.2022$Period)
-```
-
-
-```{r Charger_longueur, eval=F}
-# Charger les données de longueurs et d'ordre des tributaires
-# Nom du fichier original: 
-
-ordres=read.csv2("Pokemouche_longueurs_ordres.csv")
-dim(ordres) # 12 x 24
-ordres$Station=as.factor(ordres$Station)
-str(ordres)
-# Attention à ajouter des décimales dans Excel pour que les valeurs soient
-# considérées comme des valeurs numériques et non des entiers.
-describe(ordres)
-
-# Ordre1_m_amont: Longueur totale (m) de tous les cours d’eau d'ordre 1 en amont de la station
-# Somme_ordre_1-5: longueur totale (m) de tous les cours d'eau (ordre 1 à 5) en amont de la station
-# Dist_amont_station_m: le parcours entre la station et le point en amont le plus reculé
-#   tel que mesuré par AP avec qGIS.
-# Longueur_totale_m_ordre1: longueur totale (m) de tous les cours d'eau d'ordre 1 
-#    dans le sous-bassin versant
-
-```
-
-```{r Carte_stations, eval=F}
-# summary(ordres$Long)
-plot(ordres$Long, ordres$Lat, pch="", xlim=c(2590000, 2623000))
-text(ordres$Long, ordres$Lat,  ordres$Station)
-grid()
-
-```
-
-```{r Carte_stations2}
-plot(Pok2001.2022$Long, Pok2001.2022$Lat, pch="", xlim=c(2590000, 2623000))
-text(Pok2001.2022$Long, Pok2001.2022$Lat,  Pok2001.2022$Station)
-grid()
-
-```
-
-```{r relations_long}
-# Y a-t-il une tendance dans la longueur des chemins et la longitude?
-pairs(subset(Pok2001.2022, select=c(Long,
-  Ordre1_m_amont, Ordre2_m_amont, Ordre3_m_amont, Ordre4_m_amont, Ordre5_m_amont,
-  Somme_ordre_1.5)))
-
-```
-
-```{r relations_lat}
-# Y a-t-il une tendance dans la longueur des chemins et la latitude?
-pairs(subset(Pok2001.2022, select=c(Lat,
-  Ordre1_m_amont, Ordre2_m_amont, Ordre3_m_amont, Ordre4_m_amont, Ordre5_m_amont,
-  Somme_ordre_1.5)))
-```
-
-```{r longueur3_long}
-# Tendance à l'augmentation de la longueur des cours d'eau d'ordre 3
-# de l'ouest vers l'est (dans le sens du courant):
-plot(Pok2001.2022$Long, Pok2001.2022$Ordre3_m_amont, pch="", xlim=c(2590000, 2623000))
-text(Pok2001.2022$Long, Pok2001.2022$Ordre3_m_amont, Pok2001.2022$Station)
-
-```
-
-
-```{r Charger_caract_bv, eval=F}
-# 2024-06-20 à la maison
-# Charger le fichier que Manar a produit des caractéristiques des bassins versants
-# Nom du fichier original: 
-# https://liveumoncton-my.sharepoint.com/personal/alain_umoncton_ca/Documents
-# /Pokemouche_2021_CGERP_%C3%A9chantillonnage_20_ans/travail%20stage%20excel.xlsx
-caract.bv=read.csv2("caract_bv2.csv")
-# caract_bv2.csv est la version qui contient les valeurs pour Pok-03
-# après que j'eu signalé leurs absences à Manar.
-dim(caract.bv) 
-# 12 rangées x 319 colonnes
-# 12 x 321 au 2024-06-24
-str(caract.bv)
-caract.bv$Station=as.factor(caract.bv$Station)
-class(caract.bv$Station)
-levels(caract.bv$Station)
-```
-
-```{r graphiques_bv, eval=F}
-strwrap(" AP 2024-06-20
-Les 'couches' (fichiers géomatiques) disponibles du ministère du N.-B., sur le site geonb.ca
-incluent 'Forest' (F, forêt), 'Non Forest' (NF, tout ce qui n'est pas considéré comme de la forêt),
-Water (WA, plans d'eau) et Wetland (WL, terres humides). Ces quatre couches de polygones (surfaces)
-sont cencés couvrir tout le territoire et devraient être mutuellement exclusives.
-
-Comme nous avons rencontré des problèmes de chevauchement entre les couches F et NF, Émilie
-et Kyle nous a proposé de travailler avec les fichiers 'Landbase' qui combinent dans un seul
-fichier les quatre couches F, NF, WA, WL. Ce fichier Landbase contient une variable supplémentaire
-par rapport aux couches initiales: CAT qui désignent si l'élément (rangée du tableau attributaire)
-provient de F, NF, WL ou WA.
-        ")
-
-# Cibler les variables prioritaires et les placer dans un ordre commode:
-# names(caract.bv)
-caract.bv2=subset(caract.bv, 
- select=c(Station, sup_km2_sbv, sup_drainee_km2_sbv, longueur_route_km_sbv,
-          WA_km2_supdrainee_2020,  WL_km2_supdrainee_2020, NF_km2_supdrainee_2020, FO_km2_supdrainee_2020,
-          
-          AGR_km2_supdrainee_2020, IND_km2_supdrainee_2020, INF_km2_supdrainee_2020, SET_km2_supdrainee_2020,
-          REC_km2_supdrainee_2020, WIL_km2_supdrainee_2020,
-          
-          C_km2_supdrainee_2020, F_km2_supdrainee_2020, N_km2_supdrainee_2020, 
-          B_km2_supdrainee_2020, NULL_km2_supdrainee_2020,
-          
-          WA_km2_supdrainee_1990, WL_km2_supdrainee_1990, NF_km2_supdrainee_1990, FO_km2_supdrainee_1990,
-          
-          AGR_km2_supdrainee_1990, IND_km2_supdrainee_1990, INF_km2_supdrainee_1990, SET_km2_supdrainee_1990, 
-          # REC et WIL manquants en 1990
-          C_km2_supdrainee_1990, F_km2_supdrainee_1990, N_km2_supdrainee_1990, 
-          B_km2_supdrainee_1990, NULL_km2_supdrainee_1990))
-
-dim(caract.bv2) # 12 x 32
-# N'y a-t-il pas REC et WIL en 1990?
-
-plot(subset(caract.bv2, select=c(AGR_km2_supdrainee_2020,AGR_km2_supdrainee_1990)))
-grid()
-# Les superficies agricoles sont plus grandes en 2020 qu'en 1990...
-
-# La superficie qui draine vers la station en fonction de la superficie totale:
-plot(caract.bv2$sup_km2_sbv, caract.bv2$sup_drainee_km2_sbv,pch="", xlim=c(0,120))
-text(caract.bv2$sup_km2_sbv, caract.bv2$sup_drainee_km2_sbv,  caract.bv2$Station)
-
-caract.bv2$fraction.drainee=caract.bv2$sup_drainee_km2_sbv/caract.bv2$sup_km2_sbv 
-subset(caract.bv2, select=c(Station, sup_km2_sbv, sup_drainee_km2_sbv,fraction.drainee))
-summary(caract.bv2$fraction.drainee)
-# Les stations sont localisées généralement au point où environ 66% de la 
-# superficie du bassin est drainée (donc plutôt en aval, ce qui donne une 
-# bonne idée de l'influence du bassin)
-
-plot(caract.bv2$sup_km2_sbv, caract.bv2$longueur_route_km_sbv,pch="", xlim=c(0,120))
-text(caract.bv2$sup_km2_sbv, caract.bv2$longueur_route_km_sbv,  caract.bv2$Station)
-
-subset(caract.bv2, select=c(Station, longueur_route_km_sbv))
-
-plot(caract.bv2$sup_km2_sbv, caract.bv2$WL_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_km2_sbv, caract.bv2$WL_km2_supdrainee_2020,  caract.bv2$Station)
-
-# Couche Landbase, CAT=Forest
-plot(caract.bv2$sup_km2_sbv, caract.bv2$FO_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_km2_sbv, caract.bv2$FO_km2_supdrainee_2020,  caract.bv2$Station)
-
-# Couche Landbase, CAT=Non Forest
-plot(caract.bv2$sup_km2_sbv, caract.bv2$NF_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_km2_sbv, caract.bv2$NF_km2_supdrainee_2020,  caract.bv2$Station)
-
-# Couche Landbase, CAT=Non-Forest, variable=PLU (Primary Land Use)
-# AGR	Terre surtout utilisée pour cultiver des produits agricoles 
-#     et des produits non ligneux ainsi que les champs et pâturages
-# DND	Terre surtout utilisée pour l'entraînement et les exercices de la Défense nationale
-# IND	Terre surtout utilisée à des fins industrielles, notamment les installations de traitement
-# INF	Terre surtout utilisée pour le transport, les communications et/ou les services publics
-# REC	Terre surtout utilisée pour les activités sportives, récréatives, culturelles et/ou de divertissement
-# SET	Terre surtout utilisée à des fins résidentielles en milieu urbain ou rural
-# WIL	Terre où il est impossible de cultiver des arbres et qui ne subit pas l'incidence de l'activité humaine
-
-plot(caract.bv2$sup_drainee_km2_sbv, caract.bv2$AGR_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$AGR_km2_supdrainee_2020,  caract.bv2$Station)
-# Pour Pok-05, environ 4 km2 d'AGR pour une superficie de 20 km2, soit 1/5 ou 20%.
-
-plot(caract.bv2$sup_drainee_km2_sbv, caract.bv2$IND_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$IND_km2_supdrainee_2020,  caract.bv2$Station)
-# Pok-05 se démarque par des superficies plus grande d'industrie par rapport aux autres.
-
-plot(caract.bv2$sup_drainee_km2_sbv, caract.bv2$INF_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$INF_km2_supdrainee_2020,  caract.bv2$Station)
-
-plot(caract.bv2$sup_drainee_km2_sbv, caract.bv2$SET_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$SET_km2_supdrainee_2020,  caract.bv2$Station)
-
-plot(caract.bv2$sup_drainee_km2_sbv, caract.bv2$REC_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$REC_km2_supdrainee_2020,  caract.bv2$Station)
-# La variable REC contient beaucoup de zéros.
-
-plot(caract.bv2$sup_drainee_km2_sbv, caract.bv2$WIL_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$WIL_km2_supdrainee_2020,  caract.bv2$Station)
-# La variable WIL contient beaucoup de zéros.
-
-# Couche Landbase, CAT=Forest, variable ORIG
-# Origine du peuplement (B, C, F, N, W)
-# B	Burn		Brûlis
-# C	Clear cut (not partial cut)		Coupe à blanc (pas une coupe partielle)
-# F	Field		Champ
-# N	Natural Succession		Succession naturelle
-# W	Windthrow	2015	Chablis
-# M	Mining	2015	Mine
-# G	Windthrow	2015	Chablis
-
-plot(caract.bv2$sup_drainee_km2_sbv, caract.bv2$C_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$C_km2_supdrainee_2020,  caract.bv2$Station)
-# AP 2024-06-24 Comment expliquer que Pok-03 présente de grandes superficies coupées
-# alors que les bassin en amont en ont si peu
-
-plot(caract.bv2$sup_drainee_km2_sbv, caract.bv2$F_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$F_km2_supdrainee_2020,  caract.bv2$Station)
-
-plot(caract.bv2$sup_drainee_km2_sbv, caract.bv2$N_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$N_km2_supdrainee_2020,  caract.bv2$Station)
-
-plot(caract.bv2$sup_drainee_km2_sbv, caract.bv2$B_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$B_km2_supdrainee_2020,  caract.bv2$Station)
-
-plot(caract.bv2$sup_drainee_km2_sbv, caract.bv2$NULL_km2_supdrainee_2020, pch="", xlim=c(0,120))
-text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$NULL_km2_supdrainee_2020,  caract.bv2$Station)
-# Vérifier avec Emily ou Kyle ce que contient NULL
-
-
-```
-
-```{r Merge1, eval=F}
-# Joindre le tableau des longueurs à celui des caractéristiques territoriales
-
-dim(ordres) # 12 x 24
-dim(caract.bv2) # 12 x 33
-
-summary(ordres$Station)
-summary(caract.bv2$Station)
-
-bv1=merge(ordres,caract.bv2, by="Station", all=TRUE)
-dim(bv1) # 12 x 56
-24+33-1
-
-```
-
-```{r Relations_ordre_caract, eval=F}
-# names(bv1)
-summary(bv1$sup_km2_sbv)
-
-subset(bv1, select=c(Station, sup_km2_sbv, Longueur_totale_m_sous_bassin))
-
-plot(bv1$sup_km2_sbv, bv1$Longueur_totale_m_sous_bassin, pch="", xlim=c(20,40))
-text(bv1$sup_km2_sbv, bv1$Longueur_totale_m_sous_bassin,  bv1$Station)
-# Pok-07 est plus sec (moins bien irrigué) que les autres bassins 
-# relativement à la taille du bassin (comme Pok-04).
-# TODO Calculer les valeurs de longueurs pour POK3: 
-# Manar s'en occupe.
-
-```
-
-
-```{r Merge2, eval=F}
-
-# Joindre Pok2001.2022 (données de chimie) à bv1 (données de territoire
-# comprenant les longueurs, ordres et couvertures)
-
-dim(Pok2001.2022) 
-# 192 x 86
-class(Pok2001.2022$Station)
-levels(Pok2001.2022$Station)
-summary(Pok2001.2022$Station)
-
-dim(bv1)
-# 12 x 56
-class(bv1$Station)
-levels(bv1$Station)
-summary(bv1$Station)
-
-chimie.bv=merge(Pok2001.2022, bv1, by="Station", all=TRUE)
-dim(chimie.bv) # 192 x 141
-86 + 56 - 1
-
-# Accepter le résultat:
-Pok2001.2022 <- chimie.bv
-dim(Pok2001.2022) # 192 x 405
-
-# Supprimer les objets devenus inutiles
-
-rm(ordres, caract.bv, caract.bv2, bv1, chimie.bv, test, test2)
-
-```
-
-```{r charger_meteo, eval=F}
-strwrap("Charger le fichier des données météo de la station Bas-Caraquet
-        que Manar a préparé.")
-meteo=read.csv2("./meteo_Bac-Caraquet.csv")
-dim(meteo)
-# 16 x 57 le 2024-06-25
-str(meteo)
-summary(meteo)
-meteo$Date<-as.Date(meteo$Date)
-class(meteo$Date)
-summary(meteo$Date)
-# skim(meteo)
-# DataExplorer::create_report(meteo)
-# skim et DataExplorer ne donnent rien de plus que "summary" ou "str"...
-
-```
-
-```{r meteo_gr_precip, eval=F}
-barplot(rbind(meteo$precip.tot.2jours,
-              meteo$precip.tot.7jours, 
-              meteo$precip.tot.14jours,
-              meteo$precip.tot.21jours), 
-        col=c(1,2,3,4),
-        beside=T,
-        names.arg=meteo$Date,
-        las=3,
-        ylab="Précipitations totales (mm)",
-        main="Précipitations cumulées 2, 7, 14 et 21 jours avant l'échantillonnage")
-# col = c("darkblue", "red")
-
-
-```
-
-```{r meteo_gr_temp01, eval=F}
-barplot(rbind(meteo$temp_min_C, meteo$temp_moy_C, meteo$temp_max_C), 
-        col=c(1,2,3),
-        beside=T,
-        names.arg=meteo$Date,
-        las=3,
-        ylab="Température de l'air (°C)",
-        main="Températures quotidiennes à Bas-Caraquet, min, moyenne, max")
-```
-
-
-```{r meteo_gr_temp02, eval=F}
-barplot(rbind(meteo$Tmax2jours, meteo$Tmax4jours, meteo$Tmax7jours), 
-        col=c(1,2,3),
-        beside=T,
-        names.arg=meteo$Date,
-        las=3,
-        ylab="Température de l'air (°C)",
-        main="Moyennes des températures maximales sur 2, 4 et 7 jours avant l'échantillonnage")
-strwrap("Manar a vérifié le 2024-06-26 sur le site d'Environnement Canada et a
-        constaté que les données de température min max moy sont manquantes pour
-        cette seule journée du 2022-07-28")
-
-```
-
-```{r merge03, eval=F}
-
-# Joindre les données de météo au tableau de chimie et territoire
-
-
-# subset(Pok2001.2022, is.na(Date),select=c("Date","Station"))
-# Il ne devrait pas manquer de dates
-
-summary(Pok2001.2022$Date)
-class(Pok2001.2022$Date)
-dim(Pok2001.2022)
-# 192 x 141
-
-summary(meteo$Date)
-class(meteo$Date)
-dim(meteo) # 16 x 57
-
-chimie.bv.meteo=merge(Pok2001.2022, meteo, by="Date", all=TRUE)
-
-dim(chimie.bv.meteo) 
-# 192 x 197 
-141 + 57 -1
-
-
-# Accepter le résultat
-Pok2001.2022 <- chimie.bv.meteo
-dim(Pok2001.2022)
-# 192 x 197
-# Sauvegarder le tableau dans le format RData
-# save(Pok2001.2022, file="Pok2001.2022.RData")
-# file.info("Pok2001.2022.RData")
-# 28,8 Ko
-```
-
 
 ```{r Sous_groupes, tributaires, echo=F, eval=F, warning=F}
 # Créer des sous-groupes par tributaire (à complèté si néccessaire)
@@ -807,6 +173,7 @@ summary(y1$Temp_eau_YSI_degC)
 plot(0, xlim = c(0, 30),  axes=FALSE, type = "n", xlab = "", ylab = "")
 axis(3, at = y1$Temp_eau_YSI_degC, labels = y1$Temp_eau_YSI_degC)
 axis(1, at = y1$Temp_eau_YSI_degC, labels = y1$Station, las=3)
+
 # dev.off()
 
 # On peut dire que les station Pok-05 et Pok-04 se ressemblent.
@@ -1091,115 +458,15 @@ ggplot(aes(y=Temp_eau_YSI_degC, x=Station2, fill=Period), data=Pok2001.2022) + g
 
 Commentaire:
 
-Il n'y a pas de différente systématique de température entre les deux périodes. Certaines stations ont été échantillonnées à des periodes chaudes comme la station 11 (Maltempec) et à des periodes froides comme la station 09 (Trout).
+Il n'y a pas de grande différente de température entre les deux périodes. Certaines stations ont été échantillonnées à des periodes chaudes comme la station 11 (Maltempec) et à des periodes froides comme la station 09 (Trout).
 
 
-Les températures en 2021-2022 indique une une plus grande variabilité par rapport à celle de la période 2001_2002.
+Les températures en 2021-2022 indique une une plus grande variabilité par rapport à celle de la période 2001_2002. (a cause de la taille des boîtes)
 
-Des moustaches plus longues indiquent une plus grande variabilité dans les données.
+Les moustaches son plus longues et présent sur tout les stations en 2001_2002 (période 1) que sur les stations en 2021_2022 (période 2). Cela indique une grande variabilité dans les données de la période 1.
 
-Les moustaches son plus grande et présent sur tout les stations en 2001_2002 qu'en 2021_2022 ce qui indique une grande variabilité.
-
-
-On observe plus de valeurs abérrantes et uniqument sur les stations en 2001_2002. Ce qui indique des anomalies ou une variabilité extrême sur les stations 02, 03, 08, 12, 11 et 07.
+On observe plus de valeurs aberrantes et uniquement sur les stations en 2001_2002. Ce qui indique des anomalies ou une variabilité extrême sur les stations 01, 03, 08, 11 et 07.
  
-
-
-
-
-### Graphique de la variation de la Température sur chacun des station en 2001
-
-```{r, eval=F, echo=F, message=F, warning=F}
-Tempg2001=ggplot(aes(y=Temp_eau_YSI_degC, x=Date, group=Station2, shape=Station2, color=Station2 ), data=Year2001) + scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
-  geom_line() + 
-  geom_point() +
-  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
-  ggtitle("2001")
-Tempg2001
-```
-Commentaire du graphique 2001:
-
-On observe une baisse de la température de la fin de la saison d'été jusqu'a la fin de l'automne et ce à toutes les stations. Les température ont variés entre 25 et 4 dégré. La plus grande température est observé à la station 11 sur tout la saison d'analyse. À la station 4 la température était la 3eme station la plus basse à la fin de l'été et à la fin de l'automne elle est devenu la température la plus élévé avec la station 11 Contrairement au autre sts, la temp à la st 11 était la plus faible à la fin de l'été et a augmenté durant la saison avant de baisser à la fin de l'automne. La temp sur tous les stations ont baissé de 60%
-
-
-### Graphique de la variation de la Températures sur chacun des stations en 2002
-```{r, eval=F, echo=F, message=F, warning=F}
-Tempg2002=ggplot(aes(y=Temp_eau_YSI_degC, x=Date, group=Station2, shape=Station2, color=Station2 ), data=Year2002) + scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
-  geom_line() + 
-  geom_point() +
-  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
-  ggtitle("2002")
-Tempg2002
-```
-
-Commentaire du graphique 2002:
-
-En 2002 la temp est compris entre 4 et 15 dégré de la fin de l'été à la fin de l'automne. La station 2 detient la plus grand Temp a la fin de l'été avant de baissé à la fin de l'automne pour laisser place à la plus grand temp à la station 4 qui avait la plus faible temp sur tous les stations à la fin de l'été. La temp sur tous les stations ont baissé de 100%
-
-
-### Graphique de la variation de la Température sur chacun des stations en 2021
-
-
-```{r, eval=F, echo=F, message=F, warning=F}
-Tempg2021=ggplot(aes(y=Temp_eau_YSI_degC, x=Date, group=Station2, shape=Station2, color=Station2 ), data=Year2021) + scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
-  geom_line() + 
-  geom_point() +
-  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
-  ggtitle("2021")
-Tempg2021
-```
-
-Commentaire du graphique 2021:
-
-La temp a baisser sur tout les stations. la station 4 et 2 à la fin de l'été ont la plus faible temp mais c'est les stations 3 et 6 qui était parmis les plus grande temp à la fin de l'été qui on baissé et sont devenir les plus basses temp de tout les station a la fin de l'automne. en 2021 la temp est comprise entre 6 et 16 dégré. La temp sur tous les stations ont baissé de 85%
-
-
-### Graphique de la variation de la Température sur chacun des stations en 2022
-
-```{r, eval=F, echo=F, message=F, warning=F}
-Tempg2022=ggplot(aes(y=Temp_eau_YSI_degC, x=Date, group=Station2, shape=Station2, color=Station2 ), data=Year2022) + scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
-  geom_line() + 
-  geom_point() +
-  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
-  ggtitle("2022")
-#  date_minor_breaks = "1 week",
-Tempg2022
-```
-
-Commentaire du graphique:
-
-La temp a baissé sur tous les stations commes dans tout les autres années. la temp a varié entre 4 et 17 dégré. La temp sur tout les stations ont baissé de 80%
-
-
-### Graphique de la variation de la Température sur chacun des stations entre period: 2001_2002
-
-```{r, eval=F, echo=F, message=F, warning=F}
-TempPeriod01=ggplot(aes(y=Temp_eau_YSI_degC, x=Date, group=Station2, shape=Station2, color=Station2 ), data=Period1) + scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
-  geom_line() + 
-  geom_point() +
-  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
-  ggtitle("2001_2002")
-TempPeriod01
-```
-
-Commentaire du graphique 2001_2002:
-
-La temp a baisser au meme niveau que la temp de l'air d'aout en novembre pour les deux années. À la station 4 les temp etait les plus faible dans les trois premiere prélevement avant la fin de l'automne pour etre la plus grands de tout les autre station a la fin de chaque automne lors des deux années.
-
-
-### Graphique de la variation de la Température sur chacun des stations entre period: 2021_2022
-
-```{r, eval=F, echo=F, message=F, warning=F}
-TempPeriod02=ggplot(aes(y=Temp_eau_YSI_degC, x=Date, group=Station2, shape=Station2, color=Station2 ), data=Period2) + scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
-  geom_line() + 
-  geom_point() +
-  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
-  ggtitle("2021_2022")
-TempPeriod02
-```
-
-Commentaire du graphique 2021_2022:
-La temp a baissé aucours des deux saisons. la plus basse temp a été observé  en 2022 et la plus haute en 2021. En 2022 la temp a baisé de 11% par rapport a la temp en 2021. En 2021 les temp ont varié entre 17,5 et 6. En 2022 entre 4 et 16.
 
 
 ```{r, echo=F, message=F, warning=F, include=F}
@@ -1234,21 +501,24 @@ Tempg2001_2022
 
 Commentaire du graphique des quatre années :
 
-La différence de température est systématique sur les deux périodes :
+Certaines stations montrent des pics à des dates (numéros de campagnes) similaires, Cela suggère une possibilité de corrélation ou des facteurs communs qui affectent ces mesures.
 
-La température a plus baissé le 1er novembre 2001 et 2002 que les températures du 1er novembre 2021 et 2022, et ce sur toutes les stations.
+Le pic de baisse de la température à la période une est plus basse que le pic de basse observé en ces mêmes dates (numéro de campagne) à la période 2.
 
-Les stations 11 (Malt) et 12 (Dempsey) ont les températures les plus élevées le 1er août 2001 et les années suivantes, la température n'a plus augmenté jusqu'à ce niveau.
+À quoi est due la baisse de température à la période 1 pour que la température baisse moins à la périodes 2 à la même date.
 
-La température en novembre 2001 et 2002 a baissé plus que les températures de novembre 2021 et 2022.
+Les stations à la tête du bassin ont les basse température à la période 2.
+
+Les stations 11 (Malt) et 12 (Dempsey) ont les températures les plus élevées au cours des deux période d'étude (le 1er août 2001). 
+
 
 La station 08 (Sewell) présente la température la plus basse dans la période 01 et la station 02 (Suggary) dans la période 02.
 
-Les températures ont baissé en pic lors de la période 01 et de manière légèrement constante dans la période 02.
 
 Les questions auxquelles on peut répondre :
 
 La température qui a baissé en pics lors de la période 01 a-t-elle influencé certains paramètres ? Ont-elles été causées par des facteurs météorologiques, climatiques ou des causes territoriales à prendre en compte ?
+
 
 Remarque :
 
@@ -1274,7 +544,17 @@ summary(Pok2001.2022$Oxyg_dissous_YSI_mg_L)
 
 Commentaire:
 
-La teneur en oxygène dissous de la period 2001-2002 est généralement plus basse que la teneur en oxygène dissou de la periode 2021-2022.
+La teneur en oxygène dissous de la période 1 (2001-2002) est généralement plus basse que la teneur en oxygène dissous de la période 2 (2021-2022) et ce sur toute les stations.
+
+La teneur en oxygène dissous indique une plus grande variabilité à la période 2 (2021-2022) sur les station à la tête du bassin (allant de la station 4 à 12). Au pied ( l'exutoire) du bassin (allant de la station 10 à 05)la teneur en oxygène indique une plus grande variabilité à la période 1 (2001-2002).(la taille des box plots)
+
+Les moustaches son plus longues et présent sur tout les stations au cours des deux période 2. Cela indique une grande variabilité dans les données de la période 1 et 2.
+
+On observe les valeurs aberrantes uniquement sur les stations au pied de la rivière.
+
+
+
+
 
 La norme canadienne des recommandations du CCME (Conseil canadien des ministres de l’Environnement) dit que pour:
 
@@ -1429,12 +709,15 @@ O2g2001_2022b=ggplot(aes(y=Oxyg_dissous_YSI_mg_L, x=Campagne), data=Pok2001.2022
   geom_line(aes(color=Station2, linetype=Station2)) + 
   geom_point(aes(color=Station2, shape=Station2)) +
    theme_bw()
+
 O2g2001_2022b
 
 ```
 
 
 Commentaire du graphique des quatre années :
+
+La teneur en oxygène dissous indique un grand pic en baisse sur tous les stations à la 
 
 La teneur en oxygène dissous a considérablement baissé sur toutes les stations en octobre 2002. L'eau est très faiblement oxygénée sur toutes les stations en octobre 2002.
 
@@ -3025,7 +2308,7 @@ Question :
 ```{r, echo=F, message=F, warning=F}
 
 
-ggplot(aes(y=Nitrate_as_N_mg_L, x=Station2, fill=Period), data=sub1ecoli) + 
+ggplot(aes(y=Nitrate_as_N_mg_L, x=Station2, fill=Period), data=Pok2001.2022) + 
   geom_boxplot() +
   theme(axis.text.x = element_text(angle = 45, hjust=1),
         axis.text=element_text(size=12),
@@ -3238,6 +2521,1292 @@ En général, les plus faibles concentrations ont été observées en 2001-2002.
 La concentration la plus basse est celle à la station 07.
 
 Les stations 05 et 10 sont un peu plus proches de l'autoroute, mais leurs berges sont très humides et sont des tourbières avec des plantes qui poussent aux alentours (je ne connais pas le nom des plantes, c'est pour cela que je ne les ai pas citées. 
+
+
+#Analyse du deuxième objectifs
+
+```{r, echo=f}
+names (Pok2001.2022) 
+
+
+```
+
+```{r, echo=F, message=F, warning=F}
+
+
+ggplot(aes(y=sup_drainee_km2_sbv, x=Station2, fill=Period), data=Pok2001.2022) + 
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),
+        axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold")) +
+  ggtitle("Variation  des Nitrates à 20 ans entre les deux Period")
+
+```
+```{r}
+# une régression linéaire pour analyser la relation entre la dureté de l'eau 
+#(mesurée en mg/L de CaCO3) et la station de mesure.
+koko <- lm(Pok2001.2022$sup_drainee_km2_sbv ~ Pok2001.2022$sup_drainee_km2_sbv)
+summary(koko)
+
+anova(koko)
+
+# Effectuer une analyse de variance pour quantifier la contribution des variables explicatives
+anova_model <- aov(sup_drainee_km2_sbv ~ NF_km2_supdrainee_1990 + NF_km2_supdrainee_2020, data = Pok2001.2022)
+summary(anova_model)
+
+```
+
+```{r, eval=F, echo=F, message=F, warning=F}
+Ecolig2002=ggplot(aes(y=longueur_route_km_sbv, x=Date, 
+                group=Station2, shape=Station2, color=Station2), data=Year2002) + 
+  scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2002") +
+  theme_bw()
+Ecolig2002
+
+``` 
+
+```{r, echo=F}
+
+Drainageg2001_2022=ggplot(aes(y=NF_km2_supdrainee_2020 , x=NF_km2_supdrainee_1990), data=Pok2001.2022) + 
+  scale_shape_manual(values=1:nlevels(Pok2001.2022$Station2)) +
+  geom_line(aes(color=Station2, linetype=Station2)) + 
+  geom_point(aes(color=Station2, shape=Station2)) +
+   theme_bw()
+Drainageg2001_2022
+
+```
+
+
+```{r}
+
+#tapply(Pok2001.2022$sup_km2_sbv, Pok2001.2022$Period, summary)
+plot(Pok2001.2022$sup_km2_sbv~Pok2001.2022$sup_drainee_km2_sbv)
+cor.test(Pok2001.2022$sup_km2_sbv, Pok2001.2022$sup_drainee_km2_sbv,
+method=c('pearson'))
+
+
+```
+
+# Code Alain ce 03/07/2024
+
+```{r ordre2}
+# 2024-07-03
+# Créer un sous-tabeau avec les 12 stations (une seule date)
+Pok0=subset(Pok2001.2022, Date=="2001-08-01",
+       select=c(Station, Station2, Date, Long, Ordre, Dist_amont_station_m, 
+                Somme_ordre_1.5))
+dim(Pok0)
+```
+ 
+```{r ordonner_long}
+# 2024-07-03
+# Voici comment se suivent les stations de l'ouest vers l'est:
+Pok1=Pok0[order(Pok0$Long),]
+plot(Pok1$Long, pchr="")
+text(Pok1$Long,, Pok1$Station)
+ 
+ 
+```
+ 
+```{r ordonner_parcours_long}
+# 2024-07-03
+# Ordonner selon le parcours le plus long en amont de la station
+ 
+Pok2=Pok0[order(Pok0$Dist_amont_station_m),]
+plot(Pok2$Dist_amont_station_m, pch="")
+text(Pok2$Dist_amont_station_m,, Pok2$Station)
+ 
+```
+ 
+```{r ordonner_somme_parcours_amont}
+# 2024-07-03
+# Ordonner selon la somme des longueurs en amont
+ 
+Pok3=Pok0[order(Pok0$Somme_ordre_1.5),]
+plot(Pok3$Somme_ordre_1.5, pch="")
+text(Pok3$Somme_ordre_1.5,, Pok3$Station)
+ 
+```
+ 
+ 
+```{r analyses_chimie_bv_meteo}
+ 
+strwrap("2024-06-26 Le tableau complet des données de chimie, 
+        caractéristiques territoriales et météo est enfin assemblé
+        et prêt à être analysé.")
+
+# Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+  
+  
+scatterplot(Pok2001.2022$precip.tot.7jours,Pok2001.2022$Colour_TCU,   
+              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+ 
+scatterplot(Pok2001.2022$Somme_ordre_1.5,Pok2001.2022$Colour_TCU,   
+              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+
+scatterplot(Colour_TCU ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ 
+ 
+ggplot(Pok2001.2022,aes(x=Temp_eau_YSI_degC,y=Conductivity_microS_cm)) +
+geom_point()
+ 
+sub2=subset(Pok2001.2022,!is.na(Temp_eau_YSI_degC),
+            select=c(Ordre1_m_amont, Ordre2_m_amont,Ordre3_m_amont,
+                    Temp_eau_YSI_degC, Conductivity_microS_cm, pH_units,SS_mg_L))
+ 
+dim(sub2)
+pairs(sub2)
+
+#names(Pok2001.2022)
+ 
+```
+
+# Gaël essaie avec les données
+
+```{r analyses_chimie_bv_meteo}
+ 
+strwrap("2024-07-03 : Analyse de relation entre les variables")
+ 
+ 
+scatterplot(Pok2001.2022$precip.tot.7jours,Pok2001.2022$Colour_TCU,   
+              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+ 
+scatterplot(Pok2001.2022$Somme_ordre_1.5,Pok2001.2022$Colour_TCU,   
+              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=T)
+
+scatterplot(Colour_TCU ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ 
+ 
+ggplot(Pok2001.2022,aes(x=Temp_eau_YSI_degC,y=Conductivity_microS_cm)) +
+geom_point()
+ 
+sub2=subset(Pok2001.2022,!is.na(Temp_eau_YSI_degC),
+            select=c(Ordre1_m_amont, Ordre2_m_amont,Ordre3_m_amont,
+                    Temp_eau_YSI_degC, Conductivity_microS_cm, pH_units,SS_mg_L))
+ 
+dim(sub2)
+pairs(sub2)
+ 
+```
+
+# ordre
+
+```{r analyses_ordre_vs_Paramètres}
+ 
+strwrap("2024-06-26 relaction entre les ordres des rivières et les paramètres que j'analyse")
+
+ # Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+  
+ scatterplot(Ordre ~ Temp_eau_YSI_degC | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Ordre ~ Oxyg_dissous_YSI_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Ordre ~ Conductivity_microS_cm | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Ordre ~ pH_units | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Ordre ~ Turbidity_NTU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Ordre ~ Colour_TCU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Ordre ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Ordre ~ E.coli_MPN_100.mL | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Ordre ~ Phosphorus_Total_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Ordre ~ Nitrate_as_N_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+
+#scatterplot(Pok2001.2022$Ordre,Pok2001.2022$Colour_TCU,   
+#              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+
+ 
+
+```
+
+# Somme des ordres de tous les ordres
+
+```{r analyses_Somme_ordre_1.5_vs_Paramètres}
+ 
+strwrap("2024-06-26 relaction entre la somme de tous les ordres des rivières et les paramètres que j'analyse")
+
+ # Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+  
+ scatterplot(Somme_ordre_1.5 ~ Temp_eau_YSI_degC | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Somme_ordre_1.5 ~ Oxyg_dissous_YSI_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Somme_ordre_1.5 ~ Conductivity_microS_cm | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Somme_ordre_1.5 ~ pH_units | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Somme_ordre_1.5 ~ Turbidity_NTU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Somme_ordre_1.5 ~ Colour_TCU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Somme_ordre_1.5 ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Somme_ordre_1.5 ~ E.coli_MPN_100.mL | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Somme_ordre_1.5 ~ Phosphorus_Total_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Somme_ordre_1.5 ~ Nitrate_as_N_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+
+#scatterplot(Pok2001.2022$Somme_ordre_1.5,Pok2001.2022$Colour_TCU,   
+#              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+
+ 
+
+```
+
+
+# la longueur totale du sous bassin
+
+```{r analyses_Longueur_totale_m_sous_bassin_vs_Paramètres}
+ 
+strwrap("2024-06-26 relaction entre la longueur totale du sous bassin et les paramètres que j'analyse")
+
+ # Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+  
+ scatterplot(Longueur_totale_m_sous_bassin ~ Temp_eau_YSI_degC | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Longueur_totale_m_sous_bassin ~ Oxyg_dissous_YSI_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Longueur_totale_m_sous_bassin ~ Conductivity_microS_cm | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Longueur_totale_m_sous_bassin ~ pH_units | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Longueur_totale_m_sous_bassin ~ Turbidity_NTU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Longueur_totale_m_sous_bassin ~ Colour_TCU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Longueur_totale_m_sous_bassin ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Longueur_totale_m_sous_bassin ~ E.coli_MPN_100.mL | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Longueur_totale_m_sous_bassin ~ Phosphorus_Total_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Longueur_totale_m_sous_bassin ~ Nitrate_as_N_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+
+#scatterplot(Pok2001.2022$Longueur_totale_m_sous_bassin,Pok2001.2022$Colour_TCU,   
+#              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+
+ 
+
+```
+
+# la superficie du sous bassin
+
+```{r analyses_la superficie du sous bassin_vs_Paramètres}
+ 
+strwrap("2024-06-26 relaction entre la superficie du sous bassin et les paramètres que j'analyse")
+
+ # Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+  
+ scatterplot(sup_km2_sbv ~ Temp_eau_YSI_degC | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(sup_km2_sbv ~ Oxyg_dissous_YSI_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(sup_km2_sbv ~ Conductivity_microS_cm | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(sup_km2_sbv ~ pH_units | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(sup_km2_sbv ~ Turbidity_NTU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(sup_km2_sbv ~ Colour_TCU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(sup_km2_sbv ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(sup_km2_sbv ~ E.coli_MPN_100.mL | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(sup_km2_sbv ~ Phosphorus_Total_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(sup_km2_sbv ~ Nitrate_as_N_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+
+#scatterplot(Pok2001.2022$sup_km2_sbv,Pok2001.2022$Colour_TCU,   
+#              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+
+ 
+
+```
+
+# la superficie drainée du sous bassin
+
+```{r analyses_la superficie drainée du sous bassin_vs_Paramètres}
+ 
+strwrap("2024-06-26 relaction entre la superficie drainée du sous bassin et les paramètres que j'analyse")
+
+ # Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+  
+ scatterplot(sup_drainee_km2_sbv ~ Temp_eau_YSI_degC | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(sup_drainee_km2_sbv ~ Oxyg_dissous_YSI_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(sup_drainee_km2_sbv ~ Conductivity_microS_cm | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(sup_drainee_km2_sbv ~ pH_units | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(sup_drainee_km2_sbv ~ Turbidity_NTU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(sup_drainee_km2_sbv ~ Colour_TCU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(sup_drainee_km2_sbv ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(sup_drainee_km2_sbv ~ E.coli_MPN_100.mL | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(sup_drainee_km2_sbv ~ Phosphorus_Total_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(sup_drainee_km2_sbv ~ Nitrate_as_N_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+
+#scatterplot(Pok2001.2022$sup_drainee_km2_sbv,Pok2001.2022$Colour_TCU,   
+#              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+
+ 
+
+```
+
+# la longueur de route dans le sous bassin versant 
+
+```{r analyses_la superficie drainée du sous bassin_vs_Paramètres}
+ 
+strwrap("2024-06-26 relaction entre la longueur de route dans le sous bassin versant et les paramètres que j'analyse")
+
+ # Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+  
+ scatterplot(longueur_route_km_sbv ~ Temp_eau_YSI_degC | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(longueur_route_km_sbv ~ Oxyg_dissous_YSI_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(longueur_route_km_sbv ~ Conductivity_microS_cm | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(longueur_route_km_sbv ~ pH_units | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(longueur_route_km_sbv ~ Turbidity_NTU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(longueur_route_km_sbv ~ Colour_TCU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(longueur_route_km_sbv ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(longueur_route_km_sbv ~ E.coli_MPN_100.mL | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(longueur_route_km_sbv ~ Phosphorus_Total_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(longueur_route_km_sbv ~ Nitrate_as_N_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+
+#scatterplot(Pok2001.2022$longueur_route_km_sbv,Pok2001.2022$Colour_TCU,   
+#              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+
+ 
+
+```
+
+# la surperficie non forêt drainée en 1990 
+
+```{r analyses_la surperficie non forêt drainée_vs_Paramètres}
+ 
+strwrap("2024-06-26 relaction entre la surperficie non forêt drainée et les paramètres que j'analyse")
+
+ # Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+  
+ 
+ scatterplot( NF_km2_supdrainee_1990 ~ Temp_eau_YSI_degC | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(NF_km2_supdrainee_1990 ~ Oxyg_dissous_YSI_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(NF_km2_supdrainee_1990 ~ Conductivity_microS_cm | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(NF_km2_supdrainee_1990 ~ pH_units | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(NF_km2_supdrainee_1990 ~ Turbidity_NTU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(NF_km2_supdrainee_1990 ~ Colour_TCU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(NF_km2_supdrainee_1990 ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(NF_km2_supdrainee_1990 ~ E.coli_MPN_100.mL | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(NF_km2_supdrainee_1990 ~ Phosphorus_Total_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(NF_km2_supdrainee_1990 ~ Nitrate_as_N_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+
+#scatterplot(Pok2001.2022$NF_km2_supdrainee_1990,Pok2001.2022$Colour_TCU,   
+#              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+
+ 
+
+```
+
+# la surperficie non forêt drainée en 2020 
+
+```{r analyses_la surperficie non forêt drainée_vs_Paramètres}
+ 
+strwrap("2024-06-26 relaction entre la surperficie non forêt drainée et les paramètres que j'analyse")
+
+ # Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+  
+
+ scatterplot( NF_km2_supdrainee_2020 ~ Temp_eau_YSI_degC | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(NF_km2_supdrainee_2020 ~ Oxyg_dissous_YSI_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(NF_km2_supdrainee_2020 ~ Conductivity_microS_cm | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(NF_km2_supdrainee_2020 ~ pH_units | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(NF_km2_supdrainee_2020 ~ Turbidity_NTU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(NF_km2_supdrainee_2020 ~ Colour_TCU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(NF_km2_supdrainee_2020 ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(NF_km2_supdrainee_2020 ~ E.coli_MPN_100.mL | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(NF_km2_supdrainee_2020 ~ Phosphorus_Total_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(NF_km2_supdrainee_2020 ~ Nitrate_as_N_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+
+#scatterplot(Pok2001.2022$NF_km2_supdrainee_2020,Pok2001.2022$Colour_TCU,   
+#              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+
+ 
+```
+
+
+# la surperficie forêt drainée en 1990 
+
+```{r analyses_la surperficie forêt drainée_vs_Paramètres}
+ 
+strwrap("2024-06-26 relaction entre la surperficie forêt drainée et les paramètres que j'analyse")
+
+ # Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+  
+ 
+ scatterplot( FO_km2_supdrainee_1990 ~ Temp_eau_YSI_degC | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(FO_km2_supdrainee_1990 ~ Oxyg_dissous_YSI_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(FO_km2_supdrainee_1990 ~ Conductivity_microS_cm | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(FO_km2_supdrainee_1990 ~ pH_units | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(FO_km2_supdrainee_1990 ~ Turbidity_NTU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(FO_km2_supdrainee_1990 ~ Colour_TCU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(FO_km2_supdrainee_1990 ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(FO_km2_supdrainee_1990 ~ E.coli_MPN_100.mL | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(FO_km2_supdrainee_1990 ~ Phosphorus_Total_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(FO_km2_supdrainee_1990 ~ Nitrate_as_N_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+
+#scatterplot(Pok2001.2022$FO_km2_supdrainee_1990,Pok2001.2022$Colour_TCU,   
+#              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+
+ 
+
+```
+
+# la surperficie forêt drainée en 2020 
+
+```{r analyses_la surperficie forêt drainée_vs_Paramètres}
+ 
+strwrap("2024-06-26 relaction entre la surperficie forêt drainée et les paramètres que j'analyse")
+
+ # Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+  
+
+ scatterplot( FO_km2_supdrainee_2020 ~ Temp_eau_YSI_degC | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(FO_km2_supdrainee_2020 ~ Oxyg_dissous_YSI_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(FO_km2_supdrainee_2020 ~ Conductivity_microS_cm | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(FO_km2_supdrainee_2020 ~ pH_units | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(FO_km2_supdrainee_2020 ~ Turbidity_NTU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(FO_km2_supdrainee_2020 ~ Colour_TCU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(FO_km2_supdrainee_2020 ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(FO_km2_supdrainee_2020 ~ E.coli_MPN_100.mL | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(FO_km2_supdrainee_2020 ~ Phosphorus_Total_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(FO_km2_supdrainee_2020 ~ Nitrate_as_N_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+
+#scatterplot(Pok2001.2022$FO_km2_supdrainee_2020,Pok2001.2022$Colour_TCU,   
+#              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+
+ 
+```
+
+# les terres utilisées pour l'agriculture, pdt ligneux, champs et pâturage en 1990 
+
+```{r analyses_l'agriculture, pdt ligneux, champs et pâturage_vs_Paramètres}
+ 
+strwrap("2024-06-26 relaction entre l'agriculture, les pdts ligneux, les champs, les  pâturage et les paramètres que j'analyse")
+
+ # Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+
+ # Pok2001.2022$pct AGR_km2_supdrainee_1990
+ 
+ scatterplot( AGR_km2_supdrainee_1990 ~ Temp_eau_YSI_degC | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(AGR_km2_supdrainee_1990 ~ Oxyg_dissous_YSI_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(Conductivity_microS_cm ~ AGR_km2_supdrainee_1990 | Period,  
+            data=Pok2001.2022, regLine=F, smooth=F, by.groups=T)
+ 
+ scatterplot(AGR_km2_supdrainee_1990 ~ pH_units | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(AGR_km2_supdrainee_1990 ~ Turbidity_NTU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(AGR_km2_supdrainee_1990 ~ Colour_TCU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(AGR_km2_supdrainee_1990 ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(AGR_km2_supdrainee_1990 ~ E.coli_MPN_100.mL | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(AGR_km2_supdrainee_1990 ~ Phosphorus_Total_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(AGR_km2_supdrainee_1990 ~ Nitrate_as_N_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+
+#scatterplot(Pok2001.2022$AGR_km2_supdrainee_1990,Pok2001.2022$Colour_TCU,   
+#              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+
+ 
+
+```
+
+# les terres utilisées pour l'agriculture, pdt ligneux, champs et pâturage en 2020 
+
+```{r analyses_lagriculture, les pdts ligneux, les champs, les  pâturage_vs_Paramètres}
+ 
+strwrap("2024-06-26 relaction entre l'agriculture, les pdts ligneux, les champs, les  pâturage et les paramètres que j'analyse")
+
+ # Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+  
+
+ scatterplot( AGR_km2_supdrainee_2020 ~ Temp_eau_YSI_degC | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(AGR_km2_supdrainee_2020 ~ Oxyg_dissous_YSI_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(AGR_km2_supdrainee_2020 ~ Conductivity_microS_cm | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(AGR_km2_supdrainee_2020 ~ pH_units | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(AGR_km2_supdrainee_2020 ~ Turbidity_NTU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(AGR_km2_supdrainee_2020 ~ Colour_TCU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(AGR_km2_supdrainee_2020 ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(AGR_km2_supdrainee_2020 ~ E.coli_MPN_100.mL | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(AGR_km2_supdrainee_2020 ~ Phosphorus_Total_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(AGR_km2_supdrainee_2020 ~ Nitrate_as_N_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+
+#scatterplot(Pok2001.2022$AGR_km2_supdrainee_2020,Pok2001.2022$Colour_TCU,   
+#              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+
+ 
+```
+
+
+# les terres utilisées pour l'industries en 1990 
+
+```{r analyses_l'industries_vs_Paramètres}
+ 
+strwrap("2024-06-26 relaction entre l'industries et les paramètres que j'analyse")
+
+ # Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+  
+ 
+ scatterplot( IND_km2_supdrainee_1990 ~ Temp_eau_YSI_degC | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(IND_km2_supdrainee_1990 ~ Oxyg_dissous_YSI_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(IND_km2_supdrainee_1990 ~ Conductivity_microS_cm | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(IND_km2_supdrainee_1990 ~ pH_units | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(IND_km2_supdrainee_1990 ~ Turbidity_NTU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(IND_km2_supdrainee_1990 ~ Colour_TCU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(IND_km2_supdrainee_1990 ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(IND_km2_supdrainee_1990 ~ E.coli_MPN_100.mL | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(IND_km2_supdrainee_1990 ~ Phosphorus_Total_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(IND_km2_supdrainee_1990 ~ Nitrate_as_N_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+
+#scatterplot(Pok2001.2022$IND_km2_supdrainee_1990,Pok2001.2022$Colour_TCU,   
+#              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+
+ 
+
+```
+
+# les terres utilisées pour l'industries en 2020 
+
+```{r analyses_l'industries_vs_Paramètres}
+ 
+strwrap("2024-06-26 relaction entre l'industries et les paramètres que j'analyse")
+
+ # Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+  
+
+ scatterplot( IND_km2_supdrainee_2020 ~ Temp_eau_YSI_degC | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(IND_km2_supdrainee_2020 ~ Oxyg_dissous_YSI_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(IND_km2_supdrainee_2020 ~ Conductivity_microS_cm | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(IND_km2_supdrainee_2020 ~ pH_units | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(IND_km2_supdrainee_2020 ~ Turbidity_NTU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(IND_km2_supdrainee_2020 ~ Colour_TCU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(IND_km2_supdrainee_2020 ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(IND_km2_supdrainee_2020 ~ E.coli_MPN_100.mL | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(IND_km2_supdrainee_2020 ~ Phosphorus_Total_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(IND_km2_supdrainee_2020 ~ Nitrate_as_N_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+
+#scatterplot(Pok2001.2022$IND_km2_supdrainee_2020,Pok2001.2022$Colour_TCU,   
+#              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+
+ 
+```
+
+
+# les terres utilisées pour les résidences, milieux urbaines et rurales en 1990 
+
+```{r analyses_les résidences, milieux urbaines et rurales_vs_Paramètres}
+ 
+strwrap("2024-06-26 relaction entre les résidences, milieux urbaines, les rurales et les paramètres que j'analyse")
+
+ # Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+  
+ 
+ scatterplot( SET_km2_supdrainee_1990 ~ Temp_eau_YSI_degC | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(SET_km2_supdrainee_1990 ~ Oxyg_dissous_YSI_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(SET_km2_supdrainee_1990 ~ Conductivity_microS_cm | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(SET_km2_supdrainee_1990 ~ pH_units | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(SET_km2_supdrainee_1990 ~ Turbidity_NTU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(SET_km2_supdrainee_1990 ~ Colour_TCU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(SET_km2_supdrainee_1990 ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(SET_km2_supdrainee_1990 ~ E.coli_MPN_100.mL | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(SET_km2_supdrainee_1990 ~ Phosphorus_Total_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(SET_km2_supdrainee_1990 ~ Nitrate_as_N_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+
+#scatterplot(Pok2001.2022$SET_km2_supdrainee_1990,Pok2001.2022$Colour_TCU,   
+#              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+
+ 
+
+```
+
+# les terres utilisées pour les résidences, milieux urbaines et rurales en 2020 
+
+```{r analyses_les résidences, milieux urbaines et rurales_vs_Paramètres}
+ 
+strwrap("2024-06-26 relaction entre les résidences, milieux urbaines, les rurales et les paramètres que j'analyse")
+
+ # Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+  
+
+ scatterplot( SET_km2_supdrainee_2020 ~ Temp_eau_YSI_degC | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(SET_km2_supdrainee_2020 ~ Oxyg_dissous_YSI_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(SET_km2_supdrainee_2020 ~ Conductivity_microS_cm | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(SET_km2_supdrainee_2020 ~ pH_units | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(SET_km2_supdrainee_2020 ~ Turbidity_NTU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(SET_km2_supdrainee_2020 ~ Colour_TCU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(SET_km2_supdrainee_2020 ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(SET_km2_supdrainee_2020 ~ E.coli_MPN_100.mL | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(SET_km2_supdrainee_2020 ~ Phosphorus_Total_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(SET_km2_supdrainee_2020 ~ Nitrate_as_N_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+
+#scatterplot(Pok2001.2022$SET_km2_supdrainee_2020,Pok2001.2022$Colour_TCU,   
+#              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+
+ 
+```
+
+# les terres utilisées pour le transport et service publiques en 1990 
+
+```{r analyses_le transport et service publiques_vs_Paramètres}
+ 
+strwrap("2024-06-26 relaction entre le transport, les services publiques et les paramètres que j'analyse")
+
+ # Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+  
+ 
+ scatterplot( INF_km2_supdrainee_1990 ~ Temp_eau_YSI_degC | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(INF_km2_supdrainee_1990 ~ Oxyg_dissous_YSI_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(INF_km2_supdrainee_1990 ~ Conductivity_microS_cm | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(INF_km2_supdrainee_1990 ~ pH_units | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(INF_km2_supdrainee_1990 ~ Turbidity_NTU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(INF_km2_supdrainee_1990 ~ Colour_TCU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(INF_km2_supdrainee_1990 ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(INF_km2_supdrainee_1990 ~ E.coli_MPN_100.mL | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(INF_km2_supdrainee_1990 ~ Phosphorus_Total_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(INF_km2_supdrainee_1990 ~ Nitrate_as_N_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+
+#scatterplot(Pok2001.2022$INF_km2_supdrainee_1990,Pok2001.2022$Colour_TCU,   
+#              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+
+ 
+
+```
+
+# les terres utilisées pour le transport et les services publiques en 2020 
+
+```{r analyses_le transport et les services publiques_vs_Paramètres}
+ 
+strwrap("2024-06-26 relaction entre le transport, les services publiques et les paramètres que j'analyse")
+
+ # Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+  
+
+ scatterplot( INF_km2_supdrainee_2020 ~ Temp_eau_YSI_degC | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(INF_km2_supdrainee_2020 ~ Oxyg_dissous_YSI_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(INF_km2_supdrainee_2020 ~ Conductivity_microS_cm | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(INF_km2_supdrainee_2020 ~ pH_units | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(INF_km2_supdrainee_2020 ~ Turbidity_NTU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(INF_km2_supdrainee_2020 ~ Colour_TCU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(INF_km2_supdrainee_2020 ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(INF_km2_supdrainee_2020 ~ E.coli_MPN_100.mL | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(INF_km2_supdrainee_2020 ~ Phosphorus_Total_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(INF_km2_supdrainee_2020 ~ Nitrate_as_N_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+
+#scatterplot(Pok2001.2022$INF_km2_supdrainee_2020,Pok2001.2022$Colour_TCU,   
+#              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+
+ 
+```
+
+
+# les terres utilisées pour les activités récréatives en 1990 
+
+```{r analyses_les activités récréatives_vs_Paramètres}
+ 
+
+
+```
+
+# les terres utilisées pour les activités récréatives en 2020 
+
+```{r analyses_les activités récréatives_vs_Paramètres}
+ 
+strwrap("2024-06-26 relaction entre les activités récréatives et les paramètres que j'analyse")
+
+ # Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+  
+
+ scatterplot( REC_km2_supdrainee_2020 ~ Temp_eau_YSI_degC | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ Oxyg_dissous_YSI_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ Conductivity_microS_cm | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ pH_units | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ Turbidity_NTU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ Colour_TCU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ E.coli_MPN_100.mL | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ Phosphorus_Total_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ Nitrate_as_N_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+
+#scatterplot(Pok2001.2022$REC_km2_supdrainee_2020,Pok2001.2022$Colour_TCU,   
+#              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+
+ 
+```
+
+# les terres utilisées pour les activités récréatives en 2020 
+
+```{r analyses_les activités récréatives_vs_Paramètres}
+ 
+strwrap("2024-06-26 relaction entre les activités récréatives et les paramètres que j'analyse")
+
+ # Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+  
+
+ scatterplot( REC_km2_supdrainee_2020 ~ Temp_eau_YSI_degC | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ Oxyg_dissous_YSI_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ Conductivity_microS_cm | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ pH_units | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ Turbidity_NTU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ Colour_TCU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ E.coli_MPN_100.mL | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ Phosphorus_Total_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ scatterplot(REC_km2_supdrainee_2020 ~ Nitrate_as_N_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+
+#scatterplot(Pok2001.2022$REC_km2_supdrainee_2020,Pok2001.2022$Colour_TCU,   
+#              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+
+ 
+```
+
+# RÉFÉRENCES
 
 
 # RÉFÉRENCES
