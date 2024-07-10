@@ -3037,7 +3037,7 @@ Pok2001.2022$pctAGR_km2_supdrainee_1990 = (Pok2001.2022$AGR_km2_supdrainee_1990 
 strwrap("2024-06-26 relaction entre l'agriculture, les pdts ligneux, les champs, les  pâturage et les paramètres que j'analyse")
 
  # AGR_km2_supdrainee_2020
- Pok2001.2022$pctAGR_km2_supdrainee_2020 = (AGR_km2_supdrainee_2020 /      sup_drainee_km2_sbv)
+ Pok2001.2022$pctAGR_km2_supdrainee_2020 = (Pok2001.2022$AGR_km2_supdrainee_2020/Pok2001.2022$sup_drainee_km2_sbv)
 
  scatterplot(pctAGR_km2_supdrainee_2020 ~ Temp_eau_YSI_degC | Year,  
             data=Pok2001.2022, smooth=F, by.groups=F)
@@ -3138,7 +3138,7 @@ La dispersion des point sur le graphique ne montre aucune tendance de hausse et 
 
 Au point y=0, on 'a une concentration des points le long de la ligne horizontal ce qui suggère un absence de changement de la température quelque soit la valeur de la superficie brûlé.
 
-La répartition des points au dessu eomme en dessous de la ligne horizontale, indique des variation des température pour difféentes valeur de terre brûlé en 1990.
+La répartition des points au dessus comme en dessous de la ligne horizontale, indique des variation des température pour difféentes valeur de terre brûlé en 1990.
 
 
 Ce graphique suggère que les terres brûler (déforestations ) n'a pas d'effet direct simple sur la température. Cela pourrait impliquer que d'autres facteurs pourraient influencer les changements de température
@@ -4099,10 +4099,838 @@ ggarrange(p1, p2,  ncol=2, nrow=1)
 
 ```
 
+# Ce Mardi 09 juillet 2024
+
+
+
+# Neige totale et paramètre
+
+## Temp_VS_neige_total
+
+```{r Temp_VS_neige_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=neige_tot_cm, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre Température et la neige totale en mm",
+       x="neige_tot_cm",
+       y="Temp_eau_YSI_degC")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=neige_tot_indic, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre Température et la neige totale indice",
+       x="neige_tot_indic",
+       y="Temp_eau_YSI_degC")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+
+```
+
+## Oxygène_dissous_VS_neige_total 
+
+```{r Oxygène_dissous_VS_neige_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=neige_tot_cm, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre l'Oxygène_dissous et la neige totale en mm",
+       x="neige_tot_cm",
+       y="Oxyg_dissous_YSI_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=neige_tot_indic, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre l'Oxygène_dissous et la neige totale indice",
+       x="neige_tot_indic",
+       y="Oxyg_dissous_YSI_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Conductivity_VS_neige_total
+
+```{r Conductivity_VS_neige_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=neige_tot_cm, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la Conductivité et la neige totale en mm",
+       x="neige_tot_cm",
+       y="Conductivity_microS_cm")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=neige_tot_indic, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la Conductivité et la neige totale indice",
+       x="neige_tot_indic",
+       y="Conductivity_microS_cm")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## pH_VS_neige_total
+
+```{r pH_VS_neige_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=neige_tot_cm, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le pH et la neige totale en mm",
+       x="neige_tot_cm",
+       y="pH_units")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=neige_tot_indic, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le pH et la neige totale indice",
+       x="neige_tot_indic",
+       y="pH_units")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## turbidité_VS_neige_total
+
+```{r turbidité_VS_neige_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=neige_tot_cm, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la turbidité et la neige totale en mm",
+       x="neige_tot_cm",
+       y="Turbidity_NTU")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=neige_tot_indic, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la turbidité et la neige totale indice",
+       x="neige_tot_indic",
+       y="Turbidity_NTU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+## Couleur_VS_neige_total
+
+```{r Couleur_VS_neige_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=neige_tot_cm, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la couleur et la neige totale en mm",
+       x="neige_tot_cm",
+       y="Colour_TCU")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=neige_tot_indic, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la turbidité et la neige totale indice",
+       x="neige_tot_indic",
+       y="Colour_TCU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+## COT_VS_neige_total
+
+```{r COT_VS_neige_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=neige_tot_cm, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le COT et la neige totale en mm",
+       x="neige_tot_cm",
+       y="Carbon_Total_Organic_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=neige_tot_indic, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le COT et la neige totale indice",
+       x="neige_tot_indic",
+       y="Carbon_Total_Organic_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Coliforme_VS_neige_total
+
+```{r Coliforme_VS_neige_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=neige_tot_cm, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre les coliformes et la neige totale en mm",
+       x="neige_tot_cm",
+       y="E.coli_MPN_100.mL")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=neige_tot_indic, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre les coliformes et la neige totale indice",
+       x="neige_tot_indic",
+       y="E.coli_MPN_100.mL")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## phosphore_VS_neige_total
+
+```{r phosphore_VS_neige_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=neige_tot_cm, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le phosphore et la neige totale en mm",
+       x="neige_tot_cm",
+       y="Phosphorus_Total_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=neige_tot_indic, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le phosphore et la neige totale indice",
+       x="neige_tot_indic",
+       y="Phosphorus_Total_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Nitrate_VS_neige_total
+
+```{r Nitrate_VS_neige_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=neige_tot_cm, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le nitrate et la neige totale en mm",
+       x="neige_tot_cm",
+       y="Nitrate_as_N_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=neige_tot_indic, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le nitrate et la neige totale indice",
+       x="neige_tot_indic",
+       y="Nitrate_as_N_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+# Température maximal et minimal 2 jours avant et paramètre
+
+## Temp_VS_Temp2jrs_total
+
+```{r Temp_VS_Temp2jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=Tmax2jours, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre Température et la Température max 2jrs avant",
+       x="Tmax2jours",
+       y="Temp_eau_YSI_degC")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=Tmin2jours, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre Température et la Température min 2jrs avant",
+       x="Tmin2jours",
+       y="Temp_eau_YSI_degC")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+
+```
+
+## Oxygène_dissous_VS_Temp2jrs_total 
+
+```{r Oxygène_dissous_VS_Temp2jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=Tmax2jours, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre l'Oxygène_dissous et la Température max 2jrs avant",
+       x="Tmax2jours",
+       y="Oxyg_dissous_YSI_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=Tmin2jours, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre l'Oxygène_dissous et la Température min 2jrs avant",
+       x="Tmin2jours",
+       y="Oxyg_dissous_YSI_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Conductivity_VS_Temp2jrs_total
+
+```{r Conductivity_VS_Temp2jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=Tmax2jours, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la Conductivité et la Température max 2jrs avant",
+       x="Tmax2jours",
+       y="Conductivity_microS_cm")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=Tmin2jours, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la Conductivité et la Température min 2jrs avant",
+       x="Tmin2jours",
+       y="Conductivity_microS_cm")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## pH_VS_Temp2jrs_total
+
+```{r pH_VS_Temp2jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=Tmax2jours, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le pH et la Température max 2jrs avant",
+       x="Tmax2jours",
+       y="pH_units")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=Tmin2jours, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le pH et la Température min 2jrs avant",
+       x="Tmin2jours",
+       y="pH_units")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## turbidité_VS_Temp2jrs_total
+
+```{r turbidité_VS_Temp2jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=Tmax2jours, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la turbidité et la Température max 2jrs avant",
+       x="Tmax2jours",
+       y="Turbidity_NTU")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=Tmin2jours, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la turbidité et la Température min 2jrs avant",
+       x="Tmin2jours",
+       y="Turbidity_NTU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+## Couleur_VS_Temp2jrs_total
+
+```{r Couleur_VS_Temp2jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=Tmax2jours, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la couleur et la Température max 2jrs avant",
+       x="Tmax2jours",
+       y="Colour_TCU")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=Tmin2jours, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la turbidité et la Température min 2jrs avant",
+       x="Tmin2jours",
+       y="Colour_TCU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+## COT_VS_Temp2jrs_total
+
+```{r COT_VS_Temp2jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=Tmax2jours, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le COT et la Température max 2jrs avant",
+       x="Tmax2jours",
+       y="Carbon_Total_Organic_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=Tmin2jours, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le COT et la Température min 2jrs avant",
+       x="Tmin2jours",
+       y="Carbon_Total_Organic_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Coliforme_VS_Temp2jrs_total
+
+```{r Coliforme_VS_Temp2jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=Tmax2jours, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre les coliformes et la Température max 2jrs avant",
+       x="Tmax2jours",
+       y="E.coli_MPN_100.mL")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=Tmin2jours, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre les coliformes et la Température min 2jrs avant",
+       x="Tmin2jours",
+       y="E.coli_MPN_100.mL")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## phosphore_VS_Temp2jrs_total
+
+```{r phosphore_VS_Temp2jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=Tmax2jours, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le phosphore et la Température max 2jrs avant",
+       x="Tmax2jours",
+       y="Phosphorus_Total_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=Tmin2jours, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le phosphore et la Température min 2jrs avant",
+       x="Tmin2jours",
+       y="Phosphorus_Total_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Nitrate_VS_Temp2jrs_total
+
+```{r Nitrate_VS_Temp2jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=Tmax2jours, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le nitrate et la Température max 2jrs avant",
+       x="Tmax2jours",
+       y="Nitrate_as_N_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=Tmin2jours, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le nitrate et la Température min 2jrs avant",
+       x="Tmin2jours",
+       y="Nitrate_as_N_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+# Précipitation 2 jours et 21 jours avant les prélèvements et paramètre
+
+## Temp_VS_Précip_2_21_jrs_total
+
+```{r Temp_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre Température et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Temp_eau_YSI_degC")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre Température et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Temp_eau_YSI_degC")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+
+```
+
+## Oxygène_dissous_VS_Précip_2_21_jrs_total 
+
+```{r Oxygène_dissous_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre l'Oxygène_dissous et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Oxyg_dissous_YSI_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre l'Oxygène_dissous et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Oxyg_dissous_YSI_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Conductivity_VS_Précip_2_21_jrs_total
+
+```{r Conductivity_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la Conductivité et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Conductivity_microS_cm")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la Conductivité et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Conductivity_microS_cm")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## pH_VS_Précip_2_21_jrs_total
+
+```{r pH_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le pH et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="pH_units")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le pH et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="pH_units")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## turbidité_VS_Précip_2_21_jrs_total
+
+```{r turbidité_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la turbidité et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Turbidity_NTU")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la turbidité et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Turbidity_NTU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+## Couleur_VS_Précip_2_21_jrs_total
+
+```{r Couleur_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la couleur et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Colour_TCU")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la turbidité et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Colour_TCU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+## COT_VS_Précip_2_21_jrs_total
+
+```{r COT_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le COT et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Carbon_Total_Organic_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le COT et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Carbon_Total_Organic_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Coliforme_VS_Précip_2_21_jrs_total
+
+```{r Coliforme_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre les coliformes et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="E.coli_MPN_100.mL")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre les coliformes et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="E.coli_MPN_100.mL")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## phosphore_VS_Précip_2_21_jrs_total
+
+```{r phosphore_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le phosphore et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Phosphorus_Total_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le phosphore et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Phosphorus_Total_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Nitrate_VS_Précip_2_21_jrs_total
+
+```{r Nitrate_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le nitrate et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Nitrate_as_N_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le nitrate et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Nitrate_as_N_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+
 
 
 ```{r}
 
+# Installer et charger le package rpart
+if (!require(rpart)) {
+  install.packages("rpart")
+}
+library(rpart)
+
+# Supposons que df est votre dataframe
+# paramètre est la variable indépendante
+# TA, WL, MN, DE, AS, EF, SS, DD, SE, DR, AD, SF sont les variables dépendantes
+
+# Créer l'arbre de régression
+arbre <- rpart(Temp_eau_YSI_degC ~ Ordre + Dist_amont_station_m + Longueur_totale_m_sous_bassin + sup_km2_sbv + sup_drainee_km2_sbv + longueur_route_km_sbv + temp_min_C + temp_moy_C + temp_max_C + neige_tot_cm + pluie_tot_mm + precip_tot_mm + neige_sol_cm + Tmax2jours + Tmin2jours + precip.tot.2jours + precip.tot.21jours, data = Pok2001.2022, method = "anova")
+
+# Imprimer l'arbre de régression
+printcp(arbre)
+
+# Tracer l'arbre de régression
+plot(arbre, uniform = TRUE, main = "Arbre de régression pour paramètre")
+text(arbre, use.n = TRUE, all = TRUE, cex = .8)
+
+
+
+
+
+
+```
+
+
+
+
+```{r, eval=FALSE}
+
+# Installer et charger le package rpart
+if (!require(rpart)) {
+  install.packages("rpart")
+}
+library(rpart)
+
+# Supposons que df est votre dataframe
+# paramètre est la variable indépendante
+# TA, WL, MN, DE, AS, EF, SS, DD, SE, DR, AD, SF sont les variables dépendantes
+
+# Créer l'arbre de régression
+arbre <- rpart(Ordre ~ Temp_eau_YSI_degC + Oxyg_dissous_YSI_mg_L + Conductivity_microS_cm + pH_units + Turbidity_NTU + Colour_TCU + Carbon_Total_Organic_mg_L + E.coli_MPN_100.mL + Phosphorus_Total_mg_L + Nitrate_as_N_mg_L, data = Pok2001.2022, method = "anova")
+
+# Imprimer l'arbre de régression
+printcp(arbre)
+
+# Tracer l'arbre de régression
+plot(arbre, uniform = TRUE, main = "Arbre de régression pour paramètre")
+text(arbre, use.n = TRUE, all = TRUE, cex = .8)
+
+#
+
+#Ordre + Dist_amont_station_m + Longueur_totale_m_sous_bassin + sup_km2_sbv + sup_drainee_km2_sbv + longueur_route_km_sbv + temp_min_C + temp_moy_C + temp_max_C + neige_tot_cm + pluie_tot_mm + precip_tot_mm + neige_sol_cm + Tmax2jours + Tmin2jours + precip.tot.2jours + precip.tot.21jours
+```
+
+
+
+```{r}
+
+
+# Installer et charger le package rpart.plot
+if (!require(rpart.plot)) {
+  install.packages("rpart.plot")
+}
+library(rpart.plot)
+
+# Créer l'arbre de régression
+arbre <- rpart(Ordre ~ Temp_eau_YSI_degC + Oxyg_dissous_YSI_mg_L + Conductivity_microS_cm + pH_units + Turbidity_NTU + Colour_TCU + Carbon_Total_Organic_mg_L + E.coli_MPN_100.mL + Phosphorus_Total_mg_L + Nitrate_as_N_mg_L, data = Pok2001.2022, method = "anova")
+
+# Tracer un arbre de régression plus joli et très présentable
+rpart.plot(arbre, type = 3, extra = 101, under = TRUE, fallen.leaves = TRUE,
+           main = "Arbre de régression pour paramètre")
+
+
+
+
+```
+
+
+#Ce mercredi 10 juillet 2024
+
+
+```{r}
 # Temp_eau_YSI_degC
 # Oxyg_dissous_YSI_mg_L
 # Conductivity_microS_cm
@@ -4113,7 +4941,8 @@ ggarrange(p1, p2,  ncol=2, nrow=1)
 # E.coli_MPN_100.mL
 # Phosphorus_Total_mg_L
 # Nitrate_as_N_mg_L
-#names(Pok2001.2022)
+#
+names(Pok2001.2022)
 ```
 
 
