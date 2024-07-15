@@ -4927,10 +4927,503 @@ rpart.plot(arbre, type = 3, extra = 101, under = TRUE, fallen.leaves = TRUE,
 ```
 
 
-#Ce mercredi 10 juillet 2024
+#Ce vendredi 12 juillet 2024 les variables en %
 
+
+# Superficie non forestière et paramètre
+
+## Temp_VS_Précip_2_21_jrs_total
+
+```{r Temp_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre Température et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Temp_eau_YSI_degC")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre Température et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Temp_eau_YSI_degC")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+
+```
+
+## Oxygène_dissous_VS_Précip_2_21_jrs_total 
+
+```{r Oxygène_dissous_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre l'Oxygène_dissous et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Oxyg_dissous_YSI_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre l'Oxygène_dissous et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Oxyg_dissous_YSI_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Conductivity_VS_Précip_2_21_jrs_total
+
+```{r Conductivity_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la Conductivité et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Conductivity_microS_cm")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la Conductivité et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Conductivity_microS_cm")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## pH_VS_Précip_2_21_jrs_total
+
+```{r pH_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le pH et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="pH_units")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le pH et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="pH_units")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## turbidité_VS_Précip_2_21_jrs_total
+
+```{r turbidité_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la turbidité et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Turbidity_NTU")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la turbidité et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Turbidity_NTU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+## Couleur_VS_Précip_2_21_jrs_total
+
+```{r Couleur_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la couleur et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Colour_TCU")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la turbidité et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Colour_TCU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+## COT_VS_Précip_2_21_jrs_total
+
+```{r COT_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le COT et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Carbon_Total_Organic_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le COT et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Carbon_Total_Organic_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Coliforme_VS_Précip_2_21_jrs_total
+
+```{r Coliforme_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre les coliformes et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="E.coli_MPN_100.mL")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre les coliformes et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="E.coli_MPN_100.mL")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## phosphore_VS_Précip_2_21_jrs_total
+
+```{r phosphore_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le phosphore et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Phosphorus_Total_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le phosphore et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Phosphorus_Total_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Nitrate_VS_Précip_2_21_jrs_total
+
+```{r Nitrate_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le nitrate et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Nitrate_as_N_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le nitrate et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Nitrate_as_N_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+# Précipitation 2 jours et 21 jours avant et paramètre
+
+## Temp_VS_Précip_2_21_jrs_total
+
+```{r Temp_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre Température et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Temp_eau_YSI_degC")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre Température et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Temp_eau_YSI_degC")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+
+```
+
+## Oxygène_dissous_VS_Précip_2_21_jrs_total 
+
+```{r Oxygène_dissous_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre l'Oxygène_dissous et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Oxyg_dissous_YSI_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre l'Oxygène_dissous et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Oxyg_dissous_YSI_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Conductivity_VS_Précip_2_21_jrs_total
+
+```{r Conductivity_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la Conductivité et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Conductivity_microS_cm")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la Conductivité et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Conductivity_microS_cm")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## pH_VS_Précip_2_21_jrs_total
+
+```{r pH_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le pH et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="pH_units")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le pH et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="pH_units")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## turbidité_VS_Précip_2_21_jrs_total
+
+```{r turbidité_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la turbidité et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Turbidity_NTU")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la turbidité et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Turbidity_NTU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+## Couleur_VS_Précip_2_21_jrs_total
+
+```{r Couleur_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la couleur et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Colour_TCU")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la turbidité et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Colour_TCU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+## COT_VS_Précip_2_21_jrs_total
+
+```{r COT_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le COT et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Carbon_Total_Organic_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le COT et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Carbon_Total_Organic_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Coliforme_VS_Précip_2_21_jrs_total
+
+```{r Coliforme_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre les coliformes et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="E.coli_MPN_100.mL")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre les coliformes et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="E.coli_MPN_100.mL")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## phosphore_VS_Précip_2_21_jrs_total
+
+```{r phosphore_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le phosphore et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Phosphorus_Total_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le phosphore et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Phosphorus_Total_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Nitrate_VS_Précip_2_21_jrs_total
+
+```{r Nitrate_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le nitrate et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Nitrate_as_N_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le nitrate et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Nitrate_as_N_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+
+ 
+
+```
 
 ```{r}
+log10(Pok2001.2022$E.coli)
 # Temp_eau_YSI_degC
 # Oxyg_dissous_YSI_mg_L
 # Conductivity_microS_cm
@@ -4945,8 +5438,1570 @@ rpart.plot(arbre, type = 3, extra = 101, under = TRUE, fallen.leaves = TRUE,
 names(Pok2001.2022)
 ```
 
+```{r}
+
+Pok2001.2022$pctAGR_supdrainee_1990 = (Pok2001.2022$AGR_km2_supdrainee_1990 /      Pok2001.2022$sup_drainee_km2_sbv)
+
+summary(Pok2001.2022$pctAGR_supdrainee_1990)
+
+subset(Pok2001.2022, Date=="2001-08-01", select = c(Station, sup_km2_sbv, sup_drainee_km2_sbv, AGR_km2_supdrainee_1990, pctAGR_supdrainee_1990))
+
+stem(Pok2001.2022$pctAGR_supdrainee_1990)
+
+log10(Pok2001.2022$E.coli)
 
 
+
+```
+
+
+```{r Coliforme_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=log10(E.coli_MPN_100.mL))) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre les coliformes et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="E.coli_MPN_100.mL")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre les coliformes et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="E.coli_MPN_100.mL")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+# Ce lundi 15 juillet 2024
+
+#Je refaire le même schéma d'analyse juste avec les données de pourcentage 
+
+
+```{r }
+#je crée tout mes variable de % pour les sous variable de NF pour les deux anéées
+
+# AGR_km2_supdrainee_1990 et AGR_km2_supdrainee_2020
+
+Pok2001.2022$pctAGR_supdrainee_1990 = (Pok2001.2022$AGR_km2_supdrainee_1990 /      Pok2001.2022$sup_drainee_km2_sbv)
+
+Pok2001.2022$pctAGR_supdrainee_2020 = (Pok2001.2022$AGR_km2_supdrainee_2020 /      Pok2001.2022$sup_drainee_km2_sbv)
+
+
+# IND_km2_supdrainee_1990 et IND_km2_supdrainee_2020
+Pok2001.2022$pctIND_supdrainee_1990 = (Pok2001.2022$IND_km2_supdrainee_1990 /      Pok2001.2022$sup_drainee_km2_sbv)
+
+Pok2001.2022$pctIND_supdrainee_2020 = (Pok2001.2022$IND_km2_supdrainee_2020 /      Pok2001.2022$sup_drainee_km2_sbv)
+
+
+# INF_km2_supdrainee_1990 et INF_km2_supdrainee_2020
+Pok2001.2022$pctINF_supdrainee_1990 = (Pok2001.2022$INF_km2_supdrainee_1990 /      Pok2001.2022$sup_drainee_km2_sbv)
+
+Pok2001.2022$pctINF_supdrainee_2020 = (Pok2001.2022$INF_km2_supdrainee_2020 /      Pok2001.2022$sup_drainee_km2_sbv)
+
+
+# SET_km2_supdrainee_1990 et SET_km2_supdrainee_2020
+Pok2001.2022$pctSET_km2_supdrainee_1990 = (Pok2001.2022$SET_km2_supdrainee_1990 /      Pok2001.2022$sup_drainee_km2_sbv)
+
+Pok2001.2022$pctSET_supdrainee_2020 = (Pok2001.2022$SET_km2_supdrainee_2020 /      Pok2001.2022$sup_drainee_km2_sbv)
+
+
+# REC_km2_supdrainee_1990 et REC_km2_supdrainee_2020
+Pok2001.2022$pctREC_km2_supdrainee_1990 = (Pok2001.2022$REC_km2_supdrainee_1990 /      Pok2001.2022$sup_drainee_km2_sbv)
+
+Pok2001.2022$pctREC_supdrainee_2020 = (Pok2001.2022$REC_km2_supdrainee_2020 /      Pok2001.2022$sup_drainee_km2_sbv)
+
+
+# WIL_km2_supdrainee_1990 et WIL_km2_supdrainee_2020
+Pok2001.2022$pctWIL_supdrainee_1990 = (Pok2001.2022$WIL_km2_supdrainee_1990 /      Pok2001.2022$sup_drainee_km2_sbv)
+
+Pok2001.2022$pctWIL_supdrainee_2020 = (Pok2001.2022$WIL_km2_supdrainee_2020 /      Pok2001.2022$sup_drainee_km2_sbv)
+```
+
+# Pourcentage de l'agriculture_vs_paramètre
+
+```{r Agriculture_vs_Température }
+# Créer un graphique pour l'année 1990
+p1 <- ggplot(Pok2001.2022, aes(x=pctAGR_supdrainee_1990, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre Température et l'agriculture en 1990",
+       x="pctAGR_supdrainee_1990",
+       y="Temp_eau_YSI_degC")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctAGR_supdrainee_2020, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre Température et l'agriculture en 2020",
+       x="pctAGR_supdrainee_2020",
+       y="Temp_eau_YSI_degC")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+
+```
+
+## Oxygène_dissous_VS_Agriculture 
+
+```{r Oxygène_dissous_VS_Agriculture}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctAGR_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre l'Oxygène_dissous et l'agriculture en 1990",
+       x="pctAGR_supdrainee_1990",
+       y="Oxyg_dissous_YSI_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctAGR_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre l'Oxygène_dissous et l'agriculture en 2020",
+       x="pctAGR_supdrainee_2020",
+       y="Oxyg_dissous_YSI_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Conductivity_VS_Agriculture
+
+```{r Conductivity_VS_Agriculture}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctAGR_supdrainee_1990, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la Conductivité et l'agriculture en 1990",
+       x="pctAGR_supdrainee_1990",
+       y="Conductivity_microS_cm")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctAGR_supdrainee_2020, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la Conductivité et l'agriculture en 2020",
+       x="pctAGR_supdrainee_2020",
+       y="Conductivity_microS_cm")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## pH_VS_Agriculture
+
+```{r pH_VS_Agriculture}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctAGR_supdrainee_1990, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le pH et l'agriculture en 1990",
+       x="pctAGR_supdrainee_1990",
+       y="pH_units")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctAGR_supdrainee_2020, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le pH et l'agriculture en 2020",
+       x="pctAGR_supdrainee_2020",
+       y="pH_units")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## turbidité_VS_Agriculture
+
+```{r turbidité_VS_Agriculture}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctAGR_supdrainee_1990, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la turbidité et l'agriculture en 1990",
+       x="pctAGR_supdrainee_1990",
+       y="Turbidity_NTU")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctAGR_supdrainee_2020, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la turbidité et l'agriculture en 2020",
+       x="pctAGR_supdrainee_2020",
+       y="Turbidity_NTU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+## Couleur_VS_Agriculture
+
+```{r Couleur_VS_Agriculture}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctAGR_supdrainee_1990, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la couleur et l'agriculture en 1990",
+       x="pctAGR_supdrainee_1990",
+       y="Colour_TCU")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctAGR_supdrainee_2020, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la turbidité et l'agriculture en 2020",
+       x="pctAGR_supdrainee_2020",
+       y="Colour_TCU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+## COT_VS_Agriculture
+
+```{r COT_VS_Agriculture}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctAGR_supdrainee_1990, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le COT et l'agriculture en 1990",
+       x="pctAGR_supdrainee_1990",
+       y="Carbon_Total_Organic_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctAGR_supdrainee_2020, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le COT et l'agriculture en 2020",
+       x="pctAGR_supdrainee_2020",
+       y="Carbon_Total_Organic_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Coliforme_VS_Agriculture
+
+```{r Coliforme_VS_Agriculture}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctAGR_supdrainee_1990, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre les coliformes et l'agriculture en 1990",
+       x="pctAGR_supdrainee_1990",
+       y="E.coli_MPN_100.mL")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctAGR_supdrainee_2020, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre les coliformes et l'agriculture en 2020",
+       x="pctAGR_supdrainee_2020",
+       y="E.coli_MPN_100.mL")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## phosphore_VS_Agriculture
+
+```{r phosphore_VS_Agriculture}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctAGR_supdrainee_1990, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le phosphore et l'agriculture en 1990",
+       x="pctAGR_supdrainee_1990",
+       y="Phosphorus_Total_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctAGR_supdrainee_2020, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le phosphore et l'agriculture en 2020",
+       x="pctAGR_supdrainee_2020",
+       y="Phosphorus_Total_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Nitrate_VS_Agriculture
+
+```{r Nitrate_VS_Agriculture}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctAGR_supdrainee_1990, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le nitrate et l'agriculture en 1990",
+       x="pctAGR_supdrainee_1990",
+       y="Nitrate_as_N_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctAGR_supdrainee_2020, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le nitrate et l'agriculture en 2020",
+       x="pctAGR_supdrainee_2020",
+       y="Nitrate_as_N_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+
+ 
+
+```
+
+
+# Pourcentage de l'infrastructure_vs_paramètre
+
+```{r infrastructure_vs_Température }
+# Créer un graphique pour l'année 1990
+p1 <- ggplot(Pok2001.2022, aes(x=pctINF_supdrainee_1990, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre Température et l'infrastructure en 1990",
+       x="pctINF_supdrainee_1990",
+       y="Temp_eau_YSI_degC")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctINF_supdrainee_2020, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre Température et l'infrastructure en 2020",
+       x="pctINF_supdrainee_2020",
+       y="Temp_eau_YSI_degC")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+
+```
+
+## Oxygène_dissous_VS_infrastructure 
+
+```{r Oxygène_dissous_VS_infrastructure}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctINF_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre l'Oxygène_dissous et l'infrastructure en 1990",
+       x="pctINF_supdrainee_1990",
+       y="Oxyg_dissous_YSI_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctINF_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre l'Oxygène_dissous et l'infrastructure en 2020",
+       x="pctINF_supdrainee_2020",
+       y="Oxyg_dissous_YSI_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Conductivity_VS_infrastructure
+
+```{r Conductivity_VS_infrastructure}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctINF_supdrainee_1990, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la Conductivité et l'infrastructure en 1990",
+       x="pctINF_supdrainee_1990",
+       y="Conductivity_microS_cm")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctINF_supdrainee_2020, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la Conductivité et l'infrastructure en 2020",
+       x="pctINF_supdrainee_2020",
+       y="Conductivity_microS_cm")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## pH_VS_infrastructure
+
+```{r pH_VS_infrastructure}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctINF_supdrainee_1990, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le pH et l'infrastructure en 1990",
+       x="pctINF_supdrainee_1990",
+       y="pH_units")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctINF_supdrainee_2020, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le pH et l'infrastructure en 2020",
+       x="pctINF_supdrainee_2020",
+       y="pH_units")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## turbidité_VS_infrastructure
+
+```{r turbidité_VS_infrastructure}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctINF_supdrainee_1990, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la turbidité et l'infrastructure en 1990",
+       x="pctINF_supdrainee_1990",
+       y="Turbidity_NTU")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctINF_supdrainee_2020, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la turbidité et l'infrastructure en 2020",
+       x="pctINF_supdrainee_2020",
+       y="Turbidity_NTU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+## Couleur_VS_infrastructure
+
+```{r Couleur_VS_infrastructure}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctINF_supdrainee_1990, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la couleur et l'infrastructure en 1990",
+       x="pctINF_supdrainee_1990",
+       y="Colour_TCU")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctINF_supdrainee_2020, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la turbidité et l'infrastructure en 2020",
+       x="pctINF_supdrainee_2020",
+       y="Colour_TCU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+## COT_VS_infrastructure
+
+```{r COT_VS_infrastructure}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctINF_supdrainee_1990, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le COT et l'infrastructure en 1990",
+       x="pctINF_supdrainee_1990",
+       y="Carbon_Total_Organic_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctINF_supdrainee_2020, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le COT et l'infrastructure en 2020",
+       x="pctINF_supdrainee_2020",
+       y="Carbon_Total_Organic_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Coliforme_VS_infrastructure
+
+```{r Coliforme_VS_infrastructure}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctINF_supdrainee_1990, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre les coliformes et l'infrastructure en 1990",
+       x="pctINF_supdrainee_1990",
+       y="E.coli_MPN_100.mL")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctINF_supdrainee_2020, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre les coliformes et l'infrastructure en 2020",
+       x="pctINF_supdrainee_2020",
+       y="E.coli_MPN_100.mL")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## phosphore_VS_infrastructure
+
+```{r phosphore_VS_infrastructure}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctINF_supdrainee_1990, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le phosphore et l'infrastructure en 1990",
+       x="pctINF_supdrainee_1990",
+       y="Phosphorus_Total_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctINF_supdrainee_2020, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le phosphore et l'infrastructure en 2020",
+       x="pctINF_supdrainee_2020",
+       y="Phosphorus_Total_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Nitrate_VS_infrastructure
+
+```{r Nitrate_VS_infrastructure}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctINF_supdrainee_1990, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le nitrate et l'infrastructure en 1990",
+       x="pctINF_supdrainee_1990",
+       y="Nitrate_as_N_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctINF_supdrainee_2020, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le nitrate et l'infrastructure en 2020",
+       x="pctINF_supdrainee_2020",
+       y="Nitrate_as_N_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+
+ 
+
+```
+
+# Pourcentage de superficie d'activités récréatives _vs_paramètre
+
+```{r Récréative_vs_Température }
+# Créer un graphique pour l'année 1990
+p1 <- ggplot(Pok2001.2022, aes(x=pctREC_supdrainee_1990, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre Température et l'activités récréatives en 1990",
+       x="pctREC_supdrainee_1990",
+       y="Temp_eau_YSI_degC")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctREC_supdrainee_2020, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre Température et l'activités récréatives en 2020",
+       x="pctREC_supdrainee_2020",
+       y="Temp_eau_YSI_degC")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+
+```
+
+## Oxygène_dissous_VS_Récréative 
+
+```{r Oxygène_dissous_VS_Récréative}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctREC_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre l'Oxygène_dissous et l'activités récréatives en 1990",
+       x="pctREC_supdrainee_1990",
+       y="Oxyg_dissous_YSI_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctREC_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre l'Oxygène_dissous et l'activités récréatives en 2020",
+       x="pctREC_supdrainee_2020",
+       y="Oxyg_dissous_YSI_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Conductivity_VS_Récréative
+
+```{r Conductivity_VS_Récréative}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctREC_supdrainee_1990, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la Conductivité et l'activités récréatives en 1990",
+       x="pctREC_supdrainee_1990",
+       y="Conductivity_microS_cm")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctREC_supdrainee_2020, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la Conductivité et l'activités récréatives en 2020",
+       x="pctREC_supdrainee_2020",
+       y="Conductivity_microS_cm")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## pH_VS_Récréative
+
+```{r pH_VS_Récréative}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctREC_supdrainee_1990, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le pH et l'activités récréatives en 1990",
+       x="pctREC_supdrainee_1990",
+       y="pH_units")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctREC_supdrainee_2020, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le pH et l'activités récréatives en 2020",
+       x="pctREC_supdrainee_2020",
+       y="pH_units")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## turbidité_VS_Récréative
+
+```{r turbidité_VS_Récréative}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctREC_supdrainee_1990, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la turbidité et l'activités récréatives en 1990",
+       x="pctREC_supdrainee_1990",
+       y="Turbidity_NTU")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctREC_supdrainee_2020, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la turbidité et l'activités récréatives en 2020",
+       x="pctREC_supdrainee_2020",
+       y="Turbidity_NTU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+## Couleur_VS_Récréative
+
+```{r Couleur_VS_Récréative}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctREC_supdrainee_1990, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la couleur et l'activités récréatives en 1990",
+       x="pctREC_supdrainee_1990",
+       y="Colour_TCU")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctREC_supdrainee_2020, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la turbidité et l'activités récréatives en 2020",
+       x="pctREC_supdrainee_2020",
+       y="Colour_TCU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+## COT_VS_Récréative
+
+```{r COT_VS_Récréative}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctREC_supdrainee_1990, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le COT et l'activités récréatives en 1990",
+       x="pctREC_supdrainee_1990",
+       y="Carbon_Total_Organic_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctREC_supdrainee_2020, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le COT et l'activités récréatives en 2020",
+       x="pctREC_supdrainee_2020",
+       y="Carbon_Total_Organic_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Coliforme_VS_Récréative
+
+```{r Coliforme_VS_Récréative}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctREC_supdrainee_1990, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre les coliformes et l'activités récréatives en 1990",
+       x="pctREC_supdrainee_1990",
+       y="E.coli_MPN_100.mL")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctREC_supdrainee_2020, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre les coliformes et l'activités récréatives en 2020",
+       x="pctREC_supdrainee_2020",
+       y="E.coli_MPN_100.mL")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## phosphore_VS_Récréative
+
+```{r phosphore_VS_Récréative}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctREC_supdrainee_1990, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le phosphore et l'activités récréatives en 1990",
+       x="pctREC_supdrainee_1990",
+       y="Phosphorus_Total_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctREC_supdrainee_2020, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le phosphore et l'activités récréatives en 2020",
+       x="pctREC_supdrainee_2020",
+       y="Phosphorus_Total_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Nitrate_VS_Récréative
+
+```{r Nitrate_VS_Récréative}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctREC_supdrainee_1990, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le nitrate et l'activités récréatives en 1990",
+       x="pctREC_supdrainee_1990",
+       y="Nitrate_as_N_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctREC_supdrainee_2020, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le nitrate et l'activités récréatives en 2020",
+       x="pctREC_supdrainee_2020",
+       y="Nitrate_as_N_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+
+ 
+
+```
+
+
+
+# Pourcentage de zones_urbaines _vs_paramètre
+
+```{r zones_urbaines_vs_Température }
+# Créer un graphique pour l'année 1990
+p1 <- ggplot(Pok2001.2022, aes(x=pctSET_supdrainee_1990, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre Température et les zones urbaines en 1990",
+       x="pctSET_supdrainee_1990",
+       y="Temp_eau_YSI_degC")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctSET_supdrainee_2020, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre Température et les zones urbaines en 2020",
+       x="pctSET_supdrainee_2020",
+       y="Temp_eau_YSI_degC")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+
+```
+
+## Oxygène_dissous_VS_zones_urbaines
+
+```{r Oxygène_dissous_VS_zones_urbaines}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctSET_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre l'Oxygène_dissous et les zones urbaines en 1990",
+       x="pctSET_supdrainee_1990",
+       y="Oxyg_dissous_YSI_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctSET_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre l'Oxygène_dissous et les zones urbaines en 2020",
+       x="pctSET_supdrainee_2020",
+       y="Oxyg_dissous_YSI_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Conductivity_VS_zones_urbaines
+
+```{r Conductivity_VS_zones_urbaines}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctSET_supdrainee_1990, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la Conductivité et les zones urbaines en 1990",
+       x="pctSET_supdrainee_1990",
+       y="Conductivity_microS_cm")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctSET_supdrainee_2020, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la Conductivité et les zones urbaines en 2020",
+       x="pctSET_supdrainee_2020",
+       y="Conductivity_microS_cm")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## pH_VS_zones_urbaines
+
+```{r pH_VS_zones_urbaines}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctSET_supdrainee_1990, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le pH et les zones urbaines en 1990",
+       x="pctSET_supdrainee_1990",
+       y="pH_units")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctSET_supdrainee_2020, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le pH et les zones urbaines en 2020",
+       x="pctSET_supdrainee_2020",
+       y="pH_units")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## turbidité_VS_zones_urbaines
+
+```{r turbidité_VS_zones_urbaines}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctSET_supdrainee_1990, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la turbidité et les zones urbaines en 1990",
+       x="pctSET_supdrainee_1990",
+       y="Turbidity_NTU")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctSET_supdrainee_2020, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la turbidité et les zones urbaines en 2020",
+       x="pctSET_supdrainee_2020",
+       y="Turbidity_NTU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+## Couleur_VS_zones_urbaines
+
+```{r Couleur_VS_zones_urbaines}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctSET_supdrainee_1990, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la couleur et les zones urbaines en 1990",
+       x="pctSET_supdrainee_1990",
+       y="Colour_TCU")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctSET_supdrainee_2020, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la turbidité et les zones urbaines en 2020",
+       x="pctSET_supdrainee_2020",
+       y="Colour_TCU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+## COT_VS_zones_urbaines
+
+```{r COT_VS_zones_urbaines}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctSET_supdrainee_1990, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le COT et les zones urbaines en 1990",
+       x="pctSET_supdrainee_1990",
+       y="Carbon_Total_Organic_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctSET_supdrainee_2020, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le COT et les zones urbaines en 2020",
+       x="pctSET_supdrainee_2020",
+       y="Carbon_Total_Organic_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Coliforme_VS_zones_urbaines
+
+```{r Coliforme_VS_zones_urbaines}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctSET_supdrainee_1990, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre les coliformes et les zones urbaines en 1990",
+       x="pctSET_supdrainee_1990",
+       y="E.coli_MPN_100.mL")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctSET_supdrainee_2020, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre les coliformes et les zones urbaines en 2020",
+       x="pctSET_supdrainee_2020",
+       y="E.coli_MPN_100.mL")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## phosphore_VS_zones_urbaines
+
+```{r phosphore_VS_zones_urbaines}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctSET_supdrainee_1990, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le phosphore et les zones urbaines en 1990",
+       x="pctSET_supdrainee_1990",
+       y="Phosphorus_Total_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctSET_supdrainee_2020, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le phosphore et les zones urbaines en 2020",
+       x="pctSET_supdrainee_2020",
+       y="Phosphorus_Total_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Nitrate_VS_zones_urbaines
+
+```{r Nitrate_VS_zones_urbaines}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctSET_supdrainee_1990, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le nitrate et les zones urbaines en 1990",
+       x="pctSET_supdrainee_1990",
+       y="Nitrate_as_N_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctSET_supdrainee_2020, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le nitrate et les zones urbaines en 2020",
+       x="pctSET_supdrainee_2020",
+       y="Nitrate_as_N_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+ 
+#names(Pok2001.2022)
+```
+
+
+
+# Pourcentage de zones_sans_anthropisations_vs_paramètre
+
+```{r zones_sans_anthropisations_vs_Température }
+# Créer un graphique pour l'année 1990
+p1 <- ggplot(Pok2001.2022, aes(x=pctWIL_supdrainee_1990, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre Température et les zones urbaines en 1990",
+       x="pctWIL_supdrainee_1990",
+       y="Temp_eau_YSI_degC")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctWIL_km2_supdrainee_2020, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre Température et les zones urbaines en 2020",
+       x="pctWIL_km2_supdrainee_2020",
+       y="Temp_eau_YSI_degC")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+names(Pok2001.2022)
+
+```
+
+## Oxygène_dissous_VS_zones_sans_anthropisations
+
+```{r Oxygène_dissous_VS_zones_sans_anthropisations}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctWIL_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre l'Oxygène_dissous et les zones urbaines en 1990",
+       x="pctWIL_supdrainee_1990",
+       y="Oxyg_dissous_YSI_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctWIL_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre l'Oxygène_dissous et les zones urbaines en 2020",
+       x="pctWIL_supdrainee_2020",
+       y="Oxyg_dissous_YSI_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Conductivity_VS_zones_sans_anthropisations
+
+```{r Conductivity_VS_zones_sans_anthropisations}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctWIL_supdrainee_1990, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la Conductivité et les zones urbaines en 1990",
+       x="pctWIL_supdrainee_1990",
+       y="Conductivity_microS_cm")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctWIL_supdrainee_2020, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la Conductivité et les zones urbaines en 2020",
+       x="pctWIL_supdrainee_2020",
+       y="Conductivity_microS_cm")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## pH_VS_zones_sans_anthropisations
+
+```{r pH_VS_zones_sans_anthropisations}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctWIL_supdrainee_1990, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le pH et les zones urbaines en 1990",
+       x="pctWIL_supdrainee_1990",
+       y="pH_units")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctWIL_supdrainee_2020, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le pH et les zones urbaines en 2020",
+       x="pctWIL_supdrainee_2020",
+       y="pH_units")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## turbidité_VS_zones_sans_anthropisations
+
+```{r turbidité_VS_zones_sans_anthropisations}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctWIL_supdrainee_1990, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la turbidité et les zones urbaines en 1990",
+       x="pctWIL_supdrainee_1990",
+       y="Turbidity_NTU")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctWIL_supdrainee_2020, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la turbidité et les zones urbaines en 2020",
+       x="pctWIL_supdrainee_2020",
+       y="Turbidity_NTU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+## Couleur_VS_zones_sans_anthropisations
+
+```{r Couleur_VS_zones_sans_anthropisations}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctWIL_supdrainee_1990, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la couleur et les zones urbaines en 1990",
+       x="pctWIL_supdrainee_1990",
+       y="Colour_TCU")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctWIL_supdrainee_2020, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la turbidité et les zones urbaines en 2020",
+       x="pctWIL_supdrainee_2020",
+       y="Colour_TCU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+## COT_VS_zones_sans_anthropisations
+
+```{r COT_VS_zones_sans_anthropisations}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctWIL_supdrainee_1990, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le COT et les zones urbaines en 1990",
+       x="pctWIL_supdrainee_1990",
+       y="Carbon_Total_Organic_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctWIL_supdrainee_2020, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le COT et les zones urbaines en 2020",
+       x="pctWIL_supdrainee_2020",
+       y="Carbon_Total_Organic_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Coliforme_VS_zones_sans_anthropisations
+
+```{r Coliforme_VS_zones_sans_anthropisations}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctWIL_supdrainee_1990, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre les coliformes et les zones urbaines en 1990",
+       x="pctWIL_supdrainee_1990",
+       y="E.coli_MPN_100.mL")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctWIL_supdrainee_2020, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre les coliformes et les zones urbaines en 2020",
+       x="pctWIL_supdrainee_2020",
+       y="E.coli_MPN_100.mL")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## phosphore_VS_zones_sans_anthropisations
+
+```{r phosphore_VS_zones_sans_anthropisations}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctWIL_supdrainee_1990, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le phosphore et les zones urbaines en 1990",
+       x="pctWIL_supdrainee_1990",
+       y="Phosphorus_Total_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctWIL_supdrainee_2020, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le phosphore et les zones urbaines en 2020",
+       x="pctWIL_supdrainee_2020",
+       y="Phosphorus_Total_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Nitrate_VS_zones_sans_anthropisations
+
+```{r Nitrate_VS_zones_sans_anthropisations}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=pctWIL_supdrainee_1990, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le nitrate et les zones urbaines en 1990",
+       x="pctWIL_supdrainee_1990",
+       y="Nitrate_as_N_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctWIL_supdrainee_2020, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le nitrate et les zones urbaines en 2020",
+       x="pctWIL_supdrainee_2020",
+       y="Nitrate_as_N_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+ 
+
+```
+
+
+#essaie du code que Alain ma envoyé par courriel le lundi 15 à 15h46
+
+```{r Agriculture_vs_Temperature }
+
+# Reçu par courriel de Gaël 2024-07-15 lundi au campus pendant les vacances
+
+# Créer les variables par période:
+
+Period1$pctAGR_supdrainee_1990 = Period1$AGR_km2_supdrainee_1990 /
+
+Period1$sup_drainee_km2_sbv
+
+
+Period2$pctAGR_supdrainee_2020 = Period1$AGR_km2_supdrainee_2020 /
+
+Period1$sup_drainee_km2_sbv
+
+
+# Vérifier que les données existent:
+
+subset(Period1, select=c(Station2, Date, pctAGR_supdrainee_1990,Temp_eau_YSI_degC))
+
+subset(Period2, select=c(Station2, Date, pctAGR_supdrainee_2020,Temp_eau_YSI_degC))
+
+
+# Attention à prendre le tableau "Period1" pour les graphiques de 1990
+
+# plutôt que le tableau "Pok2001.2022".
+
+
+ggplot() +
+
+# Placer d'abord les points de la série "Period1":
+
+geom_point(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Temp_eau_YSI_degC,
+
+ color="P1", shape="P1")) +
+
+geom_smooth(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Temp_eau_YSI_degC),
+
+ method=lm, se=FALSE, color="red") +
+
+# Ajouter les points pour la série "Period2"
+
+ geom_point(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Temp_eau_YSI_degC,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Temp_eau_YSI_degC),
+
+ method=lm, se=FALSE, color="blue") +
+
+# Contrôler la couleur des séries
+
+ scale_color_manual(name="",
+
+values=c("P1"="red", "P2"="blue"),
+
+breaks=c("P1","P2")) +
+
+# Contrôler les symboles des séries
+
+scale_shape_manual(name="",
+
+values=c("P1"=1, "P2"=2),
+
+breaks=c("P1","P2")) +
+
+# Ajuster les titres
+
+ labs(title="Relation entre Température et l'agriculture en 1990",
+
+x="Agriculture (fraction de la superficie du bassin)",
+
+y="Temp_eau_YSI_degC") +
+
+# Utiliser un fond blanc
+
+theme_bw()
+
+
+```
+
+
+
+```{r pH_precip_selon_stations}
+
+
+# Montrer la relation pH vs. precip en distinguant les stations
+
+
+ggplot(data=Pok2001.2022, aes(x=precip.tot.14jours, y=pH_units,
+
+color=Station2, shape=Station2)) +
+
+scale_shape_manual(values=1:nlevels(Pok2001.2022$Station2)) +
+
+geom_point() +
+
+ theme_bw()
+
+
+```
+
+
+```{r pH_precip_selon_period}
+
+
+# Montrer la relation pH vs. precip en distinguant les périodes
+
+
+ggplot(data=Pok2001.2022, aes(x=precip.tot.14jours, y=pH_units,
+
+color=Period, shape=Period)) +
+
+geom_point() +
+
+ theme_bw()
+
+# La disposition des points reste la même, mais on voit qu'il a plus plu
+
+# en 2021-2022 qu'en 2001-2002.
+
+```
+
+
+```{r pH_precip_selon_ordre}
+
+
+
+# Montrer la relation pH vs. precip en distinguant les ordre
+
+# Ici, il faut utiliser "as.factor" pour convertir à la volée la
+
+# variable "Ordre" qui est de classe (type) "num" en facteur.
+
+
+
+ggplot(data=Pok2001.2022, aes(x=precip.tot.14jours, y=pH_units,
+
+color=as.factor(Ordre), shape=as.factor(Ordre))) +
+
+# Utiliser "geom_jitter" pour décaler les points de gauche à droite et ainsi
+
+# éviter que des points soient cachés derrière d'autres.
+
+geom_jitter() +
+
+ theme_bw()
+
+
+
+# On voit que les stations d'ordre 4 ou 5 ont généralement des valeurs
+
+# de pH plus élevées que les stations d'ordre 3.
+
+
+
+```
+
+#Agriculture_vs_Phosphore
+
+```{r Agriculture_vs_Phosphore}
+
+#names(Pok2001.2022)
+
+Period1$pctAGR_supdrainee_1990 = Period1$AGR_km2_supdrainee_1990 /
+Period1$sup_drainee_km2_sbv
+
+Period2$pctAGR_supdrainee_2020 = Period1$AGR_km2_supdrainee_2020 /
+Period1$sup_drainee_km2_sbv
+
+
+subset(Period1, select=c(Station2, Date, pctAGR_supdrainee_1990,Phosphorus_Total_mg_L))
+subset(Period2, select=c(Station2, Date, pctAGR_supdrainee_2020,Phosphorus_Total_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Phosphorus_Total_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Phosphorus_Total_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Phosphorus_Total_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Phosphorus_Total_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le phosphore et l'agriculture en 1990",
+x="Agriculture (fraction de la superficie du bassin)",
+y="Nitrate_as_N_mg_L") +
+
+theme_bw()
+
+```
+#Agriculture_vs_Nitrate
+
+```{r Agriculture_vs_Nitrate }
+
+#names(Pok2001.2022)
+
+Period1$pctAGR_supdrainee_1990 = Period1$AGR_km2_supdrainee_1990 /
+Period1$sup_drainee_km2_sbv
+
+Period2$pctAGR_supdrainee_2020 = Period1$AGR_km2_supdrainee_2020 /
+Period1$sup_drainee_km2_sbv
+
+
+subset(Period1, select=c(Station2, Date, pctAGR_supdrainee_1990,Nitrate_as_N_mg_L))
+subset(Period2, select=c(Station2, Date, pctAGR_supdrainee_2020,Nitrate_as_N_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Nitrate_as_N_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Nitrate_as_N_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Nitrate_as_N_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Nitrate_as_N_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="titre en commentaire",
+x="Agriculture (fraction de la superficie du bassin)",
+y="Nitrate_as_N_mg_L") +
+
+theme_bw()
+
+```
 # RÉFÉRENCES
 
 
