@@ -10,7 +10,8 @@ editor_options:
   chunk_output_type: console
 bibliography: rbilbio.bib
 ---
-jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj
+
+
 Tous les chunks jusqu'à "merge03" ne sont pas évalués (eval=F) puisque ceux-ci
 sont désormais inutiles après la création du fichier de données en format RData
 qui est chargé ci-dessous dans le chunk "charger_Pok2001.2022.RData".
@@ -18,6 +19,7 @@ qui est chargé ci-dessous dans le chunk "charger_Pok2001.2022.RData".
 
 
 ```{r Charger_librairies, include=F, message=F, warning=F}
+rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
 
 library("ggpubr") # pour la fonction ggarrange 
 library("ggplot2")
