@@ -19,7 +19,7 @@ qui est chargé ci-dessous dans le chunk "charger_Pok2001.2022.RData".
 
 
 ```{r Charger_librairies, include=F, message=F, warning=F}
-rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+
 
 library("ggpubr") # pour la fonction ggarrange 
 library("ggplot2")
@@ -3242,6 +3242,6898 @@ En général, les plus faibles concentrations ont été observées en 2001-2002.
 La concentration la plus basse est celle à la station 07.
 
 Les stations 05 et 10 sont un peu plus proches de l'autoroute, mais leurs berges sont très humides et sont des tourbières avec des plantes qui poussent aux alentours (je ne connais pas le nom des plantes, c'est pour cela que je ne les ai pas citées. 
+
+# ce 22 08 2024 à 16:33 j'ai collé les manquant du script et c'est a partie d'ici
+
+
+
+#Analyse du deuxième objectifs
+
+```{r, echo=f}
+names (Pok2001.2022) 
+
+
+```
+
+```{r, echo=F, message=F, warning=F}
+
+
+ggplot(aes(y=sup_drainee_km2_sbv, x=Station2, fill=Period), data=Pok2001.2022) + 
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),
+        axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold")) +
+  ggtitle("Variation  des Nitrates à 20 ans entre les deux Period")
+
+```
+```{r}
+# une régression linéaire pour analyser la relation entre la dureté de l'eau 
+#(mesurée en mg/L de CaCO3) et la station de mesure.
+koko <- lm(Pok2001.2022$sup_drainee_km2_sbv ~ Pok2001.2022$sup_drainee_km2_sbv)
+summary(koko)
+
+anova(koko)
+
+# Effectuer une analyse de variance pour quantifier la contribution des variables explicatives
+anova_model <- aov(sup_drainee_km2_sbv ~ NF_km2_supdrainee_1990 + NF_km2_supdrainee_2020, data = Pok2001.2022)
+summary(anova_model)
+
+```
+
+```{r, eval=F, echo=F, message=F, warning=F}
+Ecolig2002=ggplot(aes(y=longueur_route_km_sbv, x=Date, 
+                group=Station2, shape=Station2, color=Station2), data=Year2002) + 
+  scale_shape_manual(values=1:nlevels(Year2001$Station2)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B %Y")+
+  ggtitle("2002") +
+  theme_bw()
+Ecolig2002
+
+``` 
+
+```{r, echo=F}
+
+Drainageg2001_2022=ggplot(aes(y=NF_km2_supdrainee_2020 , x=NF_km2_supdrainee_1990), data=Pok2001.2022) + 
+  scale_shape_manual(values=1:nlevels(Pok2001.2022$Station2)) +
+  geom_line(aes(color=Station2, linetype=Station2)) + 
+  geom_point(aes(color=Station2, shape=Station2)) +
+   theme_bw()
+Drainageg2001_2022
+
+```
+
+
+```{r}
+
+#tapply(Pok2001.2022$sup_km2_sbv, Pok2001.2022$Period, summary)
+plot(Pok2001.2022$sup_km2_sbv~Pok2001.2022$sup_drainee_km2_sbv)
+cor.test(Pok2001.2022$sup_km2_sbv, Pok2001.2022$sup_drainee_km2_sbv,
+method=c('pearson'))
+
+```
+
+# Code Alain ce 03/07/2024
+
+```{r ordre2}
+# 2024-07-03
+# Créer un sous-tabeau avec les 12 stations (une seule date)
+Pok0=subset(Pok2001.2022, Date=="2001-08-01",
+       select=c(Station, Station2, Date, Long, Ordre, Dist_amont_station_m, 
+                Somme_ordre_1.5))
+dim(Pok0)
+```
+ 
+```{r ordonner_long}
+# 2024-07-03
+# Voici comment se suivent les stations de l'ouest vers l'est:
+Pok1=Pok0[order(Pok0$Long),]
+plot(Pok1$Long, pchr="")
+text(Pok1$Long,, Pok1$Station)
+ 
+ 
+```
+ 
+```{r ordonner_parcours_long}
+# 2024-07-03
+# Ordonner selon le parcours le plus long en amont de la station
+ 
+Pok2=Pok0[order(Pok0$Dist_amont_station_m),]
+plot(Pok2$Dist_amont_station_m, pch="")
+text(Pok2$Dist_amont_station_m,, Pok2$Station)
+ 
+```
+ 
+```{r ordonner_somme_parcours_amont}
+# 2024-07-03
+# Ordonner selon la somme des longueurs en amont
+ 
+Pok3=Pok0[order(Pok0$Somme_ordre_1.5),]
+plot(Pok3$Somme_ordre_1.5, pch="")
+text(Pok3$Somme_ordre_1.5,, Pok3$Station)
+ 
+```
+ 
+ 
+```{r analyses_chimie_bv_meteo}
+ 
+strwrap("2024-06-26 Le tableau complet des données de chimie, 
+        caractéristiques territoriales et météo est enfin assemblé
+        et prêt à être analysé.")
+
+# Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+  
+  
+scatterplot(Pok2001.2022$precip.tot.7jours,Pok2001.2022$Colour_TCU,   
+              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+ 
+scatterplot(Pok2001.2022$Somme_ordre_1.5,Pok2001.2022$Colour_TCU,   
+              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+
+scatterplot(Colour_TCU ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ 
+ 
+ggplot(Pok2001.2022,aes(x=Temp_eau_YSI_degC,y=Conductivity_microS_cm)) +
+geom_point()
+ 
+sub2=subset(Pok2001.2022,!is.na(Temp_eau_YSI_degC),
+            select=c(Ordre1_m_amont, Ordre2_m_amont,Ordre3_m_amont,
+                    Temp_eau_YSI_degC, Conductivity_microS_cm, pH_units,SS_mg_L))
+ 
+dim(sub2)
+pairs(sub2)
+#names(Pok2001.2022)
+ 
+```
+
+# Gaël essaie avec les données
+
+```{r analyses_chimie_bv_meteo}
+ 
+strwrap("2024-07-03 : Analyse de relation entre les variables")
+ 
+ 
+scatterplot(Pok2001.2022$precip.tot.7jours,Pok2001.2022$Colour_TCU,   
+              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=F)
+ 
+scatterplot(Pok2001.2022$Somme_ordre_1.5,Pok2001.2022$Colour_TCU,   
+              groups=Pok2001.2022$Year, smooth=F, by.groups=T, regLine=T)
+
+scatterplot(Colour_TCU ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ 
+ 
+ 
+ggplot(Pok2001.2022,aes(x=Temp_eau_YSI_degC,y=Conductivity_microS_cm)) +
+geom_point()
+ 
+sub2=subset(Pok2001.2022,!is.na(Temp_eau_YSI_degC),
+            select=c(Ordre1_m_amont, Ordre2_m_amont,Ordre3_m_amont,
+                    Temp_eau_YSI_degC, Conductivity_microS_cm, pH_units,SS_mg_L))
+ 
+dim(sub2)
+pairs(sub2)
+ 
+```
+
+# Ce lundi 08 juillets 2024
+## la surperficie forêt drainée en 2020 
+
+```{r analyses_la surperficie forêt drainée_vs_Paramètres, eval=FALSE}
+ 
+ scatterplot(pctAGR_km2_supdrainee_2020 ~ Temp_eau_YSI_degC | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ scatterplot(AGR_km2_supdrainee_2020 ~ Oxyg_dissous_YSI_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ scatterplot(AGR_km2_supdrainee_2020 ~ Conductivity_microS_cm | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ scatterplot(AGR_km2_supdrainee_2020 ~ pH_units | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ scatterplot(AGR_km2_supdrainee_2020 ~ Turbidity_NTU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ scatterplot(AGR_km2_supdrainee_2020 ~ Colour_TCU | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ scatterplot(AGR_km2_supdrainee_2020 ~ Carbon_Total_Organic_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ scatterplot(AGR_km2_supdrainee_2020 ~ E.coli_MPN_100.mL | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ scatterplot(AGR_km2_supdrainee_2020 ~ Phosphorus_Total_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+ scatterplot(AGR_km2_supdrainee_2020 ~ Nitrate_as_N_mg_L | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+
+# names(Pok2001.2022)
+```
+
+# Je crée  un graphique de dispersion pour montrer la relation entre mes variables dépendant (paramètres de la qualité de l'eau) et indépendant (Caractéristique territoriaux)
+
+# Superficie de terre brûlé et paramètre
+
+## Temp_VS_superficie_brûlé
+
+```{r Temp_VS_superficie_brûlé}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=B_km2_supdrainee_1990, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre Température et la superficies brûlé en 1990",
+       x="B_km2_supdrainee_1990",
+       y="Temp_eau_YSI_degC")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=B_km2_supdrainee_2020, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre Température et la superficies brûlé en 2020",
+       x="B_km2_supdrainee_2020",
+       y="Temp_eau_YSI_degC")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+
+```
+
+
+Voici une interprétation possible de ce graphique :
+
+La dispersion des point sur le graphique ne montre aucune tendance de hausse et de baisse. Cela suggère qu'il y absence de forte relation linéaire entre la température et les terres brûles en 1990
+
+Au point y=0, on 'a une concentration des points le long de la ligne horizontal ce qui suggère un absence de changement de la température quelque soit la valeur de la superficie brûlé.
+
+La répartition des points au dessus comme en dessous de la ligne horizontale, indique des variation des température pour difféentes valeur de terre brûlé en 1990.
+
+
+Ce graphique suggère que les terres brûler (déforestations ) n'a pas d'effet direct simple sur la température. Cela pourrait impliquer que d'autres facteurs pourraient influencer les changements de température
+
+
+
+```{r}
+
+# Installer et charger le package rpart
+if (!require(rpart)) {
+  install.packages("rpart")
+}
+library(rpart)
+
+# Supposons que df est votre dataframe
+# paramètre est la variable indépendante
+# TA, WL, MN, DE, AS, EF, SS, DD, SE, DR, AD, SF sont les variables dépendantes
+
+# Créer l'arbre de régression
+arbre <- rpart(Temp_eau_YSI_degC ~ Ordre + Dist_amont_station_m + Longueur_totale_m_sous_bassin + sup_km2_sbv + sup_drainee_km2_sbv + longueur_route_km_sbv + temp_min_C + temp_moy_C + temp_max_C + neige_tot_cm + pluie_tot_mm + precip_tot_mm + neige_sol_cm + Tmax2jours + Tmin2jours + precip.tot.2jours + precip.tot.21jours, data = Pok2001.2022, method = "anova")
+
+# Imprimer l'arbre de régression
+printcp(arbre)
+
+# Tracer l'arbre de régression
+plot(arbre, uniform = TRUE, main = "Arbre de régression pour paramètre")
+text(arbre, use.n = TRUE, all = TRUE, cex = .8)
+
+
+
+
+
+
+```
+
+
+
+
+```{r, eval=FALSE}
+
+# Installer et charger le package rpart
+if (!require(rpart)) {
+  install.packages("rpart")
+}
+library(rpart)
+
+# Supposons que df est votre dataframe
+# paramètre est la variable indépendante
+# TA, WL, MN, DE, AS, EF, SS, DD, SE, DR, AD, SF sont les variables dépendantes
+
+# Créer l'arbre de régression
+arbre <- rpart(Ordre ~ Temp_eau_YSI_degC + Oxyg_dissous_YSI_mg_L + Conductivity_microS_cm + pH_units + Turbidity_NTU + Colour_TCU + Carbon_Total_Organic_mg_L + E.coli_MPN_100.mL + Phosphorus_Total_mg_L + Nitrate_as_N_mg_L, data = Pok2001.2022, method = "anova")
+
+# Imprimer l'arbre de régression
+printcp(arbre)
+
+# Tracer l'arbre de régression
+plot(arbre, uniform = TRUE, main = "Arbre de régression pour paramètre")
+text(arbre, use.n = TRUE, all = TRUE, cex = .8)
+
+#
+
+#Ordre + Dist_amont_station_m + Longueur_totale_m_sous_bassin + sup_km2_sbv + sup_drainee_km2_sbv + longueur_route_km_sbv + temp_min_C + temp_moy_C + temp_max_C + neige_tot_cm + pluie_tot_mm + precip_tot_mm + neige_sol_cm + Tmax2jours + Tmin2jours + precip.tot.2jours + precip.tot.21jours
+```
+
+
+
+```{r}
+
+
+# Installer et charger le package rpart.plot
+if (!require(rpart.plot)) {
+  install.packages("rpart.plot")
+}
+library(rpart.plot)
+
+# Créer l'arbre de régression
+arbre <- rpart(Ordre ~ Temp_eau_YSI_degC + Oxyg_dissous_YSI_mg_L + Conductivity_microS_cm + pH_units + Turbidity_NTU + Colour_TCU + Carbon_Total_Organic_mg_L + E.coli_MPN_100.mL + Phosphorus_Total_mg_L + Nitrate_as_N_mg_L, data = Pok2001.2022, method = "anova")
+
+# Tracer un arbre de régression plus joli et très présentable
+rpart.plot(arbre, type = 3, extra = 101, under = TRUE, fallen.leaves = TRUE,
+           main = "Arbre de régression pour paramètre")
+
+
+
+
+```
+
+
+#Ce vendredi 12 juillet 2024 les variables en %
+
+
+# Superficie non forestière et paramètre
+
+## Temp_VS_Précip_2_21_jrs_total
+
+```{r Temp_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre Température et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Temp_eau_YSI_degC")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre Température et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Temp_eau_YSI_degC")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+
+```
+
+## Oxygène_dissous_VS_Précip_2_21_jrs_total 
+
+```{r Oxygène_dissous_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre l'Oxygène_dissous et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Oxyg_dissous_YSI_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre l'Oxygène_dissous et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Oxyg_dissous_YSI_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Conductivity_VS_Précip_2_21_jrs_total
+
+```{r Conductivity_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la Conductivité et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Conductivity_microS_cm")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la Conductivité et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Conductivity_microS_cm")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## pH_VS_Précip_2_21_jrs_total
+
+```{r pH_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le pH et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="pH_units")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le pH et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="pH_units")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## turbidité_VS_Précip_2_21_jrs_total
+
+```{r turbidité_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la turbidité et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Turbidity_NTU")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la turbidité et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Turbidity_NTU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+## Couleur_VS_Précip_2_21_jrs_total
+
+```{r Couleur_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la couleur et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Colour_TCU")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la turbidité et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Colour_TCU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+## COT_VS_Précip_2_21_jrs_total
+
+```{r COT_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le COT et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Carbon_Total_Organic_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le COT et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Carbon_Total_Organic_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Coliforme_VS_Précip_2_21_jrs_total
+
+```{r Coliforme_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre les coliformes et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="E.coli_MPN_100.mL")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre les coliformes et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="E.coli_MPN_100.mL")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## phosphore_VS_Précip_2_21_jrs_total
+
+```{r phosphore_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le phosphore et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Phosphorus_Total_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le phosphore et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Phosphorus_Total_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+## Nitrate_VS_Précip_2_21_jrs_total
+
+```{r Nitrate_VS_Précip_2_21_jrs_total}
+# Créer un graphique pour l'année 2000
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre le nitrate et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Nitrate_as_N_mg_L")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre le nitrate et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Nitrate_as_N_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+
+```
+
+
+# Ce lundi 15 juillet 2024
+
+#Je refaire le même schéma d'analyse juste avec les données de pourcentage 
+
+
+```{r }
+#je crée tout mes variable de % pour les sous variable de NF pour les deux anéées
+
+# AGR_km2_supdrainee_1990 et AGR_km2_supdrainee_2020
+
+Pok2001.2022$pctAGR_supdrainee_1990 = (Pok2001.2022$AGR_km2_supdrainee_1990 /      Pok2001.2022$sup_drainee_km2_sbv)
+
+Pok2001.2022$pctAGR_supdrainee_2020 = (Pok2001.2022$AGR_km2_supdrainee_2020 /      Pok2001.2022$sup_drainee_km2_sbv)
+
+
+# IND_km2_supdrainee_1990 et IND_km2_supdrainee_2020
+Pok2001.2022$pctIND_supdrainee_1990 = (Pok2001.2022$IND_km2_supdrainee_1990 /      Pok2001.2022$sup_drainee_km2_sbv)
+
+Pok2001.2022$pctIND_supdrainee_2020 = (Pok2001.2022$IND_km2_supdrainee_2020 /      Pok2001.2022$sup_drainee_km2_sbv)
+
+
+# INF_km2_supdrainee_1990 et INF_km2_supdrainee_2020
+Pok2001.2022$pctINF_supdrainee_1990 = (Pok2001.2022$INF_km2_supdrainee_1990 /      Pok2001.2022$sup_drainee_km2_sbv)
+
+Pok2001.2022$pctINF_supdrainee_2020 = (Pok2001.2022$INF_km2_supdrainee_2020 /      Pok2001.2022$sup_drainee_km2_sbv)
+
+
+# SET_km2_supdrainee_1990 et SET_km2_supdrainee_2020
+Pok2001.2022$pctSET_km2_supdrainee_1990 = (Pok2001.2022$SET_km2_supdrainee_1990 /      Pok2001.2022$sup_drainee_km2_sbv)
+
+Pok2001.2022$pctSET_supdrainee_2020 = (Pok2001.2022$SET_km2_supdrainee_2020 /      Pok2001.2022$sup_drainee_km2_sbv)
+
+#erreur :Erreur dans `$<-.data.frame`(`*tmp*`, pctREC_km2_supdrainee_1990, value = numeric(0)) :   le tableau de remplacement a 0 lignes, le tableau remplacé en a 192
+
+# REC_km2_supdrainee_1990 et REC_km2_supdrainee_2020
+#Pok2001.2022$pctREC_km2_supdrainee_1990 = (Pok2001.2022$REC_km2_supdrainee_1990 /      Pok2001.2022$sup_drainee_km2_sbv)
+
+Pok2001.2022$pctREC_supdrainee_2020 = (Pok2001.2022$REC_km2_supdrainee_2020 /      Pok2001.2022$sup_drainee_km2_sbv)
+
+#Erreur dans `$<-.data.frame`(`*tmp*`, pctWIL_supdrainee_1990, value = numeric(0)) :  le tableau de remplacement a 0 lignes, le tableau remplacé en a 192
+
+# WIL_km2_supdrainee_1990 et WIL_km2_supdrainee_2020
+#Pok2001.2022$pctWIL_supdrainee_1990 = (Pok2001.2022$WIL_km2_supdrainee_1990 /      Pok2001.2022$sup_drainee_km2_sbv)
+
+Pok2001.2022$pctWIL_supdrainee_2020 = (Pok2001.2022$WIL_km2_supdrainee_2020 /      Pok2001.2022$sup_drainee_km2_sbv)
+```
+
+
+
+
+
+
+#essaie du code que Alain ma envoyé par courriel le lundi 15 à 15h46
+
+```{r Agriculture_vs_Temperature }
+
+# Reçu par courriel de Gaël 2024-07-15 lundi au campus pendant les vacances
+
+# Créer les variables par période:
+
+Period1$pctAGR_supdrainee_1990 = Period1$AGR_km2_supdrainee_1990 /
+
+Period1$sup_drainee_km2_sbv
+
+
+Period2$pctAGR_supdrainee_2020 = Period1$AGR_km2_supdrainee_2020 /
+
+Period1$sup_drainee_km2_sbv
+
+
+# Vérifier que les données existent:
+
+subset(Period1, select=c(Station2, Date, pctAGR_supdrainee_1990,Temp_eau_YSI_degC))
+
+subset(Period2, select=c(Station2, Date, pctAGR_supdrainee_2020,Temp_eau_YSI_degC))
+
+
+# Attention à prendre le tableau "Period1" pour les graphiques de 1990
+
+# plutôt que le tableau "Pok2001.2022".
+
+
+ggplot() +
+
+# Placer d'abord les points de la série "Period1":
+
+geom_point(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Temp_eau_YSI_degC,
+
+ color="P1", shape="P1")) +
+
+geom_smooth(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Temp_eau_YSI_degC),
+
+ method=lm, se=FALSE, color="red") +
+
+# Ajouter les points pour la série "Period2"
+
+ geom_point(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Temp_eau_YSI_degC,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Temp_eau_YSI_degC),
+
+ method=lm, se=FALSE, color="blue") +
+
+# Contrôler la couleur des séries
+
+ scale_color_manual(name="",
+
+values=c("P1"="red", "P2"="blue"),
+
+breaks=c("P1","P2")) +
+
+# Contrôler les symboles des séries
+
+scale_shape_manual(name="",
+
+values=c("P1"=1, "P2"=2),
+
+breaks=c("P1","P2")) +
+
+# Ajuster les titres
+
+ labs(title="Relation entre Température et l'agriculture en 1990",
+
+x="Agriculture (fraction de la superficie du bassin)",
+
+y="Temp_eau_YSI_degC") +
+
+# Utiliser un fond blanc
+
+theme_bw()
+
+
+```
+
+
+
+```{r pH_precip_selon_stations}
+
+
+# Montrer la relation pH vs. precip en distinguant les stations
+
+
+ggplot(data=Pok2001.2022, aes(x=precip.tot.14jours, y=pH_units,
+
+color=Station2, shape=Station2)) +
+
+scale_shape_manual(values=1:nlevels(Pok2001.2022$Station2)) +
+
+geom_point() +
+
+ theme_bw()
+
+
+```
+
+
+```{r pH_precip_selon_period}
+
+
+# Montrer la relation pH vs. precip en distinguant les périodes
+
+
+ggplot(data=Pok2001.2022, aes(x=precip.tot.14jours, y=pH_units,
+
+color=Period, shape=Period)) +
+
+geom_point() +
+
+ theme_bw()
+
+# La disposition des points reste la même, mais on voit qu'il a plus plu
+
+# en 2021-2022 qu'en 2001-2002.
+
+```
+
+
+```{r pH_precip_selon_ordre}
+
+
+
+# Montrer la relation pH vs. precip en distinguant les ordre
+
+# Ici, il faut utiliser "as.factor" pour convertir à la volée la
+
+# variable "Ordre" qui est de classe (type) "num" en facteur.
+
+
+
+ggplot(data=Pok2001.2022, aes(x=precip.tot.14jours, y=pH_units,
+
+color=as.factor(Ordre), shape=as.factor(Ordre))) +
+
+# Utiliser "geom_jitter" pour décaler les points de gauche à droite et ainsi
+
+# éviter que des points soient cachés derrière d'autres.
+
+geom_jitter() +
+
+ theme_bw()
+
+
+
+# On voit que les stations d'ordre 4 ou 5 ont généralement des valeurs
+
+# de pH plus élevées que les stations d'ordre 3.
+
+
+
+```
+
+
+```{r}
+log10(Pok2001.2022$E.coli)
+# Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+#
+names(Pok2001.2022)
+```
+
+# NF: Non forêts
+
+```{r}
+
+# Crée la variable pourcentage
+
+
+Period1$pctNF_supdrainee_1990 = Period1$NF_km2_supdrainee_1990 /
+Period1$sup_drainee_km2_sbv
+
+Period2$pctNF_supdrainee_2020 = Period1$NF_km2_supdrainee_2020 /
+Period1$sup_drainee_km2_sbv
+
+```
+
+# non_foret_vs_température 
+
+```{r non_foret_vs_température }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctNF_supdrainee_1990,Temp_eau_YSI_degC))
+subset(Period2, select=c(Station2, Date, pctNF_supdrainee_2020,Temp_eau_YSI_degC))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctNF_supdrainee_1990, y=Temp_eau_YSI_degC,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctNF_supdrainee_1990, y=Temp_eau_YSI_degC),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctNF_supdrainee_2020, y=Temp_eau_YSI_degC,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctNF_supdrainee_2020, y=Temp_eau_YSI_degC),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la température et la variable non forêt en 1990",
+x="Non forêt (fraction de la superficie du bassin)",
+y="Temp_eau_YSI_degC") +
+
+theme_bw()
+
+```
+
+# non_foret_vs_Oxygène
+
+```{r non_foret_vs_Oxygène }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctNF_supdrainee_1990,Oxyg_dissous_YSI_mg_L))
+subset(Period2, select=c(Station2, Date, pctNF_supdrainee_2020,Oxyg_dissous_YSI_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctNF_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctNF_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctNF_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctNF_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la variable non foret et l'Oxygène dissous en 1990",
+x="non foret (fraction de la superficie du bassin)",
+y="Oxyg_dissous_YSI_mg_L") +
+
+theme_bw()
+
+```
+
+# non_foret_vs_conductivité
+
+```{r non_foret_vs_conductivité }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctNF_supdrainee_1990,Conductivity_microS_cm))
+subset(Period2, select=c(Station2, Date, pctNF_supdrainee_2020,Conductivity_microS_cm))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctNF_supdrainee_1990, y=Conductivity_microS_cm,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctNF_supdrainee_1990, y=Conductivity_microS_cm),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctNF_supdrainee_2020, y=Conductivity_microS_cm,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctNF_supdrainee_2020, y=Conductivity_microS_cm),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la conductivité et la variable non foret ",
+x="non foret (fraction de la superficie du bassin)",
+y="Conductivity_microS_cm") +
+
+theme_bw()
+
+```
+
+
+
+
+# non_foret_vs_pH
+
+```{r non_foret_vs_pH }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctNF_supdrainee_1990,pH_units))
+subset(Period2, select=c(Station2, Date, pctNF_supdrainee_2020,pH_units))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctNF_supdrainee_1990, y=pH_units,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctNF_supdrainee_1990, y=pH_units),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctNF_supdrainee_2020, y=pH_units,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctNF_supdrainee_2020, y=pH_units),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le pH et la variable non_foret en 1990",
+x="Non_foret (fraction de la superficie du bassin)",
+y="pH_units") +
+
+theme_bw()
+
+
+```
+
+# non_foret_vs_turbidité
+
+```{r non_foret_vs_turbidité }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctNF_supdrainee_1990,Turbidity_NTU))
+subset(Period2, select=c(Station2, Date, pctNF_supdrainee_2020,Turbidity_NTU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctNF_supdrainee_1990, y=log10(Turbidity_NTU),
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctNF_supdrainee_1990, y=log10(Turbidity_NTU)),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctNF_supdrainee_2020, y=log10(Turbidity_NTU),
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctNF_supdrainee_2020, y=log10(Turbidity_NTU)),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la turbidité et la variable non_foret",
+x="Non_foret (fraction de la superficie du bassin)",
+y="Turbidity_NTU") +
+
+theme_bw()
+
+```
+
+# non_foret_vs_Couleur
+
+```{r non_foret_vs_couleur }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctNF_supdrainee_1990,Colour_TCU))
+subset(Period2, select=c(Station2, Date, pctNF_supdrainee_2020,Colour_TCU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctNF_supdrainee_1990, y=Colour_TCU,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctNF_supdrainee_1990, y=Colour_TCU),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctNF_supdrainee_2020, y=Colour_TCU,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctNF_supdrainee_2020, y=Colour_TCU),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la couleur et la variable non_foret",
+x="Non_foret (fraction de la superficie du bassin)",
+y="Colour_TCU") +
+
+theme_bw()
+
+```
+
+# non_foret_vs_COT
+
+```{r non_foret_vs_COT }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctNF_supdrainee_1990,Carbon_Total_Organic_mg_L))
+subset(Period2, select=c(Station2, Date, pctNF_supdrainee_2020,Carbon_Total_Organic_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctNF_supdrainee_1990, y=Carbon_Total_Organic_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctNF_supdrainee_1990, y=Carbon_Total_Organic_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctNF_supdrainee_2020, y=Carbon_Total_Organic_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctNF_supdrainee_2020, y=Carbon_Total_Organic_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre les COT et la variable non_foret",
+x="Non_foret (fraction de la superficie du bassin)",
+y="Carbon_Total_Organic_mg_L") +
+
+theme_bw()
+
+```
+
+# non_foret_vs_coliforme
+
+```{r non_foret_vs_coliforme }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctNF_supdrainee_1990,E.coli_MPN_100.mL))
+subset(Period2, select=c(Station2, Date, pctNF_supdrainee_2020,E.coli_MPN_100.mL))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctNF_supdrainee_1990, y=log10(E.coli_MPN_100.mL),
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctNF_supdrainee_1990, y=log10(E.coli_MPN_100.mL)),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctNF_supdrainee_2020, y=log10(E.coli_MPN_100.mL),
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctNF_supdrainee_2020, y=log10(E.coli_MPN_100.mL),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre les coliformes et la variable non_foret",
+x="Non_foret (fraction de la superficie du bassin)",
+y="E.coli_MPN_100.mL") +
+
+theme_bw()
+
+```
+
+
+# non_foret_vs_phosphore
+
+```{r non_foret_vs_phosphore }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctNF_supdrainee_1990,Phosphorus_Total_mg_L))
+
+subset(Period2, select=c(Station2, Date, pctNF_supdrainee_2020,Phosphorus_Total_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctNF_supdrainee_1990, y=Phosphorus_Total_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctNF_supdrainee_1990, y=Phosphorus_Total_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctNF_supdrainee_2020, y=Phosphorus_Total_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctNF_supdrainee_2020, y=Phosphorus_Total_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le phosphore et la variable non_foret",
+x="Non_foret (fraction de la superficie du bassin)",
+y="Phosphorus_Total_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+# non_foret_vs_nitrate
+
+```{r non_foret_vs_nitrate }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctNF_supdrainee_1990,Nitrate_as_N_mg_L))
+subset(Period2, select=c(Station2, Date, pctNF_supdrainee_2020,Nitrate_as_N_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctNF_supdrainee_1990, y=Nitrate_as_N_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctNF_supdrainee_1990, y=Nitrate_as_N_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctNF_supdrainee_2020, y=Nitrate_as_N_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctNF_supdrainee_2020, y=Nitrate_as_N_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le nitrate et la variable non_foret",
+x="Non_foret (fraction de la superficie du bassin)",
+y="Nitrate_as_N_mg_L") +
+
+theme_bw()
+
+```
+
+
+# AGR: Agriculture
+
+```{r}
+#crée la variable pourcentage
+
+Period1$pctAGR_supdrainee_1990 = Period1$AGR_km2_supdrainee_1990 /
+Period1$sup_drainee_km2_sbv
+
+Period2$pctAGR_supdrainee_2020 = Period1$AGR_km2_supdrainee_2020 /
+Period1$sup_drainee_km2_sbv
+
+
+
+
+```
+
+# Agriculture_vs_température 
+
+```{r Agriculture_vs_température }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctAGR_supdrainee_1990,Temp_eau_YSI_degC))
+subset(Period2, select=c(Station2, Date, pctAGR_supdrainee_2020,Temp_eau_YSI_degC))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Temp_eau_YSI_degC,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Temp_eau_YSI_degC),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Temp_eau_YSI_degC,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Temp_eau_YSI_degC),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la température et l'agriculture en 1990",
+x="Agriculture (fraction de la superficie du bassin)",
+y="Temp_eau_YSI_degC") +
+
+theme_bw()
+
+```
+
+# Agriculture_vs_Oxygène
+
+```{r Agriculture_vs_Oxygène }
+
+#names(Pok2001.2022) 
+
+Period1$pctAGR_supdrainee_1990 = Period1$AGR_km2_supdrainee_1990 /
+Period1$sup_drainee_km2_sbv
+
+Period2$pctAGR_supdrainee_2020 = Period1$AGR_km2_supdrainee_2020 /
+Period1$sup_drainee_km2_sbv
+
+
+subset(Period1, select=c(Station2, Date, pctAGR_supdrainee_1990,Oxyg_dissous_YSI_mg_L))
+subset(Period2, select=c(Station2, Date, pctAGR_supdrainee_2020,Oxyg_dissous_YSI_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre l'oxygène et l'agriculture en 1990",
+x="Agriculture (fraction de la superficie du bassin)",
+y="Oxyg_dissous_YSI_mg_L") +
+
+theme_bw()
+
+```
+
+# Agriculture_vs_conductivité
+
+```{r Agriculture_vs_conductivité }
+
+#names(Pok2001.2022) 
+
+Period1$pctAGR_supdrainee_1990 = Period1$AGR_km2_supdrainee_1990 /
+Period1$sup_drainee_km2_sbv
+
+Period2$pctAGR_supdrainee_2020 = Period1$AGR_km2_supdrainee_2020 /
+Period1$sup_drainee_km2_sbv
+
+
+subset(Period1, select=c(Station2, Date, pctAGR_supdrainee_1990,Conductivity_microS_cm))
+subset(Period2, select=c(Station2, Date, pctAGR_supdrainee_2020,Conductivity_microS_cm))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Conductivity_microS_cm,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Conductivity_microS_cm),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Conductivity_microS_cm,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Conductivity_microS_cm),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la conductivité et l'agriculture en 1990",
+x="Agriculture (fraction de la superficie du bassin)",
+y="Conductivity_microS_cm") +
+
+theme_bw()
+
+```
+
+
+# Agriculture_vs_pH
+
+```{r Agriculture_vs_pH }
+
+#names(Pok2001.2022) 
+
+Period1$pctAGR_supdrainee_1990 = Period1$AGR_km2_supdrainee_1990 /
+Period1$sup_drainee_km2_sbv
+
+Period2$pctAGR_supdrainee_2020 = Period1$AGR_km2_supdrainee_2020 /
+Period1$sup_drainee_km2_sbv
+
+
+subset(Period1, select=c(Station2, Date, pctAGR_supdrainee_1990,pH_units))
+subset(Period2, select=c(Station2, Date, pctAGR_supdrainee_2020,pH_units))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctAGR_supdrainee_1990, y=pH_units,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctAGR_supdrainee_1990, y=pH_units),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctAGR_supdrainee_2020, y=pH_units,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctAGR_supdrainee_2020, y=pH_units),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le pH et l'agriculture en 1990",
+x="Agriculture (fraction de la superficie du bassin)",
+y="pH_units") +
+
+theme_bw()
+
+```
+
+# Agriculture_vs_turbidité
+
+```{r Agriculture_vs_turbidité }
+
+#names(Pok2001.2022) 
+
+Period1$pctAGR_supdrainee_1990 = Period1$AGR_km2_supdrainee_1990 /
+Period1$sup_drainee_km2_sbv
+
+Period2$pctAGR_supdrainee_2020 = Period1$AGR_km2_supdrainee_2020 /
+Period1$sup_drainee_km2_sbv
+
+
+subset(Period1, select=c(Station2, Date, pctAGR_supdrainee_1990,Turbidity_NTU))
+subset(Period2, select=c(Station2, Date, pctAGR_supdrainee_2020,Turbidity_NTU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctAGR_supdrainee_1990, y=log10(Turbidity_NTU),
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctAGR_supdrainee_1990, y=log10(Turbidity_NTU)),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctAGR_supdrainee_2020, y=log10(Turbidity_NTU),
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctAGR_supdrainee_2020, y=log10(Turbidity_NTU)),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la turbidité et l'agriculture en 1990",
+x="Agriculture (fraction de la superficie du bassin)",
+y="Turbidity_NTU") +
+
+theme_bw()
+
+```
+
+# Agriculture_vs_couleur
+
+```{r Agriculture_vs_Couleurs }
+
+#names(Pok2001.2022) 
+
+Period1$pctAGR_supdrainee_1990 = Period1$AGR_km2_supdrainee_1990 /
+Period1$sup_drainee_km2_sbv
+
+Period2$pctAGR_supdrainee_2020 = Period1$AGR_km2_supdrainee_2020 /
+Period1$sup_drainee_km2_sbv
+
+
+subset(Period1, select=c(Station2, Date, pctAGR_supdrainee_1990,Colour_TCU))
+subset(Period2, select=c(Station2, Date, pctAGR_supdrainee_2020,Colour_TCU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Colour_TCU,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Colour_TCU),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Colour_TCU,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Colour_TCU),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la couleur et l'agriculture en 1990",
+x="Agriculture (fraction de la superficie du bassin)",
+y="Colour_TCU") +
+
+theme_bw()
+
+```
+
+# Agriculture_vs_COT
+
+```{r Agriculture_vs_COT}
+
+#names(Pok2001.2022)
+
+Period1$pctAGR_supdrainee_1990 = Period1$AGR_km2_supdrainee_1990 /
+Period1$sup_drainee_km2_sbv
+
+Period2$pctAGR_supdrainee_2020 = Period1$AGR_km2_supdrainee_2020 /
+Period1$sup_drainee_km2_sbv
+
+
+subset(Period1, select=c(Station2, Date, pctAGR_supdrainee_1990,Carbon_Total_Organic_mg_L))
+subset(Period2, select=c(Station2, Date, pctAGR_supdrainee_2020,Carbon_Total_Organic_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Carbon_Total_Organic_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Carbon_Total_Organic_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Carbon_Total_Organic_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Carbon_Total_Organic_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre les carbones organique totale et l'agriculture",
+x="Agriculture (fraction de la superficie du bassin)",
+y="Carbon_Total_Organic_mg_L") +
+
+theme_bw()
+
+```
+
+# Agriculture_vs_Coliforme
+
+```{r Agriculture_vs_Coliforme}
+
+#names(Pok2001.2022)
+
+Period1$pctAGR_supdrainee_1990 = Period1$AGR_km2_supdrainee_1990 /
+Period1$sup_drainee_km2_sbv
+
+Period2$pctAGR_supdrainee_2020 = Period1$AGR_km2_supdrainee_2020 /
+Period1$sup_drainee_km2_sbv
+
+
+subset(Period1, select=c(Station2, Date, pctAGR_supdrainee_1990,E.coli_MPN_100.mL))
+subset(Period2, select=c(Station2, Date, pctAGR_supdrainee_2020,E.coli_MPN_100.mL))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctAGR_supdrainee_1990, y=E.coli_MPN_100.mL,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctAGR_supdrainee_1990, y=E.coli_MPN_100.mL),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctAGR_supdrainee_2020, y=E.coli_MPN_100.mL,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctAGR_supdrainee_2020, y=E.coli_MPN_100.mL),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre les coliformes et l'agriculture en 1990",
+x="Agriculture (fraction de la superficie du bassin)",
+y="E.coli_MPN_100.mL") +
+
+theme_bw()
+
+```
+
+#Agriculture_vs_Phosphore
+
+```{r Agriculture_vs_Phosphore}
+
+#names(Pok2001.2022)
+
+Period1$pctAGR_supdrainee_1990 = Period1$AGR_km2_supdrainee_1990 /
+Period1$sup_drainee_km2_sbv
+
+Period2$pctAGR_supdrainee_2020 = Period1$AGR_km2_supdrainee_2020 /
+Period1$sup_drainee_km2_sbv
+
+
+subset(Period1, select=c(Station2, Date, pctAGR_supdrainee_1990,Phosphorus_Total_mg_L))
+subset(Period2, select=c(Station2, Date, pctAGR_supdrainee_2020,Phosphorus_Total_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Phosphorus_Total_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Phosphorus_Total_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Phosphorus_Total_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Phosphorus_Total_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le phosphore et l'agriculture en 1990",
+x="Agriculture (fraction de la superficie du bassin)",
+y="Phosphorus_Total_mg_L") +
+
+theme_bw()
+
+```
+#Agriculture_vs_Nitrate
+
+```{r Agriculture_vs_Nitrate }
+
+#names(Pok2001.2022)
+
+Period1$pctAGR_supdrainee_1990 = Period1$AGR_km2_supdrainee_1990 /
+Period1$sup_drainee_km2_sbv
+
+Period2$pctAGR_supdrainee_2020 = Period1$AGR_km2_supdrainee_2020 /
+Period1$sup_drainee_km2_sbv
+
+
+subset(Period1, select=c(Station2, Date, pctAGR_supdrainee_1990,Nitrate_as_N_mg_L))
+subset(Period2, select=c(Station2, Date, pctAGR_supdrainee_2020,Nitrate_as_N_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Nitrate_as_N_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Nitrate_as_N_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Nitrate_as_N_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Nitrate_as_N_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="titre en commentaire",
+x="Agriculture (fraction de la superficie du bassin)",
+y="Nitrate_as_N_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+# IND: zone industriel 
+
+```{r}
+
+# Crée la variable pourcentage
+
+
+Period1$pctIND_supdrainee_1990 = Period1$IND_km2_supdrainee_1990 /
+Period1$sup_drainee_km2_sbv
+
+Period2$pctIND_supdrainee_2020 = Period1$IND_km2_supdrainee_2020 /
+Period1$sup_drainee_km2_sbv
+
+```
+
+# Zone_industriel_vs_température 
+
+```{r Zone_industriel_vs_température }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctIND_supdrainee_1990,Temp_eau_YSI_degC))
+subset(Period2, select=c(Station2, Date, pctIND_supdrainee_2020,Temp_eau_YSI_degC))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctIND_supdrainee_1990, y=log10(Temp_eau_YSI_degC),
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctIND_supdrainee_1990, y=log10(Temp_eau_YSI_degC)),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctIND_supdrainee_2020, y=log10(Temp_eau_YSI_degC ,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctIND_supdrainee_2020, y=log10(Temp_eau_YSI_degC)),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la température et la Zone industriel",
+x=" Zone industriel (fraction de la superficie du bassin)",
+y="Temp_eau_YSI_degC") +
+
+theme_bw()
+
+```
+
+# Zone_industriel_vs_Oxyg_dissous 
+
+```{r Zone_industriel_vs_Oxyg_dissous }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctIND_supdrainee_1990,Oxyg_dissous_YSI_mg_L))
+subset(Period2, select=c(Station2, Date, pctIND_supdrainee_2020,Oxyg_dissous_YSI_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctIND_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctIND_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctIND_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctIND_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre l'oxygène dissous et la Zone industriel",
+x=" Zone industriel (fraction de la superficie du bassin)",
+y="Oxyg_dissous_YSI_mg_L") +
+
+theme_bw()
+
+```
+
+
+# Zone_industriel_vs_Conductivité 
+
+```{r Zone_industriel_vs_Conductivité}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctIND_supdrainee_1990,Conductivity_microS_cm))
+subset(Period2, select=c(Station2, Date, pctIND_supdrainee_2020,Conductivity_microS_cm))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctIND_supdrainee_1990, y=Conductivity_microS_cm,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctIND_supdrainee_1990, y=Conductivity_microS_cm),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctIND_supdrainee_2020, y=Conductivity_microS_cm,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctIND_supdrainee_2020, y=Conductivity_microS_cm),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la conductivité et la Zone industriel",
+x=" Zone industriel (fraction de la superficie du bassin)",
+y="Conductivity_microS_cm") +
+
+theme_bw()
+
+```
+
+
+
+# Zone_industriel_vs_pH 
+
+```{r Zone_industriel_vs_pH}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctIND_supdrainee_1990,pH_units))
+subset(Period2, select=c(Station2, Date, pctIND_supdrainee_2020,pH_units))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctIND_supdrainee_1990, y=pH_units,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctIND_supdrainee_1990, y=pH_units),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctIND_supdrainee_2020, y=pH_units,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctIND_supdrainee_2020, y=pH_units),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le potentiel d'hydrogène et la Zone industriel",
+x=" Zone industriel (fraction de la superficie du bassin)",
+y="pH_units") +
+
+theme_bw()
+
+```
+
+
+
+# Zone_industriel_vs_turbidité
+
+```{r Zone_industriel_vs_turbidité }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctIND_supdrainee_1990,Turbidity_NTU))
+subset(Period2, select=c(Station2, Date, pctIND_supdrainee_2020,Turbidity_NTU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctIND_supdrainee_1990, y=Turbidity_NTU,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctIND_supdrainee_1990, y=Turbidity_NTU),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctIND_supdrainee_2020, y=Turbidity_NTU,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctIND_supdrainee_2020, y=Turbidity_NTU),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la turbidité et la Zone industriel",
+x=" Zone industriel (fraction de la superficie du bassin)",
+y="Turbidity_NTU") +
+
+theme_bw()
+
+```
+
+
+# Zone_industriel_vs_couleur 
+
+```{r Zone_industriel_vs_couleur }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctIND_supdrainee_1990,Colour_TCU))
+subset(Period2, select=c(Station2, Date, pctIND_supdrainee_2020,Colour_TCU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctIND_supdrainee_1990, y=Colour_TCU,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctIND_supdrainee_1990, y=Colour_TCU),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctIND_supdrainee_2020, y=Colour_TCU,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctIND_supdrainee_2020, y=Colour_TCU),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la couleur et la Zone industriel",
+x=" Zone industriel (fraction de la superficie du bassin)",
+y="Colour_TCU") +
+
+theme_bw()
+
+```
+
+
+# Zone_industriel_vs_COT 
+
+```{r Zone_industriel_vs_COT }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctIND_supdrainee_1990,Carbon_Total_Organic_mg_L))
+subset(Period2, select=c(Station2, Date, pctIND_supdrainee_2020,Carbon_Total_Organic_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctIND_supdrainee_1990, y=log10(Carbon_Total_Organic_mg_L),
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctIND_supdrainee_1990, y=log10(Carbon_Total_Organic_mg_L)),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctIND_supdrainee_2020, y=log10(Carbon_Total_Organic_mg_L),
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctIND_supdrainee_2020, y=log10(Carbon_Total_Organic_mg_L)),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le carbone organique totale et la Zone industriel",
+x=" Zone industriel (fraction de la superficie du bassin)",
+y="Carbon_Total_Organic_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+# Zone_industriel_vs_coliforme 
+
+```{r Zone_industriel_vs_coliforme }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctIND_supdrainee_1990,E.coli_MPN_100.mL))
+subset(Period2, select=c(Station2, Date, pctIND_supdrainee_2020,E.coli_MPN_100.mL))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctIND_supdrainee_1990, y=log10(E.coli_MPN_100.mL),
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctIND_supdrainee_1990, y=log10(E.coli_MPN_100.mL)),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctIND_supdrainee_2020, y=log10(E.coli_MPN_100.mL),
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctIND_supdrainee_2020, y=log10(E.coli_MPN_100.mL)),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre les coliformes et la Zone industriel",
+x=" Zone industriel (fraction de la superficie du bassin)",
+y="E.coli_MPN_100.mL") +
+
+theme_bw()
+
+```
+
+
+
+# Zone_industriel_vs_phosphore 
+
+```{r Zone_industriel_vs_phosphore }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctIND_supdrainee_1990,Phosphorus_Total_mg_L))
+subset(Period2, select=c(Station2, Date, pctIND_supdrainee_2020,Phosphorus_Total_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctIND_supdrainee_1990, y=Phosphorus_Total_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctIND_supdrainee_1990, y=Phosphorus_Total_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctIND_supdrainee_2020, y=Phosphorus_Total_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctIND_supdrainee_2020, y=Phosphorus_Total_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le phosphore et la Zone industriel",
+x=" Zone industriel (fraction de la superficie du bassin)",
+y="Phosphorus_Total_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+# Zone_industriel_vs_nitrate 
+
+```{r Zone_industriel_vs_nitrate }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctIND_supdrainee_1990,Nitrate_as_N_mg_L))
+subset(Period2, select=c(Station2, Date, pctIND_supdrainee_2020,Nitrate_as_N_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctIND_supdrainee_1990, y=Nitrate_as_N_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctIND_supdrainee_1990, y=Nitrate_as_N_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctIND_supdrainee_2020, y=Nitrate_as_N_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctIND_supdrainee_2020, y=Nitrate_as_N_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le nitrate et la Zone industriel",
+x=" Zone industriel (fraction de la superficie du bassin)",
+y="Nitrate_as_N_mg_L") +
+
+theme_bw()
+
+```
+
+# INF: Infrastructures 
+
+```{r}
+
+# Crée la variable pourcentage
+
+
+Period1$pctINF_supdrainee_1990 = Period1$INF_km2_supdrainee_1990 /
+Period1$sup_drainee_km2_sbv
+
+Period2$pctINF_supdrainee_2020 = Period1$INF_km2_supdrainee_2020 /
+Period1$sup_drainee_km2_sbv
+
+```
+
+# Infrastructures_vs_température 
+
+```{r Infrastructures_vs_température }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctINF_supdrainee_1990,Temp_eau_YSI_degC))
+subset(Period2, select=c(Station2, Date, pctINF_supdrainee_2020,Temp_eau_YSI_degC))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctINF_supdrainee_1990, y=Temp_eau_YSI_degC,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctINF_supdrainee_1990, y=Temp_eau_YSI_degC),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctINF_supdrainee_2020, y=Temp_eau_YSI_degC,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctINF_supdrainee_2020, y=Temp_eau_YSI_degC),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la température et les infrastructures",
+x=" Les infrastructures (fraction de la superficie du bassin)",
+y="Temp_eau_YSI_degC") +
+
+theme_bw()
+
+```
+
+
+# Infrastructures_vs_Oxyg_dissous 
+
+```{r Infrastructures_vs_Oxyg_dissous }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctINF_supdrainee_1990,Oxyg_dissous_YSI_mg_L))
+subset(Period2, select=c(Station2, Date, pctINF_supdrainee_2020,Oxyg_dissous_YSI_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctINF_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctINF_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctINF_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctINF_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre l'oxygène dissous et les infrastructures",
+x=" Les infrastructures (fraction de la superficie du bassin)",
+y="Oxyg_dissous_YSI_mg_L") +
+
+theme_bw()
+
+```
+
+# Infrastructures_vs_Conductivité 
+
+```{r Infrastructures_vs_Conductivité }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctINF_supdrainee_1990,Conductivity_microS_cm))
+subset(Period2, select=c(Station2, Date, pctINF_supdrainee_2020,Conductivity_microS_cm))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctINF_supdrainee_1990, y=Conductivity_microS_cm,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctINF_supdrainee_1990, y=Conductivity_microS_cm),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctINF_supdrainee_2020, y=Conductivity_microS_cm,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctINF_supdrainee_2020, y=Conductivity_microS_cm),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la conductivité et les infrastructures",
+x=" Les infrastructures (fraction de la superficie du bassin)",
+y="Conductivity_microS_cm") +
+
+theme_bw()
+
+```
+
+# Infrastructures_vs_pH
+
+```{r Infrastructures_vs_pH }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctINF_supdrainee_1990,pH_units))
+subset(Period2, select=c(Station2, Date, pctINF_supdrainee_2020,pH_units))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctINF_supdrainee_1990, y=pH_units,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctINF_supdrainee_1990, y=pH_units),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctINF_supdrainee_2020, y=pH_units,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctINF_supdrainee_2020, y=pH_units),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le pH et les infrastructures",
+x=" Les infrastructures (fraction de la superficie du bassin)",
+y="pH_units") +
+
+theme_bw()
+
+```
+# Infrastructures_vs_turbidité
+
+```{r Infrastructures_vs_turbidité}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctINF_supdrainee_1990,Turbidity_NTU))
+subset(Period2, select=c(Station2, Date, pctINF_supdrainee_2020,Turbidity_NTU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctINF_supdrainee_1990, y=log10(Turbidity_NTU),
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctINF_supdrainee_1990, y=log10(Turbidity_NTU)),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctINF_supdrainee_2020, y=log10(Turbidity_NTU),
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctINF_supdrainee_2020, y=log10(Turbidity_NTU)),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la turbidité et les infrastructures",
+x=" Les infrastructures (fraction de la superficie du bassin)",
+y="Turbidity_NTU") +
+
+theme_bw()
+
+```
+
+
+# Infrastructures_vs_couleur
+
+```{r Infrastructures_vs_couleur}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctINF_supdrainee_1990,Colour_TCU))
+subset(Period2, select=c(Station2, Date, pctINF_supdrainee_2020,Colour_TCU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctINF_supdrainee_1990, y=Colour_TCU,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctINF_supdrainee_1990, y=Colour_TCU),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctINF_supdrainee_2020, y=Colour_TCU,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctINF_supdrainee_2020, y=Colour_TCU),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la couleur et les infrastructures",
+x=" Les infrastructures (fraction de la superficie du bassin)",
+y="Colour_TCU") +
+
+theme_bw()
+
+```
+
+
+# Infrastructures_vs_COT
+
+```{r Infrastructures_vs_COT}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctINF_supdrainee_1990,Carbon_Total_Organic_mg_L))
+subset(Period2, select=c(Station2, Date, pctINF_supdrainee_2020,Carbon_Total_Organic_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctINF_supdrainee_1990, y=Carbon_Total_Organic_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctINF_supdrainee_1990, y=Carbon_Total_Organic_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctINF_supdrainee_2020, y=Carbon_Total_Organic_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctINF_supdrainee_2020, y=Carbon_Total_Organic_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la COT et les infrastructures",
+x=" Les infrastructures (fraction de la superficie du bassin)",
+y="Carbon_Total_Organic_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+
+# Infrastructures_vs_Coliforme
+
+```{r Infrastructures_vs_Coliforme}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctINF_supdrainee_1990,E.coli_MPN_100.mL))
+subset(Period2, select=c(Station2, Date, pctINF_supdrainee_2020,E.coli_MPN_100.mL))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctINF_supdrainee_1990, y=log10(E.coli_MPN_100.mL),
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctINF_supdrainee_1990, y=log10(E.coli_MPN_100.mL)),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctINF_supdrainee_2020, y=log10(E.coli_MPN_100.mL),
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctINF_supdrainee_2020, y=log10(E.coli_MPN_100.mL)),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre les coliformes et les infrastructures",
+x=" Les infrastructures (fraction de la superficie du bassin)",
+y="E.coli_MPN_100.mL") +
+
+theme_bw()
+
+
+```
+
+
+# Infrastructures_vs_phosphore
+
+```{r Infrastructures_vs_phophore}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctINF_supdrainee_1990,Phosphorus_Total_mg_L))
+subset(Period2, select=c(Station2, Date, pctINF_supdrainee_2020,Phosphorus_Total_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctINF_supdrainee_1990, y=Phosphorus_Total_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctINF_supdrainee_1990, y=Phosphorus_Total_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctINF_supdrainee_2020, y=Phosphorus_Total_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctINF_supdrainee_2020, y=Phosphorus_Total_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le phosphore et les infrastructures",
+x=" Les infrastructures (fraction de la superficie du bassin)",
+y="Phosphorus_Total_mg_L") +
+
+theme_bw()
+
+
+```
+
+
+
+# Infrastructures_vs_nitrate
+
+```{r Infrastructures_vs_nitrate}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctINF_supdrainee_1990,Nitrate_as_N_mg_L))
+subset(Period2, select=c(Station2, Date, pctINF_supdrainee_2020,Nitrate_as_N_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctINF_supdrainee_1990, y=Nitrate_as_N_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctINF_supdrainee_1990, y=Nitrate_as_N_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctINF_supdrainee_2020, y=Nitrate_as_N_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctINF_supdrainee_2020, y=Nitrate_as_N_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le nitrate et les infrastructures",
+x=" Les infrastructures (fraction de la superficie du bassin)",
+y="Nitrate_as_N_mg_L") +
+
+theme_bw()
+
+
+```
+
+
+
+# SET: Zone urbaine
+
+```{r}
+
+# Crée la variable pourcentage
+
+
+Period1$pctSET_supdrainee_1990 = Period1$SET_km2_supdrainee_1990 /
+Period1$sup_drainee_km2_sbv
+
+Period2$pctSET_supdrainee_2020 = Period1$SET_km2_supdrainee_2020 /
+Period1$sup_drainee_km2_sbv
+
+```
+
+# Zone_urbaine_vs_température 
+
+```{r Zone_urbaine_vs_température }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctSET_supdrainee_1990,Temp_eau_YSI_degC))
+subset(Period2, select=c(Station2, Date, pctSET_supdrainee_2020,Temp_eau_YSI_degC))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctSET_supdrainee_1990, y=Temp_eau_YSI_degC,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctSET_supdrainee_1990, y=Temp_eau_YSI_degC),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctSET_supdrainee_2020, y=Temp_eau_YSI_degC,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctSET_supdrainee_2020, y=Temp_eau_YSI_degC),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la température et les Zones urbaines",
+x=" Les Zones urbaines (fraction de la superficie du bassin)",
+y="Temp_eau_YSI_degC") +
+
+theme_bw()
+
+```
+
+
+# Zone_urbaine_vs_oxygène dissous 
+
+```{r Zone_urbaine_vs_oxygène_dissous }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctSET_supdrainee_1990,Oxyg_dissous_YSI_mg_L))
+subset(Period2, select=c(Station2, Date, pctSET_supdrainee_2020,Oxyg_dissous_YSI_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctSET_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctSET_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctSET_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctSET_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre l'oxygène dissous et les Zones urbaines",
+x=" Les Zones urbaines (fraction de la superficie du bassin)",
+y="Oxyg_dissous_YSI_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+# Zone_urbaine_vs_Conductivité
+
+```{r Zone_urbaine_vs_Conductivité }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctSET_supdrainee_1990,Conductivity_microS_cm))
+subset(Period2, select=c(Station2, Date, pctSET_supdrainee_2020,Conductivity_microS_cm))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctSET_supdrainee_1990, y=Conductivity_microS_cm,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctSET_supdrainee_1990, y=Conductivity_microS_cm),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctSET_supdrainee_2020, y=Conductivity_microS_cm,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctSET_supdrainee_2020, y=Conductivity_microS_cm),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la conductivité et les Zones urbaines",
+x=" Les Zones urbaines (fraction de la superficie du bassin)",
+y="Conductivity_microS_cm") +
+
+theme_bw()
+
+```
+
+
+
+
+# Zone_urbaine_vs_pH
+
+```{r Zone_urbaine_vs_pH }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctSET_supdrainee_1990,pH_units))
+subset(Period2, select=c(Station2, Date, pctSET_supdrainee_2020,pH_units))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctSET_supdrainee_1990, y=pH_units,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctSET_supdrainee_1990, y=pH_units),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctSET_supdrainee_2020, y=pH_units,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctSET_supdrainee_2020, y=pH_units),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le potentiel d'hydrogène et les Zones urbaines",
+x=" Les Zones urbaines (fraction de la superficie du bassin)",
+y="pH_units") +
+
+theme_bw()
+
+```
+
+
+
+# Zone_urbaine_vs_turbidité
+
+```{r Zone_urbaine_vs_turbidité }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctSET_supdrainee_1990,Turbidity_NTU))
+subset(Period2, select=c(Station2, Date, pctSET_supdrainee_2020,Turbidity_NTU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctSET_supdrainee_1990, y=log10(Turbidity_NTU),
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctSET_supdrainee_1990, y=log10(Turbidity_NTU)),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctSET_supdrainee_2020, y=log10(Turbidity_NTU),
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctSET_supdrainee_2020, y=log10(Turbidity_NTU)),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la turbidité et les Zones urbaines",
+x=" Les Zones urbaines (fraction de la superficie du bassin)",
+y="Turbidity_NTU") +
+
+theme_bw()
+
+```
+
+
+
+
+# Zone_urbaine_vs_Couleur
+
+```{r Zone_urbaine_vs_Couleur }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctSET_supdrainee_1990,Colour_TCU))
+subset(Period2, select=c(Station2, Date, pctSET_supdrainee_2020,Colour_TCU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctSET_supdrainee_1990, y=Colour_TCU,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctSET_supdrainee_1990, y=Colour_TCU),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctSET_supdrainee_2020, y=Colour_TCU,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctSET_supdrainee_2020, y=Colour_TCU),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la couleur et les Zones urbaines",
+x=" Les Zones urbaines (fraction de la superficie du bassin)",
+y="Colour_TCU") +
+
+theme_bw()
+
+```
+
+
+
+
+
+# Zone_urbaine_vs_COT
+
+```{r Zone_urbaine_vs_COT }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctSET_supdrainee_1990,Carbon_Total_Organic_mg_L))
+subset(Period2, select=c(Station2, Date, pctSET_supdrainee_2020,Carbon_Total_Organic_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctSET_supdrainee_1990, y=log10(Carbon_Total_Organic_mg_L),
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctSET_supdrainee_1990, y=log10(Carbon_Total_Organic_mg_L)),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctSET_supdrainee_2020, y=log10(Carbon_Total_Organic_mg_L),
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctSET_supdrainee_2020, y=log10(Carbon_Total_Organic_mg_L)),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le COT et les Zones urbaines",
+x=" Les Zones urbaines (fraction de la superficie du bassin)",
+y="Carbon_Total_Organic_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+
+# Zone_urbaine_vs_coliforme
+
+```{r Zone_urbaine_vs_coliforme }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctSET_supdrainee_1990,E.coli_MPN_100.mL))
+subset(Period2, select=c(Station2, Date, pctSET_supdrainee_2020,E.coli_MPN_100.mL))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctSET_supdrainee_1990, y=log10(E.coli_MPN_100.mL),
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctSET_supdrainee_1990, y=log10(E.coli_MPN_100.mL)),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctSET_supdrainee_2020, y=log10(E.coli_MPN_100.mL),
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctSET_supdrainee_2020, y=log10(E.coli_MPN_100.mL)),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre les coliformes et les Zones urbaines",
+x=" Les Zones urbaines (fraction de la superficie du bassin)",
+y="E.coli_MPN_100.mL") +
+
+theme_bw()
+
+```
+
+
+
+
+# Zone_urbaine_vs_phosphore
+
+```{r Zone_urbaine_vs_phosphore }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctSET_supdrainee_1990,Phosphorus_Total_mg_L))
+subset(Period2, select=c(Station2, Date, pctSET_supdrainee_2020,Phosphorus_Total_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctSET_supdrainee_1990, y=Phosphorus_Total_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctSET_supdrainee_1990, y=Phosphorus_Total_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctSET_supdrainee_2020, y=Phosphorus_Total_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctSET_supdrainee_2020, y=Phosphorus_Total_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le phosphore et les Zones urbaines",
+x=" Les Zones urbaines (fraction de la superficie du bassin)",
+y="Phosphorus_Total_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+
+# Zone_urbaine_vs_nitratre
+
+```{r Zone_urbaine_vs_nitrate }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctSET_supdrainee_1990,Nitrate_as_N_mg_L))
+subset(Period2, select=c(Station2, Date, pctSET_supdrainee_2020,Nitrate_as_N_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctSET_supdrainee_1990, y=Nitrate_as_N_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctSET_supdrainee_1990, y=Nitrate_as_N_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctSET_supdrainee_2020, y=Nitrate_as_N_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctSET_supdrainee_2020, y=Nitrate_as_N_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le nitrate et les Zones urbaines",
+x=" Les Zones urbaines (fraction de la superficie du bassin)",
+y="Nitrate_as_N_mg_L") +
+
+theme_bw()
+
+```
+
+
+# REC: Zone récréative
+
+```{r}
+
+# Crée la variable pourcentage
+
+
+#Period1$pctREC_supdrainee_1990 = Period1$REC_km2_supdrainee_1990 /
+#Period1$sup_drainee_km2_sbv
+
+Period2$pctREC_supdrainee_2020 = Period1$REC_km2_supdrainee_2020 /
+Period1$sup_drainee_km2_sbv
+
+```
+
+# Zone_recreative_vs_température 
+
+```{r Zone_recreative_vs_température }
+
+#names(Pok2001.2022) 
+
+#subset(Period1, select=c(Station2, Date, pctREC_supdrainee_1990,Temp_eau_YSI_degC))
+subset(Period2, select=c(Station2, Date, pctREC_supdrainee_2020,Temp_eau_YSI_degC))
+
+ggplot() +
+#geom_point(data=Period1, aes(x=pctREC_supdrainee_1990, y=Temp_eau_YSI_degC,
+# color="P1", shape="P1")) +
+#geom_smooth(data=Period1, aes(x=pctREC_supdrainee_1990, y=Temp_eau_YSI_degC),
+            
+# method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctREC_supdrainee_2020, y=Temp_eau_YSI_degC,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctREC_supdrainee_2020, y=Temp_eau_YSI_degC),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la température et les Zones récréatives",
+x=" Les Zones récréatives (fraction de la superficie du bassin)",
+y="Temp_eau_YSI_degC") +
+
+theme_bw()
+
+```
+
+
+
+# Zone_recreative_vs_oxygène 
+
+
+```{r Zone_recreative_vs_oxygène }
+
+#names(Pok2001.2022) 
+
+#subset(Period1, select=c(Station2, Date, pctREC_supdrainee_1990,Oxyg_dissous_YSI_mg_L))
+subset(Period2, select=c(Station2, Date, pctREC_supdrainee_2020,Oxyg_dissous_YSI_mg_L))
+
+ggplot() +
+#geom_point(data=Period1, aes(x=pctREC_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L,
+# color="P1", shape="P1")) +
+#geom_smooth(data=Period1, aes(x=pctREC_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L),
+            
+# method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctREC_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctREC_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre l'oxygène et les Zones récréatives",
+x=" Les Zones récréatives (fraction de la superficie du bassin)",
+y="Oxyg_dissous_YSI_mg_L") +
+
+theme_bw()
+
+```
+
+
+# Zone_recreative_vs_conductivité 
+
+
+```{r Zone_recreative_vs_conductivité}
+
+#names(Pok2001.2022) 
+
+#subset(Period1, select=c(Station2, Date, pctREC_supdrainee_1990,Oxyg_dissous_YSI_mg_L))
+subset(Period2, select=c(Station2, Date, pctREC_supdrainee_2020,Conductivity_microS_cm))
+
+ggplot() +
+#geom_point(data=Period1, aes(x=pctREC_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L,
+# color="P1", shape="P1")) +
+#geom_smooth(data=Period1, aes(x=pctREC_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L),
+            
+# method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctREC_supdrainee_2020, y=Conductivity_microS_cm,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctREC_supdrainee_2020, y=Conductivity_microS_cm),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la conductivité et les Zones récréatives",
+x=" Les Zones récréatives (fraction de la superficie du bassin)",
+y="Conductivity_microS_cm") +
+
+theme_bw()
+
+```
+
+
+# Zone_recreative_vs_pH 
+
+
+```{r Zone_recreative_vs_pH}
+
+#names(Pok2001.2022) 
+
+#subset(Period1, select=c(Station2, Date, pctREC_supdrainee_1990,Oxyg_dissous_YSI_mg_L))
+subset(Period2, select=c(Station2, Date, pctREC_supdrainee_2020,pH_units))
+
+ggplot() +
+#geom_point(data=Period1, aes(x=pctREC_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L,
+# color="P1", shape="P1")) +
+#geom_smooth(data=Period1, aes(x=pctREC_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L),
+            
+# method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctREC_supdrainee_2020, y=pH_units,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctREC_supdrainee_2020, y=pH_units),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le pH et les Zones récréatives",
+x=" Les Zones récréatives (fraction de la superficie du bassin)",
+y="pH_units") +
+
+theme_bw()
+
+```
+
+
+# Zone_recreative_vs_Turbidity 
+
+
+```{r Zone_recreative_vs_Turbidity}
+
+#names(Pok2001.2022) 
+
+#subset(Period1, select=c(Station2, Date, pctREC_supdrainee_1990,Oxyg_dissous_YSI_mg_L))
+subset(Period2, select=c(Station2, Date, pctREC_supdrainee_2020,Turbidity_NTU))
+
+ggplot() +
+#geom_point(data=Period1, aes(x=pctREC_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L,
+# color="P1", shape="P1")) +
+#geom_smooth(data=Period1, aes(x=pctREC_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L),
+            
+# method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctREC_supdrainee_2020, y=Turbidity_NTU,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctREC_supdrainee_2020, y=Turbidity_NTU),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la turbidité et les Zones récréatives",
+x=" Les Zones récréatives (fraction de la superficie du bassin)",
+y="Turbidity_NTU") +
+
+theme_bw()
+
+```
+
+
+# Zone_recreative_vs_Colour 
+
+
+```{r Zone_recreative_vs_Colour}
+
+#names(Pok2001.2022) 
+
+#subset(Period1, select=c(Station2, Date, pctREC_supdrainee_1990,Oxyg_dissous_YSI_mg_L))
+subset(Period2, select=c(Station2, Date, pctREC_supdrainee_2020,Colour_TCU))
+
+ggplot() +
+#geom_point(data=Period1, aes(x=pctREC_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L,
+# color="P1", shape="P1")) +
+#geom_smooth(data=Period1, aes(x=pctREC_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L),
+            
+# method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctREC_supdrainee_2020, y=Colour_TCU,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctREC_supdrainee_2020, y=Colour_TCU),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la couleur et les Zones récréatives",
+x=" Les Zones récréatives (fraction de la superficie du bassin)",
+y="Colour_TCU") +
+
+theme_bw()
+
+```
+
+
+
+
+# Zone_recreative_vs_COT 
+
+
+```{r Zone_recreative_vs_COT}
+
+#names(Pok2001.2022) 
+
+#subset(Period1, select=c(Station2, Date, pctREC_supdrainee_1990,Oxyg_dissous_YSI_mg_L))
+subset(Period2, select=c(Station2, Date, pctREC_supdrainee_2020,Carbon_Total_Organic_mg_L))
+
+ggplot() +
+#geom_point(data=Period1, aes(x=pctREC_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L,
+# color="P1", shape="P1")) +
+#geom_smooth(data=Period1, aes(x=pctREC_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L),
+            
+# method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctREC_supdrainee_2020, y=Carbon_Total_Organic_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctREC_supdrainee_2020, y=Carbon_Total_Organic_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le COT et les Zones récréatives",
+x=" Les Zones récréatives (fraction de la superficie du bassin)",
+y="Carbon_Total_Organic_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+
+
+# Zone_recreative_vs_coliforme 
+
+
+```{r Zone_recreative_vs_coliforme}
+
+#names(Pok2001.2022) 
+
+#subset(Period1, select=c(Station2, Date, pctREC_supdrainee_1990,Oxyg_dissous_YSI_mg_L))
+subset(Period2, select=c(Station2, Date, pctREC_supdrainee_2020,E.coli_MPN_100.mL))
+
+ggplot() +
+#geom_point(data=Period1, aes(x=pctREC_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L,
+# color="P1", shape="P1")) +
+#geom_smooth(data=Period1, aes(x=pctREC_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L),
+            
+# method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctREC_supdrainee_2020, y=log10(E.coli_MPN_100.mL),
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctREC_supdrainee_2020, y=log10(E.coli_MPN_100.mL)),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre les coliformes et les Zones récréatives",
+x=" Les Zones récréatives (fraction de la superficie du bassin)",
+y="E.coli_MPN_100.mL") +
+
+theme_bw()
+
+```
+
+
+
+
+# Zone_recreative_vs_Phosphore 
+
+
+```{r Zone_recreative_vs_Phosphore}
+
+#names(Pok2001.2022) 
+
+#subset(Period1, select=c(Station2, Date, pctREC_supdrainee_1990,Oxyg_dissous_YSI_mg_L))
+subset(Period2, select=c(Station2, Date, pctREC_supdrainee_2020,Phosphorus_Total_mg_L))
+
+ggplot() +
+#geom_point(data=Period1, aes(x=pctREC_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L,
+# color="P1", shape="P1")) +
+#geom_smooth(data=Period1, aes(x=pctREC_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L),
+            
+# method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctREC_supdrainee_2020, y=Phosphorus_Total_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctREC_supdrainee_2020, y=Phosphorus_Total_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le phosphore et les Zones récréatives",
+x=" Les Zones récréatives (fraction de la superficie du bassin)",
+y="Phosphorus_Total_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+
+
+# Zone_recreative_vs_nitrate 
+
+
+```{r Zone_recreative_vs_nitrate}
+
+#names(Pok2001.2022) 
+
+#subset(Period1, select=c(Station2, Date, pctREC_supdrainee_1990,Oxyg_dissous_YSI_mg_L))
+subset(Period2, select=c(Station2, Date, pctREC_supdrainee_2020,Nitrate_as_N_mg_L))
+
+ggplot() +
+#geom_point(data=Period1, aes(x=pctREC_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L,
+# color="P1", shape="P1")) +
+#geom_smooth(data=Period1, aes(x=pctREC_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L),
+            
+# method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctREC_supdrainee_2020, y=Nitrate_as_N_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctREC_supdrainee_2020, y=Nitrate_as_N_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le nitrate et les Zones récréatives",
+x=" Les Zones récréatives (fraction de la superficie du bassin)",
+y="Nitrate_as_N_mg_L") +
+
+theme_bw()
+
+```
+
+
+# FO: Zone forêts
+
+```{r}
+
+# Crée la variable pourcentage
+
+
+Period1$pctFO_supdrainee_1990 = Period1$FO_km2_supdrainee_1990 /
+Period1$sup_drainee_km2_sbv
+
+Period2$pctFO_supdrainee_2020 = Period1$FO_km2_supdrainee_2020 /
+Period1$sup_drainee_km2_sbv
+
+```
+
+# Zone_forets_vs_température 
+
+```{r Zone_forets_vs_température }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctFO_supdrainee_1990,Temp_eau_YSI_degC))
+subset(Period2, select=c(Station2, Date, pctFO_supdrainee_2020,Temp_eau_YSI_degC))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctFO_supdrainee_1990, y=Temp_eau_YSI_degC,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctFO_supdrainee_1990, y=Temp_eau_YSI_degC),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctFO_supdrainee_2020, y=Temp_eau_YSI_degC,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctFO_supdrainee_2020, y=Temp_eau_YSI_degC),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la température et les Zones forêts",
+x=" Les Zones forêts (fraction de la superficie du bassin)",
+y="Temp_eau_YSI_degC") +
+
+theme_bw()
+
+```
+
+
+
+# Zone_forets_vs_oxygène
+
+```{r Zone_forets_vs_Oxygène }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctFO_supdrainee_1990,Oxyg_dissous_YSI_mg_L))
+subset(Period2, select=c(Station2, Date, pctFO_supdrainee_2020,Oxyg_dissous_YSI_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctFO_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctFO_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctFO_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctFO_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre l'Oxygène dissous et les Zones forêts",
+x=" Les Zones forêts (fraction de la superficie du bassin)",
+y="Oxyg_dissous_YSI_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+
+# Zone_forets_vs_Conductivités 
+
+```{r Zone_forets_vs_Conductivité }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctFO_supdrainee_1990,Conductivity_microS_cm))
+subset(Period2, select=c(Station2, Date, pctFO_supdrainee_2020,Conductivity_microS_cm))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctFO_supdrainee_1990, y=Conductivity_microS_cm,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctFO_supdrainee_1990, y=Conductivity_microS_cm),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctFO_supdrainee_2020, y=Conductivity_microS_cm,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctFO_supdrainee_2020, y=Conductivity_microS_cm),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la conductivité et les Zones forêts",
+x=" Les Zones forêts (fraction de la superficie du bassin)",
+y="Conductivity_microS_cm") +
+
+theme_bw()
+
+```
+
+
+
+# Zone_forets_vs_pH 
+
+```{r Zone_forets_vs_pH }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctFO_supdrainee_1990,pH_units))
+subset(Period2, select=c(Station2, Date, pctFO_supdrainee_2020,pH_units))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctFO_supdrainee_1990, y=pH_units,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctFO_supdrainee_1990, y=pH_units),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctFO_supdrainee_2020, y=pH_units,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctFO_supdrainee_2020, y=pH_units),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le pH et les Zones forêts",
+x=" Les Zones forêts (fraction de la superficie du bassin)",
+y="pH_units") +
+
+theme_bw()
+
+```
+
+
+# Zone_forets_vs_turbidité 
+
+```{r Zone_forets_vs_turbidité}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctFO_supdrainee_1990,Turbidity_NTU))
+subset(Period2, select=c(Station2, Date, pctFO_supdrainee_2020,Turbidity_NTU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctFO_supdrainee_1990, y=log10(Turbidity_NTU),
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctFO_supdrainee_1990, y=log10(Turbidity_NTU)),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctFO_supdrainee_2020, y=log10(Turbidity_NTU),
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctFO_supdrainee_2020, y=log10(Turbidity_NTU)),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la turbidité et les Zones forêts",
+x=" Les Zones forêts (fraction de la superficie du bassin)",
+y="Turbidity_NTU") +
+
+theme_bw()
+
+```
+
+
+
+# Zone_forets_vs_Couleur 
+
+```{r Zone_forets_vs_Couleur}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctFO_supdrainee_1990,Colour_TCU))
+subset(Period2, select=c(Station2, Date, pctFO_supdrainee_2020,Colour_TCU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctFO_supdrainee_1990, y=Colour_TCU,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctFO_supdrainee_1990, y=Colour_TCU),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctFO_supdrainee_2020, y=Colour_TCU,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctFO_supdrainee_2020, y=Colour_TCU),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la couleur et les Zones forêts",
+x=" Les Zones forêts (fraction de la superficie du bassin)",
+y="Colour_TCU") +
+
+theme_bw()
+
+```
+
+
+
+
+# Zone_forets_vs_COT 
+
+```{r Zone_forets_vs_COT}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctFO_supdrainee_1990,Carbon_Total_Organic_mg_L))
+subset(Period2, select=c(Station2, Date, pctFO_supdrainee_2020,Carbon_Total_Organic_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctFO_supdrainee_1990, y=Carbon_Total_Organic_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctFO_supdrainee_1990, y=Carbon_Total_Organic_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctFO_supdrainee_2020, y=Carbon_Total_Organic_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctFO_supdrainee_2020, y=Carbon_Total_Organic_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la COT et les Zones forêts",
+x=" Les Zones forêts (fraction de la superficie du bassin)",
+y="Carbon_Total_Organic_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+
+# Zone_forets_vs_Coliforme 
+
+```{r Zone_forets_vs_Coliforme}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctFO_supdrainee_1990,E.coli_MPN_100.mL))
+subset(Period2, select=c(Station2, Date, pctFO_supdrainee_2020,E.coli_MPN_100.mL))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctFO_supdrainee_1990, y=log10(E.coli_MPN_100.mL),
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctFO_supdrainee_1990, y=log10(E.coli_MPN_100.mL)),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctFO_supdrainee_2020, y=log10(E.coli_MPN_100.mL),
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctFO_supdrainee_2020, y=log10(E.coli_MPN_100.mL)),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre les coliformes et les Zones forêts",
+x=" Les Zones forêts (fraction de la superficie du bassin)",
+y="E.coli_MPN_100.mL") +
+
+theme_bw()
+
+```
+
+
+
+
+# Zone_forets_vs_phosphore 
+
+```{r Zone_forets_vs_phosphore}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctFO_supdrainee_1990,Phosphorus_Total_mg_L))
+subset(Period2, select=c(Station2, Date, pctFO_supdrainee_2020,Phosphorus_Total_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctFO_supdrainee_1990, y=Phosphorus_Total_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctFO_supdrainee_1990, y=Phosphorus_Total_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctFO_supdrainee_2020, y=Phosphorus_Total_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctFO_supdrainee_2020, y=Phosphorus_Total_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le phosphore et les Zones forêts",
+x=" Les Zones forêts (fraction de la superficie du bassin)",
+y="Phosphorus_Total_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+
+
+# Zone_forets_vs_nitrate 
+
+```{r Zone_forets_vs_nitrate}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctFO_supdrainee_1990,Nitrate_as_N_mg_L))
+subset(Period2, select=c(Station2, Date, pctFO_supdrainee_2020,Nitrate_as_N_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctFO_supdrainee_1990, y=Nitrate_as_N_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctFO_supdrainee_1990, y=Nitrate_as_N_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctFO_supdrainee_2020, y=Nitrate_as_N_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctFO_supdrainee_2020, y=Nitrate_as_N_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le nitrate et les Zones forêts",
+x=" Les Zones forêts (fraction de la superficie du bassin)",
+y="Nitrate_as_N_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+
+# WL: Terres humides 
+
+```{r}
+
+# Crée la variable pourcentage
+
+
+Period1$pctWL_supdrainee_1990 = Period1$WL_km2_supdrainee_1990 /
+Period1$sup_drainee_km2_sbv
+
+Period2$pctWL_supdrainee_2020 = Period1$WL_km2_supdrainee_2020 /
+Period1$sup_drainee_km2_sbv
+
+```
+
+# Terres_humides_vs_température 
+
+```{r Terres_humides_vs_température }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctWL_supdrainee_1990,Temp_eau_YSI_degC))
+subset(Period2, select=c(Station2, Date, pctWL_supdrainee_2020,Temp_eau_YSI_degC))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctWL_supdrainee_1990, y=Temp_eau_YSI_degC,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctWL_supdrainee_1990, y=Temp_eau_YSI_degC),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctWL_supdrainee_2020, y=Temp_eau_YSI_degC,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctWL_supdrainee_2020, y=Temp_eau_YSI_degC),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la température et les Terres humides",
+x=" Les Terres humides (fraction de la superficie du bassin)",
+y="Temp_eau_YSI_degC") +
+
+theme_bw()
+
+```
+
+
+# Terres_humides_vs_oxygène 
+
+```{r Terres_humides_vs_oxygène }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctWL_supdrainee_1990,Oxyg_dissous_YSI_mg_L))
+subset(Period2, select=c(Station2, Date, pctWL_supdrainee_2020,Oxyg_dissous_YSI_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctWL_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctWL_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctWL_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctWL_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre l'Oxygène et les Terres humides",
+x=" Les Terres humides (fraction de la superficie du bassin)",
+y="Oxyg_dissous_YSI_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+# Terres_humides_vs_conductivité 
+
+```{r Terres_humides_vs_conductivité}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctWL_supdrainee_1990,Conductivity_microS_cm))
+subset(Period2, select=c(Station2, Date, pctWL_supdrainee_2020,Conductivity_microS_cm))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctWL_supdrainee_1990, y=Conductivity_microS_cm,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctWL_supdrainee_1990, y=Conductivity_microS_cm),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctWL_supdrainee_2020, y=Conductivity_microS_cm,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctWL_supdrainee_2020, y=Conductivity_microS_cm),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la conductivité et les Terres humides",
+x=" Les Terres humides (fraction de la superficie du bassin)",
+y="Conductivity_microS_cm") +
+
+theme_bw()
+
+```
+
+
+
+
+# Terres_humides_vs_pH
+
+```{r Terres_humides_vs_pH}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctWL_supdrainee_1990,pH_units))
+subset(Period2, select=c(Station2, Date, pctWL_supdrainee_2020,pH_units))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctWL_supdrainee_1990, y=pH_units,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctWL_supdrainee_1990, y=pH_units),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctWL_supdrainee_2020, y=pH_units,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctWL_supdrainee_2020, y=pH_units),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le pH et les Terres humides",
+x=" Les Terres humides (fraction de la superficie du bassin)",
+y="pH_units") +
+
+theme_bw()
+
+```
+
+
+
+
+
+# Terres_humides_vs_turbidité
+
+```{r Terres_humides_vs_turbidité}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctWL_supdrainee_1990,Turbidity_NTU))
+subset(Period2, select=c(Station2, Date, pctWL_supdrainee_2020,Turbidity_NTU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctWL_supdrainee_1990, y=Turbidity_NTU,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctWL_supdrainee_1990, y=Turbidity_NTU),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctWL_supdrainee_2020, y=Turbidity_NTU,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctWL_supdrainee_2020, y=Turbidity_NTU),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la turbidité et les Terres humides",
+x=" Les Terres humides (fraction de la superficie du bassin)",
+y="Turbidity_NTU") +
+
+theme_bw()
+
+```
+
+
+
+# Terres_humides_vs_couleur
+
+```{r Terres_humides_vs_couleur}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctWL_supdrainee_1990,Colour_TCU))
+subset(Period2, select=c(Station2, Date, pctWL_supdrainee_2020,Colour_TCU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctWL_supdrainee_1990, y=Colour_TCU,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctWL_supdrainee_1990, y=Colour_TCU),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctWL_supdrainee_2020, y=Colour_TCU,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctWL_supdrainee_2020, y=Colour_TCU),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la couleur et les Terres humides",
+x=" Les Terres humides (fraction de la superficie du bassin)",
+y="Colour_TCU") +
+
+theme_bw()
+
+```
+
+
+
+
+# Terres_humides_vs_COT
+
+```{r Terres_humides_vs_COT}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctWL_supdrainee_1990,Carbon_Total_Organic_mg_L))
+subset(Period2, select=c(Station2, Date, pctWL_supdrainee_2020,Carbon_Total_Organic_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctWL_supdrainee_1990, y=Carbon_Total_Organic_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctWL_supdrainee_1990, y=Carbon_Total_Organic_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctWL_supdrainee_2020, y=Carbon_Total_Organic_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctWL_supdrainee_2020, y=Carbon_Total_Organic_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la COT et les Terres humides",
+x=" Les Terres humides (fraction de la superficie du bassin)",
+y="Carbon_Total_Organic_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+
+# Terres_humides_vs_coliforme
+
+```{r Terres_humides_vs_coliforme}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctWL_supdrainee_1990,E.coli_MPN_100.mL))
+subset(Period2, select=c(Station2, Date, pctWL_supdrainee_2020,E.coli_MPN_100.mL))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctWL_supdrainee_1990, y=log10(E.coli_MPN_100.mL),
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctWL_supdrainee_1990, y=log10(E.coli_MPN_100.mL)),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctWL_supdrainee_2020, y=log10(E.coli_MPN_100.mL),
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctWL_supdrainee_2020, y=log10(E.coli_MPN_100.mL)),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le coliforme et les Terres humides",
+x=" Les Terres humides (fraction de la superficie du bassin)",
+y="E.coli_MPN_100.mL") +
+
+theme_bw()
+
+```
+
+
+
+
+# Terres_humides_vs_phosphore
+
+```{r Terres_humides_vs_phosphore}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctWL_supdrainee_1990,Phosphorus_Total_mg_L))
+subset(Period2, select=c(Station2, Date, pctWL_supdrainee_2020,Phosphorus_Total_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctWL_supdrainee_1990, y=Phosphorus_Total_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctWL_supdrainee_1990, y=Phosphorus_Total_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctWL_supdrainee_2020, y=Phosphorus_Total_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctWL_supdrainee_2020, y=Phosphorus_Total_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le phosphore et les Terres humides",
+x=" Les Terres humides (fraction de la superficie du bassin)",
+y="Phosphorus_Total_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+
+# Terres_humides_vs_nitrate
+
+```{r Terres_humides_vs_nitrate}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctWL_supdrainee_1990,Nitrate_as_N_mg_L))
+subset(Period2, select=c(Station2, Date, pctWL_supdrainee_2020,Nitrate_as_N_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctWL_supdrainee_1990, y=Nitrate_as_N_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctWL_supdrainee_1990, y=Nitrate_as_N_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctWL_supdrainee_2020, y=Nitrate_as_N_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctWL_supdrainee_2020, y=Nitrate_as_N_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le nitrate et les Terres humides",
+x=" Les Terres humides (fraction de la superficie du bassin)",
+y="Nitrate_as_N_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+# Somme_ordre_1.5: Sommes des ordres
+
+```{r}
+
+# Crée la variable pourcentage
+
+
+Period1$pctSomme_ordre_1.5 = Period1$Somme_ordre_1.5 /
+Period1$sup_drainee_km2_sbv
+
+#Period2$pctWL_supdrainee_2020 = Period1$WL_km2_supdrainee_2020 /
+#Period1$sup_drainee_km2_sbv
+
+```
+
+# Somme_ordre_vs_température 
+
+```{r Somme_ordre_vs_température }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctSomme_ordre_1.5,Temp_eau_YSI_degC))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctSomme_ordre_1.5, y=Temp_eau_YSI_degC,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctSomme_ordre_1.5, y=Temp_eau_YSI_degC),
+            
+ method=lm, se=FALSE, color="red") +
+
+ scale_color_manual(name="",
+values=c("P1"="red"),
+breaks=c("P1")) +
+scale_shape_manual(name="",
+values=c("P1"=1),
+breaks=c("P1")) +
+
+  
+labs(title="Relation entre la température et la sommes des ordres",
+x=" Sommes des ordres (Ordre des ruisseaux du sous bassin)",
+y="Temp_eau_YSI_degC") +
+
+theme_bw()
+
+```
+
+
+# Somme_ordre_vs_Oxyg_dissous 
+
+```{r Somme_ordre_vs_Oxyg_dissous}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctSomme_ordre_1.5,Oxyg_dissous_YSI_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctSomme_ordre_1.5, y=Oxyg_dissous_YSI_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctSomme_ordre_1.5, y=Oxyg_dissous_YSI_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+
+ scale_color_manual(name="",
+values=c("P1"="red"),
+breaks=c("P1")) +
+scale_shape_manual(name="",
+values=c("P1"=1),
+breaks=c("P1")) +
+
+  
+labs(title="Relation entre l'Oxyg_dissous et la sommes des ordres",
+x=" Sommes des ordres (Ordre des ruisseaux du sous bassin)",
+y="Oxyg_dissous_YSI_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+# Somme_ordre_vs_Conductivité 
+
+```{r Somme_ordre_vs_Conductivité}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctSomme_ordre_1.5,Conductivity_microS_cm))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctSomme_ordre_1.5, y=Conductivity_microS_cm,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctSomme_ordre_1.5, y=Conductivity_microS_cm),
+            
+ method=lm, se=FALSE, color="red") +
+
+ scale_color_manual(name="",
+values=c("P1"="red"),
+breaks=c("P1")) +
+scale_shape_manual(name="",
+values=c("P1"=1),
+breaks=c("P1")) +
+
+  
+labs(title="Relation entre la Conductivité et la sommes des ordres",
+x=" Sommes des ordres (Ordre des ruisseaux du sous bassin)",
+y="Conductivity_microS_cm") +
+
+theme_bw()
+
+```
+
+
+
+
+# Somme_ordre_vs_pH 
+
+```{r Somme_ordre_vs_pH}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctSomme_ordre_1.5,pH_units))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctSomme_ordre_1.5, y=pH_units,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctSomme_ordre_1.5, y=pH_units),
+            
+ method=lm, se=FALSE, color="red") +
+
+ scale_color_manual(name="",
+values=c("P1"="red"),
+breaks=c("P1")) +
+scale_shape_manual(name="",
+values=c("P1"=1),
+breaks=c("P1")) +
+
+  
+labs(title="Relation entre le pH et la sommes des ordres",
+x=" Sommes des ordres (Ordre des ruisseaux du sous bassin)",
+y="pH_units") +
+
+theme_bw()
+
+```
+
+
+
+# Somme_ordre_vs_Turbidité 
+
+```{r Somme_ordre_vs_Turbidité}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctSomme_ordre_1.5,Turbidity_NTU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctSomme_ordre_1.5, y=Turbidity_NTU,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctSomme_ordre_1.5, y=Turbidity_NTU),
+            
+ method=lm, se=FALSE, color="red") +
+
+ scale_color_manual(name="",
+values=c("P1"="red"),
+breaks=c("P1")) +
+scale_shape_manual(name="",
+values=c("P1"=1),
+breaks=c("P1")) +
+
+  
+labs(title="Relation entre la Turbidité et la sommes des ordres",
+x=" Sommes des ordres (Ordre des ruisseaux du sous bassin)",
+y="Turbidity_NTU") +
+
+theme_bw()
+
+```
+
+
+
+# Somme_ordre_vs_couleur 
+
+```{r Somme_ordre_vs_couleur}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctSomme_ordre_1.5,Colour_TCU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctSomme_ordre_1.5, y=Colour_TCU,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctSomme_ordre_1.5, y=Colour_TCU),
+            
+ method=lm, se=FALSE, color="red") +
+
+ scale_color_manual(name="",
+values=c("P1"="red"),
+breaks=c("P1")) +
+scale_shape_manual(name="",
+values=c("P1"=1),
+breaks=c("P1")) +
+
+  
+labs(title="Relation entre la couleur et la sommes des ordres",
+x=" Sommes des ordres (Ordre des ruisseaux du sous bassin)",
+y="Colour_TCU") +
+
+theme_bw()
+
+```
+
+
+
+
+
+# Somme_ordre_vs_COT 
+
+```{r Somme_ordre_vs_COT}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctSomme_ordre_1.5,Carbon_Total_Organic_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctSomme_ordre_1.5, y=Carbon_Total_Organic_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctSomme_ordre_1.5, y=Carbon_Total_Organic_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+
+ scale_color_manual(name="",
+values=c("P1"="red"),
+breaks=c("P1")) +
+scale_shape_manual(name="",
+values=c("P1"=1),
+breaks=c("P1")) +
+
+  
+labs(title="Relation entre la COT et la sommes des ordres",
+x=" Sommes des ordres (Ordre des ruisseaux du sous bassin)",
+y="Carbon_Total_Organic_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+# Somme_ordre_vs_Coliforme 
+
+```{r Somme_ordre_vs_Coliforme}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctSomme_ordre_1.5,E.coli_MPN_100.mL))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctSomme_ordre_1.5, y=E.coli_MPN_100.mL,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctSomme_ordre_1.5, y=E.coli_MPN_100.mL),
+            
+ method=lm, se=FALSE, color="red") +
+
+ scale_color_manual(name="",
+values=c("P1"="red"),
+breaks=c("P1")) +
+scale_shape_manual(name="",
+values=c("P1"=1),
+breaks=c("P1")) +
+
+  
+labs(title="Relation entre les coliformes et la sommes des ordres",
+x=" Sommes des ordres (Ordre des ruisseaux du sous bassin)",
+y="E.coli_MPN_100.mL") +
+
+theme_bw()
+
+```
+
+
+
+
+
+# Somme_ordre_vs_phosphore 
+
+```{r Somme_ordre_vs_phosphore}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctSomme_ordre_1.5,Phosphorus_Total_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctSomme_ordre_1.5, y=Phosphorus_Total_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctSomme_ordre_1.5, y=Phosphorus_Total_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+
+ scale_color_manual(name="",
+values=c("P1"="red"),
+breaks=c("P1")) +
+scale_shape_manual(name="",
+values=c("P1"=1),
+breaks=c("P1")) +
+
+  
+labs(title="Relation entre le phosphore et la sommes des ordres",
+x=" Sommes des ordres (Ordre des ruisseaux du sous bassin)",
+y="Phosphorus_Total_mg_L") +
+
+theme_bw()
+
+```
+
+
+# Somme_ordre_vs_Nitrate_as_N_mg_L 
+
+```{r Somme_ordre_vs_Nitrate_as_N_mg_L}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctSomme_ordre_1.5,Nitrate_as_N_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctSomme_ordre_1.5, y=Nitrate_as_N_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctSomme_ordre_1.5, y=Nitrate_as_N_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+
+ scale_color_manual(name="",
+values=c("P1"="red"),
+breaks=c("P1")) +
+scale_shape_manual(name="",
+values=c("P1"=1),
+breaks=c("P1")) +
+
+  
+labs(title="Relation entre le nitrate et la sommes des ordres",
+x=" Sommes des ordres (Ordre des ruisseaux du sous bassin)",
+y="Nitrate_as_N_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+
+
+# F: superficie de champs
+
+```{r}
+
+# Crée la variable pourcentage
+
+
+Period1$pctF_supdrainee_1990 = Period1$F_km2_supdrainee_1990 /
+Period1$sup_drainee_km2_sbv
+
+Period2$pctF_supdrainee_2020 = Period1$F_km2_supdrainee_2020 /
+Period1$sup_drainee_km2_sbv
+
+```
+
+# superficie_champs_vs_température 
+
+```{r superficie_champs_vs_température }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctF_supdrainee_1990,Temp_eau_YSI_degC))
+subset(Period2, select=c(Station2, Date, pctF_supdrainee_2020,Temp_eau_YSI_degC))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctF_supdrainee_1990, y=Temp_eau_YSI_degC,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctF_supdrainee_1990, y=Temp_eau_YSI_degC),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctF_supdrainee_2020, y=Temp_eau_YSI_degC,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctF_supdrainee_2020, y=Temp_eau_YSI_degC),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la température et les superficies des champs",
+x=" Les superficies des champs (fraction de la superficie du bassin)",
+y="Temp_eau_YSI_degC") +
+
+theme_bw()
+
+```
+
+
+# superficie_champs_vs_Oxygène 
+
+```{r superficie_champs_vs_Oxygène }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctF_supdrainee_1990,Oxyg_dissous_YSI_mg_L))
+subset(Period2, select=c(Station2, Date, pctF_supdrainee_2020,Oxyg_dissous_YSI_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctF_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctF_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctF_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctF_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre l'oxygène et les superficies des champs",
+x=" Les superficies des champs (fraction de la superficie du bassin)",
+y="Oxyg_dissous_YSI_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+
+# superficie_champs_vs_Conductivité 
+
+```{r superficie_champs_vs_Conductivité}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctF_supdrainee_1990,Conductivity_microS_cm))
+subset(Period2, select=c(Station2, Date, pctF_supdrainee_2020,Conductivity_microS_cm))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctF_supdrainee_1990, y=Conductivity_microS_cm,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctF_supdrainee_1990, y=Conductivity_microS_cm),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctF_supdrainee_2020, y=Conductivity_microS_cm,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctF_supdrainee_2020, y=Conductivity_microS_cm),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la conductivité et les superficies des champs",
+x=" Les superficies des champs (fraction de la superficie du bassin)",
+y="Conductivity_microS_cm") +
+
+theme_bw()
+
+```
+
+
+
+
+# superficie_champs_vs_pH 
+
+```{r superficie_champs_vs_pH}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctF_supdrainee_1990,pH_units))
+subset(Period2, select=c(Station2, Date, pctF_supdrainee_2020,pH_units))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctF_supdrainee_1990, y=pH_units,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctF_supdrainee_1990, y=pH_units),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctF_supdrainee_2020, y=pH_units,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctF_supdrainee_2020, y=pH_units),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le pH et les superficies des champs",
+x=" Les superficies des champs (fraction de la superficie du bassin)",
+y="pH_units") +
+
+theme_bw()
+
+```
+
+
+
+
+# superficie_champs_vs_Turbidité 
+
+```{r superficie_champs_vs_Turbidité}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctF_supdrainee_1990,Turbidity_NTU))
+subset(Period2, select=c(Station2, Date, pctF_supdrainee_2020,Turbidity_NTU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctF_supdrainee_1990, y=Turbidity_NTU,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctF_supdrainee_1990, y=Turbidity_NTU),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctF_supdrainee_2020, y=Turbidity_NTU,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctF_supdrainee_2020, y=Turbidity_NTU),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la turbidité et les superficies des champs",
+x=" Les superficies des champs (fraction de la superficie du bassin)",
+y="Turbidity_NTU") +
+
+theme_bw()
+
+```
+
+
+
+
+# superficie_champs_vs_couleur 
+
+```{r superficie_champs_vs_couleur}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctF_supdrainee_1990,Colour_TCU))
+subset(Period2, select=c(Station2, Date, pctF_supdrainee_2020,Colour_TCU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctF_supdrainee_1990, y=Colour_TCU,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctF_supdrainee_1990, y=Colour_TCU),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctF_supdrainee_2020, y=Colour_TCU,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctF_supdrainee_2020, y=Colour_TCU),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la couleur et les superficies des champs",
+x=" Les superficies des champs (fraction de la superficie du bassin)",
+y="Colour_TCU") +
+
+theme_bw()
+
+```
+
+
+
+
+# superficie_champs_vs_COT 
+
+```{r superficie_champs_vs_COT}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctF_supdrainee_1990,Carbon_Total_Organic_mg_L))
+subset(Period2, select=c(Station2, Date, pctF_supdrainee_2020,Carbon_Total_Organic_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctF_supdrainee_1990, y=log10(Carbon_Total_Organic_mg_L),
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctF_supdrainee_1990, y=log10(Carbon_Total_Organic_mg_L)),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctF_supdrainee_2020, y=log10(Carbon_Total_Organic_mg_L),
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctF_supdrainee_2020, y=log10(Carbon_Total_Organic_mg_L)),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la COT et les superficies des champs",
+x=" Les superficies des champs (fraction de la superficie du bassin)",
+y="Carbon_Total_Organic_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+
+# superficie_champs_vs_coliforme 
+
+```{r superficie_champs_vs_coliforme}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctF_supdrainee_1990,E.coli_MPN_100.mL))
+subset(Period2, select=c(Station2, Date, pctF_supdrainee_2020,E.coli_MPN_100.mL))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctF_supdrainee_1990, y=E.coli_MPN_100.mL,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctF_supdrainee_1990, y=E.coli_MPN_100.mL),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctF_supdrainee_2020, y=E.coli_MPN_100.mL,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctF_supdrainee_2020, y=E.coli_MPN_100.mL),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre les coliformes et les superficies des champs",
+x=" Les superficies des champs (fraction de la superficie du bassin)",
+y="E.coli_MPN_100.mL") +
+
+theme_bw()
+
+```
+
+
+
+# superficie_champs_vs_phosphore 
+
+```{r superficie_champs_vs_phosphore}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctF_supdrainee_1990,Phosphorus_Total_mg_L))
+subset(Period2, select=c(Station2, Date, pctF_supdrainee_2020,Phosphorus_Total_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctF_supdrainee_1990, y=Phosphorus_Total_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctF_supdrainee_1990, y=Phosphorus_Total_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctF_supdrainee_2020, y=Phosphorus_Total_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctF_supdrainee_2020, y=Phosphorus_Total_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le phosphore et les superficies des champs",
+x=" Les superficies des champs (fraction de la superficie du bassin)",
+y="Phosphorus_Total_mg_L") +
+
+theme_bw()
+
+```
+
+
+# superficie_champs_vs_nitrate 
+
+```{r superficie_champs_vs_nitrate}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctF_supdrainee_1990,Nitrate_as_N_mg_L))
+subset(Period2, select=c(Station2, Date, pctF_supdrainee_2020,Nitrate_as_N_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctF_supdrainee_1990, y=Nitrate_as_N_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctF_supdrainee_1990, y=Nitrate_as_N_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctF_supdrainee_2020, y=Nitrate_as_N_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctF_supdrainee_2020, y=Nitrate_as_N_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le nitrate et les superficies des champs",
+x=" Les superficies des champs (fraction de la superficie du bassin)",
+y="Nitrate_as_N_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+
+# c: superficie de coupe à blancs
+
+```{r}
+
+# Crée la variable pourcentage
+
+
+Period1$pctC_supdrainee_1990 = Period1$C_km2_supdrainee_1990 /
+Period1$sup_drainee_km2_sbv
+
+Period2$pctC_supdrainee_2020 = Period1$C_km2_supdrainee_2020 /
+Period1$sup_drainee_km2_sbv
+
+```
+
+# Coupeablanc_vs_température 
+
+```{r Coupeablanc_vs_température }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctC_supdrainee_1990,Temp_eau_YSI_degC))
+subset(Period2, select=c(Station2, Date, pctC_supdrainee_2020,Temp_eau_YSI_degC))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctC_supdrainee_1990, y=Temp_eau_YSI_degC,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctC_supdrainee_1990, y=Temp_eau_YSI_degC),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctC_supdrainee_2020, y=Temp_eau_YSI_degC,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctC_supdrainee_2020, y=Temp_eau_YSI_degC),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la température et les Coupes à blanc",
+x=" Les coupes à blanc (fraction de la superficie du bassin)",
+y="Temp_eau_YSI_degC") +
+
+theme_bw()
+
+```
+
+# Coupeablanc_vs_Oxyg_dissous 
+
+```{r Coupeablanc_vs_Oxyg_dissous }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctC_supdrainee_1990,Oxyg_dissous_YSI_mg_L))
+subset(Period2, select=c(Station2, Date, pctC_supdrainee_2020,Oxyg_dissous_YSI_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctC_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctC_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctC_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctC_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre l'oxygène et les coupes à blanc",
+x=" Les coupes à blanc (fraction de la superficie du bassin)",
+y="Oxyg_dissous_YSI_mg_L") +
+
+theme_bw()
+
+```
+
+
+# Coupeablanc_vs_Conductivité 
+
+```{r Coupeablanc_vs_Conductivité }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctC_supdrainee_1990,Conductivity_microS_cm))
+subset(Period2, select=c(Station2, Date, pctC_supdrainee_2020,Conductivity_microS_cm))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctC_supdrainee_1990, y=Conductivity_microS_cm,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctC_supdrainee_1990, y=Conductivity_microS_cm),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctC_supdrainee_2020, y=Conductivity_microS_cm,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctC_supdrainee_2020, y=Conductivity_microS_cm),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la Conductivité et les coupes à blanc",
+x=" Les coupes à blanc (fraction de la superficie du bassin)",
+y="Conductivity_microS_cm") +
+
+theme_bw()
+
+```
+
+
+
+# Coupeablanc_vs_pH 
+
+```{r Coupeablanc_vs_pH }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctC_supdrainee_1990,pH_units))
+subset(Period2, select=c(Station2, Date, pctC_supdrainee_2020,pH_units))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctC_supdrainee_1990, y=pH_units,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctC_supdrainee_1990, y=pH_units),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctC_supdrainee_2020, y=pH_units,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctC_supdrainee_2020, y=pH_units),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la pH et les coupes à blanc",
+x=" Les coupes à blanc (fraction de la superficie du bassin)",
+y="pH_units") +
+
+theme_bw()
+
+```
+
+
+
+# Coupeablanc_vs_Turbidité 
+
+```{r Coupeablanc_vs_Turbidité }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctC_supdrainee_1990,Turbidity_NTU))
+subset(Period2, select=c(Station2, Date, pctC_supdrainee_2020,Turbidity_NTU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctC_supdrainee_1990, y=Turbidity_NTU,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctC_supdrainee_1990, y=Turbidity_NTU),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctC_supdrainee_2020, y=Turbidity_NTU,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctC_supdrainee_2020, y=Turbidity_NTU),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la Turbidité et les coupes à blanc",
+x=" Les coupes à blanc (fraction de la superficie du bassin)",
+y="Turbidity_NTU") +
+
+theme_bw()
+
+```
+
+
+
+
+# Coupeablanc_vs_Turbidité 
+
+```{r Coupeablanc_vs_Turbidité }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctC_supdrainee_1990,Turbidity_NTU))
+subset(Period2, select=c(Station2, Date, pctC_supdrainee_2020,Turbidity_NTU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctC_supdrainee_1990, y=Turbidity_NTU,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctC_supdrainee_1990, y=Turbidity_NTU),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctC_supdrainee_2020, y=Turbidity_NTU,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctC_supdrainee_2020, y=Turbidity_NTU),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la Turbidité et les coupes à blanc",
+x=" Les coupes à blanc (fraction de la superficie du bassin)",
+y="Turbidity_NTU") +
+
+theme_bw()
+
+```
+
+
+
+# Coupeablanc_vs_couleur 
+
+```{r Coupeablanc_vs_couleur }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctC_supdrainee_1990,Colour_TCU))
+subset(Period2, select=c(Station2, Date, pctC_supdrainee_2020,Colour_TCU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctC_supdrainee_1990, y=Colour_TCU,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctC_supdrainee_1990, y=Colour_TCU),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctC_supdrainee_2020, y=Colour_TCU,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctC_supdrainee_2020, y=Colour_TCU),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la couleur et les coupes à blanc",
+x=" Les coupes à blanc (fraction de la superficie du bassin)",
+y="Colour_TCU") +
+
+theme_bw()
+
+```
+
+
+
+
+
+# Coupeablanc_vs_COT 
+
+```{r Coupeablanc_vs_COT}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctC_supdrainee_1990,Carbon_Total_Organic_mg_L))
+subset(Period2, select=c(Station2, Date, pctC_supdrainee_2020,Carbon_Total_Organic_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctC_supdrainee_1990, y=Carbon_Total_Organic_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctC_supdrainee_1990, y=Carbon_Total_Organic_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctC_supdrainee_2020, y=Carbon_Total_Organic_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctC_supdrainee_2020, y=Carbon_Total_Organic_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la COT et les coupes à blanc",
+x=" Les coupes à blanc (fraction de la superficie du bassin)",
+y="Carbon_Total_Organic_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+# Coupeablanc_vs_Coliforme 
+
+```{r Coupeablanc_vs_Coliforme}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctC_supdrainee_1990,E.coli_MPN_100.mL))
+subset(Period2, select=c(Station2, Date, pctC_supdrainee_2020,E.coli_MPN_100.mL))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctC_supdrainee_1990, y=E.coli_MPN_100.mL,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctC_supdrainee_1990, y=E.coli_MPN_100.mL),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctC_supdrainee_2020, y=E.coli_MPN_100.mL,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctC_supdrainee_2020, y=E.coli_MPN_100.mL),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le coliforme et les coupes à blanc",
+x=" Les coupes à blanc (fraction de la superficie du bassin)",
+y="E.coli_MPN_100.mL") +
+
+theme_bw()
+
+```
+
+
+
+# Coupeablanc_vs_phosphore 
+
+```{r Coupeablanc_vs_phosphore}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctC_supdrainee_1990,Phosphorus_Total_mg_L))
+subset(Period2, select=c(Station2, Date, pctC_supdrainee_2020,Phosphorus_Total_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctC_supdrainee_1990, y=Phosphorus_Total_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctC_supdrainee_1990, y=Phosphorus_Total_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctC_supdrainee_2020, y=Phosphorus_Total_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctC_supdrainee_2020, y=Phosphorus_Total_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le phosphore et les coupes à blanc",
+x=" Les coupes à blanc (fraction de la superficie du bassin)",
+y="Phosphorus_Total_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+# Coupeablanc_vs_nitrate 
+
+```{r Coupeablanc_vs_nitrate}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctC_supdrainee_1990,Nitrate_as_N_mg_L))
+subset(Period2, select=c(Station2, Date, pctC_supdrainee_2020,Nitrate_as_N_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctC_supdrainee_1990, y=Nitrate_as_N_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctC_supdrainee_1990, y=Nitrate_as_N_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctC_supdrainee_2020, y=Nitrate_as_N_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctC_supdrainee_2020, y=Nitrate_as_N_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le nitrate et les coupes à blanc",
+x=" Les coupes à blanc (fraction de la superficie du bassin)",
+y="Nitrate_as_N_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+# c: superficie boisé 
+
+```{r}
+
+# Crée la variable pourcentage
+
+
+Period1$pctB_supdrainee_1990 = Period1$B_km2_supdrainee_1990 /
+Period1$sup_drainee_km2_sbv
+
+Period2$pctB_supdrainee_2020 = Period1$B_km2_supdrainee_2020 /
+Period1$sup_drainee_km2_sbv
+
+```
+
+# Boisé_vs_température 
+
+```{r Boisé_vs_température }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctB_supdrainee_1990,Temp_eau_YSI_degC))
+subset(Period2, select=c(Station2, Date, pctB_supdrainee_2020,Temp_eau_YSI_degC))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctB_supdrainee_1990, y=Temp_eau_YSI_degC,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctB_supdrainee_1990, y=Temp_eau_YSI_degC),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctB_supdrainee_2020, y=Temp_eau_YSI_degC,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctB_supdrainee_2020, y=Temp_eau_YSI_degC),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la température et les superficies boisés",
+x=" Les superficies boisés (fraction de la superficie du bassin)",
+y="Temp_eau_YSI_degC") +
+
+theme_bw()
+
+```
+
+
+# Boisé_vs_oxygène 
+
+```{r Boisé_vs_oxygène }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctB_supdrainee_1990,Oxyg_dissous_YSI_mg_L))
+subset(Period2, select=c(Station2, Date, pctB_supdrainee_2020,Oxyg_dissous_YSI_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctB_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctB_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctB_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctB_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre l'oxygène et les superficies boisés",
+x=" Les superficies boisés (fraction de la superficie du bassin)",
+y="Oxyg_dissous_YSI_mg_L") +
+
+theme_bw()
+
+```
+
+
+# Boisé_vs_conductivité 
+
+```{r Boisé_vs_conductivité}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctB_supdrainee_1990,Conductivity_microS_cm))
+subset(Period2, select=c(Station2, Date, pctB_supdrainee_2020,Conductivity_microS_cm))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctB_supdrainee_1990, y=Conductivity_microS_cm,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctB_supdrainee_1990, y=Conductivity_microS_cm),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctB_supdrainee_2020, y=Conductivity_microS_cm,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctB_supdrainee_2020, y=Conductivity_microS_cm),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la conductivité et les superficies boisés",
+x=" Les superficies boisés (fraction de la superficie du bassin)",
+y="Conductivity_microS_cm") +
+
+theme_bw()
+
+```
+
+
+# Boisé_vs_pH 
+
+```{r Boisé_vs_pH}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctB_supdrainee_1990,pH_units))
+subset(Period2, select=c(Station2, Date, pctB_supdrainee_2020,pH_units))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctB_supdrainee_1990, y=pH_units,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctB_supdrainee_1990, y=pH_units),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctB_supdrainee_2020, y=pH_units,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctB_supdrainee_2020, y=pH_units),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le pH et les superficies boisés",
+x=" Les superficies boisés (fraction de la superficie du bassin)",
+y="pH_units") +
+
+theme_bw()
+
+```
+
+
+
+# Boisé_vs_Turbidité 
+
+```{r Boisé_vs_Turbidité}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctB_supdrainee_1990,Turbidity_NTU))
+subset(Period2, select=c(Station2, Date, pctB_supdrainee_2020,Turbidity_NTU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctB_supdrainee_1990, y=Turbidity_NTU,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctB_supdrainee_1990, y=Turbidity_NTU),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctB_supdrainee_2020, y=Turbidity_NTU,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctB_supdrainee_2020, y=Turbidity_NTU),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la turbidité et les superficies boisés",
+x=" Les superficies boisés (fraction de la superficie du bassin)",
+y="Turbidity_NTU") +
+
+theme_bw()
+
+```
+
+
+# Boisé_vs_couleur 
+
+```{r Boisé_vs_couleur}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctB_supdrainee_1990,Colour_TCU))
+subset(Period2, select=c(Station2, Date, pctB_supdrainee_2020,Colour_TCU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctB_supdrainee_1990, y=Colour_TCU,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctB_supdrainee_1990, y=Colour_TCU),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctB_supdrainee_2020, y=Colour_TCU,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctB_supdrainee_2020, y=Colour_TCU),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la couleur et les superficies boisés",
+x=" Les superficies boisés (fraction de la superficie du bassin)",
+y="Colour_TCU") +
+
+theme_bw()
+
+```
+
+
+# Boisé_vs_COT 
+
+```{r Boisé_vs_COT}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctB_supdrainee_1990,Carbon_Total_Organic_mg_L))
+subset(Period2, select=c(Station2, Date, pctB_supdrainee_2020,Carbon_Total_Organic_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctB_supdrainee_1990, y=Carbon_Total_Organic_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctB_supdrainee_1990, y=Carbon_Total_Organic_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctB_supdrainee_2020, y=Carbon_Total_Organic_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctB_supdrainee_2020, y=Carbon_Total_Organic_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le COT et les superficies boisés",
+x=" Les superficies boisés (fraction de la superficie du bassin)",
+y="Carbon_Total_Organic_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+# Boisé_vs_coliforme 
+
+```{r Boisé_vs_coliforme}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctB_supdrainee_1990,E.coli_MPN_100.mL))
+subset(Period2, select=c(Station2, Date, pctB_supdrainee_2020,E.coli_MPN_100.mL))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctB_supdrainee_1990, y=E.coli_MPN_100.mL,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctB_supdrainee_1990, y=E.coli_MPN_100.mL),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctB_supdrainee_2020, y=E.coli_MPN_100.mL,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctB_supdrainee_2020, y=E.coli_MPN_100.mL),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre les coliformes et les superficies boisés",
+x=" Les superficies boisés (fraction de la superficie du bassin)",
+y="E.coli_MPN_100.mL") +
+
+theme_bw()
+
+```
+
+
+
+
+# Boisé_vs_phosphore 
+
+```{r Boisé_vs_phosphore}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctB_supdrainee_1990,Phosphorus_Total_mg_L))
+subset(Period2, select=c(Station2, Date, pctB_supdrainee_2020,Phosphorus_Total_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctB_supdrainee_1990, y=Phosphorus_Total_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctB_supdrainee_1990, y=Phosphorus_Total_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctB_supdrainee_2020, y=Phosphorus_Total_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctB_supdrainee_2020, y=Phosphorus_Total_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le phosphore et les superficies boisés",
+x=" Les superficies boisés (fraction de la superficie du bassin)",
+y="Phosphorus_Total_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+# Boisé_vs_nitrate 
+
+```{r Boisé_vs_nitrate}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctB_supdrainee_1990,Nitrate_as_N_mg_L))
+subset(Period2, select=c(Station2, Date, pctB_supdrainee_2020,Nitrate_as_N_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctB_supdrainee_1990, y=Nitrate_as_N_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctB_supdrainee_1990, y=Nitrate_as_N_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctB_supdrainee_2020, y=Nitrate_as_N_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctB_supdrainee_2020, y=Nitrate_as_N_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le nitrate et les superficies boisés",
+x=" Les superficies boisés (fraction de la superficie du bassin)",
+y="Nitrate_as_N_mg_L") +
+
+theme_bw()
+
+```
+
+
+# c: superficie de succession  naturelle 
+
+```{r}
+
+# Crée la variable pourcentage
+
+
+Period1$pctN_supdrainee_1990 = Period1$N_km2_supdrainee_1990 /
+Period1$sup_drainee_km2_sbv
+
+Period2$pctN_supdrainee_2020 = Period1$N_km2_supdrainee_2020 /
+Period1$sup_drainee_km2_sbv
+
+```
+
+# superficie_naturels_vs_température 
+
+```{r superficie_naturels_vs_température }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctN_supdrainee_1990,Temp_eau_YSI_degC))
+subset(Period2, select=c(Station2, Date, pctN_supdrainee_2020,Temp_eau_YSI_degC))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctN_supdrainee_1990, y=Temp_eau_YSI_degC,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctN_supdrainee_1990, y=Temp_eau_YSI_degC),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctN_supdrainee_2020, y=Temp_eau_YSI_degC,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctN_supdrainee_2020, y=Temp_eau_YSI_degC),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la température et les superficies naturels",
+x=" Les superficies naturels (fraction de la superficie du bassin)",
+y="Temp_eau_YSI_degC") +
+
+theme_bw()
+
+```
+
+
+# superficie_naturels_vs_oxygène 
+
+```{r superficie_naturels_vs_oxygène }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctN_supdrainee_1990,Oxyg_dissous_YSI_mg_L))
+subset(Period2, select=c(Station2, Date, pctN_supdrainee_2020,Oxyg_dissous_YSI_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctN_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctN_supdrainee_1990, y=Oxyg_dissous_YSI_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctN_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctN_supdrainee_2020, y=Oxyg_dissous_YSI_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre l'oxygène et les superficies naturels",
+x=" Les superficies naturels (fraction de la superficie du bassin)",
+y="Oxyg_dissous_YSI_mg_L") +
+
+theme_bw()
+
+```
+
+
+# superficie_naturels_vs_conductivité 
+
+```{r superficie_naturels_vs_conductivité }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctN_supdrainee_1990,Conductivity_microS_cm))
+subset(Period2, select=c(Station2, Date, pctN_supdrainee_2020,Conductivity_microS_cm))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctN_supdrainee_1990, y=Conductivity_microS_cm,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctN_supdrainee_1990, y=Conductivity_microS_cm),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctN_supdrainee_2020, y=Conductivity_microS_cm,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctN_supdrainee_2020, y=Conductivity_microS_cm),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la conductivité et les superficies naturels",
+x=" Les superficies naturels (fraction de la superficie du bassin)",
+y="Conductivity_microS_cm") +
+
+theme_bw()
+
+```
+
+
+
+# superficie_naturels_vs_pH 
+
+```{r superficie_naturels_vs_pH }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctN_supdrainee_1990,pH_units))
+subset(Period2, select=c(Station2, Date, pctN_supdrainee_2020,pH_units))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctN_supdrainee_1990, y=pH_units,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctN_supdrainee_1990, y=pH_units),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctN_supdrainee_2020, y=pH_units,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctN_supdrainee_2020, y=pH_units),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le pH et les superficies naturels",
+x=" Les superficies naturels (fraction de la superficie du bassin)",
+y="pH_units") +
+
+theme_bw()
+
+```
+
+
+
+# superficie_naturels_vs_Turbidité 
+
+```{r superficie_naturels_vs_Turbidité }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctN_supdrainee_1990,Turbidity_NTU))
+subset(Period2, select=c(Station2, Date, pctN_supdrainee_2020,Turbidity_NTU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctN_supdrainee_1990, y=Turbidity_NTU,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctN_supdrainee_1990, y=Turbidity_NTU),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctN_supdrainee_2020, y=Turbidity_NTU,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctN_supdrainee_2020, y=Turbidity_NTU),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le Turbidité et les superficies naturels",
+x=" Les superficies naturels (fraction de la superficie du bassin)",
+y="Turbidity_NTU") +
+
+theme_bw()
+
+```
+
+
+
+# superficie_naturels_vs_couleur 
+
+```{r superficie_naturels_vs_couleur }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctN_supdrainee_1990,Colour_TCU))
+subset(Period2, select=c(Station2, Date, pctN_supdrainee_2020,Colour_TCU))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctN_supdrainee_1990, y=Colour_TCU,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctN_supdrainee_1990, y=Colour_TCU),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctN_supdrainee_2020, y=Colour_TCU,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctN_supdrainee_2020, y=Colour_TCU),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la couleur et les superficies naturels",
+x=" Les superficies naturels (fraction de la superficie du bassin)",
+y="Colour_TCU") +
+
+theme_bw()
+
+```
+
+
+# superficie_naturels_vs_COT 
+
+```{r superficie_naturels_vs_COT }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctN_supdrainee_1990,Carbon_Total_Organic_mg_L))
+subset(Period2, select=c(Station2, Date, pctN_supdrainee_2020,Carbon_Total_Organic_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctN_supdrainee_1990, y=Carbon_Total_Organic_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctN_supdrainee_1990, y=Carbon_Total_Organic_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctN_supdrainee_2020, y=Carbon_Total_Organic_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctN_supdrainee_2020, y=Carbon_Total_Organic_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le COT et les superficies naturels",
+x=" Les superficies naturels (fraction de la superficie du bassin)",
+y="Carbon_Total_Organic_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+
+# superficie_naturels_vs_coliforme 
+
+```{r superficie_naturels_vs_coliforme }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctN_supdrainee_1990,E.coli_MPN_100.mL))
+subset(Period2, select=c(Station2, Date, pctN_supdrainee_2020,E.coli_MPN_100.mL))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctN_supdrainee_1990, y=E.coli_MPN_100.mL,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctN_supdrainee_1990, y=E.coli_MPN_100.mL),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctN_supdrainee_2020, y=E.coli_MPN_100.mL,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctN_supdrainee_2020, y=E.coli_MPN_100.mL),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre les coliformes et les superficies naturels",
+x=" Les superficies naturels (fraction de la superficie du bassin)",
+y="E.coli_MPN_100.mL") +
+
+theme_bw()
+
+```
+
+
+
+# superficie_naturels_vs_phosphore 
+
+```{r superficie_naturels_vs_phosphore }
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctN_supdrainee_1990,Phosphorus_Total_mg_L))
+subset(Period2, select=c(Station2, Date, pctN_supdrainee_2020,Phosphorus_Total_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctN_supdrainee_1990, y=Phosphorus_Total_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctN_supdrainee_1990, y=Phosphorus_Total_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctN_supdrainee_2020, y=Phosphorus_Total_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctN_supdrainee_2020, y=Phosphorus_Total_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le phosphore et les superficies naturels",
+x=" Les superficies naturels (fraction de la superficie du bassin)",
+y="Phosphorus_Total_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+
+# superficie_naturels_vs_nitrate 
+
+```{r superficie_naturels_vs_nitrate}
+
+#names(Pok2001.2022) 
+
+subset(Period1, select=c(Station2, Date, pctN_supdrainee_1990,Nitrate_as_N_mg_L))
+subset(Period2, select=c(Station2, Date, pctN_supdrainee_2020,Nitrate_as_N_mg_L))
+
+ggplot() +
+geom_point(data=Period1, aes(x=pctN_supdrainee_1990, y=Nitrate_as_N_mg_L,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=pctN_supdrainee_1990, y=Nitrate_as_N_mg_L),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=pctN_supdrainee_2020, y=Nitrate_as_N_mg_L,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=pctN_supdrainee_2020, y=Nitrate_as_N_mg_L),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre le nitrate et les superficies naturels",
+x=" Les superficies naturels (fraction de la superficie du bassin)",
+y="Nitrate_as_N_mg_L") +
+
+theme_bw()
+
+```
+
+
+
+
+# Précipitation totale: 
+
+```{r}
+
+# Crée la variable pourcentage
+
+
+Pok2001.2022$pctN_supdrainee_1990 = Pok2001.2022$precip.tot.2jours /
+Pok2001.2022$precip.tot.21jours
+
+Pok2001.2022$pctN_supdrainee_2020 = Pok2001.2022$precip.tot.6jours /
+Pok2001.2022$precip.tot.21jours
+
+```
+
+
+## Temp_VS_Précip_total
+
+```{r Temp_VS_Précip_total}
+# Créer un graphique pour la précipitation à 2 jours plus tôt 
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre Température et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Temp_eau_YSI_degC")
+# Créer un graphique pour la précipitation à 6 jours plus tôt 
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.6jours, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre Température et la Précipitation 6jrs avant",
+       x="precip.tot.6jours",
+       y="Temp_eau_YSI_degC")
+# Créer un graphique pour la précipitation à 14 jours plus tôt 
+p3 <- ggplot(Pok2001.2022, aes(x=precip.tot.14jours, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="yellow") +
+  labs(title="Relation entre Température et la Précipitation 14jrs avant",
+       x="precip.tot.14jours",
+       y="Temp_eau_YSI_degC")
+# Créer un graphique pour la précipitation à 21 jours plus tôt 
+p4 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="green") +
+  labs(title="Relation entre Température et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Temp_eau_YSI_degC")
+# Afficher les graphiques
+print(p1)
+print(p2)
+print(p3)
+print(p4)
+ggarrange(p1, p2, p3, p4,  ncol=2, nrow=2)
+
+
+```
+
+
+## Oxygène_VS_Précip_total
+
+```{r Oxygène_VS_Précip_total}
+# Créer un graphique pour la précipitation à 2 jours plus tôt 
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre l'Oxygène et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Oxyg_dissous_YSI_mg_L")
+# Créer un graphique pour la précipitation à 6 jours plus tôt 
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.6jours, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre l'Oxygène et la Précipitation 6jrs avant",
+       x="precip.tot.6jours",
+       y="Oxyg_dissous_YSI_mg_L")
+# Créer un graphique pour la précipitation à 14 jours plus tôt 
+p3 <- ggplot(Pok2001.2022, aes(x=precip.tot.14jours, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="yellow") +
+  labs(title="Relation entre l'Oxygène et la Précipitation 14jrs avant",
+       x="precip.tot.14jours",
+       y="Oxyg_dissous_YSI_mg_L")
+# Créer un graphique pour la précipitation à 21 jours plus tôt 
+p4 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Oxyg_dissous_YSI_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="green") +
+  labs(title="Relation entre l'Oxygène et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Oxyg_dissous_YSI_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+print(p3)
+print(p4)
+ggarrange(p1, p2, p3, p4,  ncol=2, nrow=2)
+
+
+```
+
+
+## conductivité_VS_Précip_total
+
+```{r conductivité_VS_Précip_total}
+# Créer un graphique pour la précipitation à 2 jours plus tôt 
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la conductivité et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Conductivity_microS_cm")
+# Créer un graphique pour la précipitation à 6 jours plus tôt 
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.6jours, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la conductivité et la Précipitation 6jrs avant",
+       x="precip.tot.6jours",
+       y="Conductivity_microS_cm")
+# Créer un graphique pour la précipitation à 14 jours plus tôt 
+p3 <- ggplot(Pok2001.2022, aes(x=precip.tot.14jours, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="yellow") +
+  labs(title="Relation entre la conductivité et la Précipitation 14jrs avant",
+       x="precip.tot.14jours",
+       y="Conductivity_microS_cm")
+# Créer un graphique pour la précipitation à 21 jours plus tôt 
+p4 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Conductivity_microS_cm)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="green") +
+  labs(title="Relation entre la conductivité et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Conductivity_microS_cm")
+# Afficher les graphiques
+print(p1)
+print(p2)
+print(p3)
+print(p4)
+ggarrange(p1, p2, p3, p4,  ncol=2, nrow=2)
+
+
+```
+
+
+## pH_VS_Précip_total
+
+```{r pH_VS_Précip_total}
+# Créer un graphique pour la précipitation à 2 jours plus tôt 
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la conductivité et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="pH_units")
+# Créer un graphique pour la précipitation à 6 jours plus tôt 
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.6jours, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la conductivité et la Précipitation 6jrs avant",
+       x="precip.tot.6jours",
+       y="pH_units")
+# Créer un graphique pour la précipitation à 14 jours plus tôt 
+p3 <- ggplot(Pok2001.2022, aes(x=precip.tot.14jours, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="yellow") +
+  labs(title="Relation entre la conductivité et la Précipitation 14jrs avant",
+       x="precip.tot.14jours",
+       y="pH_units")
+# Créer un graphique pour la précipitation à 21 jours plus tôt 
+p4 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=pH_units)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="green") +
+  labs(title="Relation entre la conductivité et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="pH_units")
+# Afficher les graphiques
+print(p1)
+print(p2)
+print(p3)
+print(p4)
+ggarrange(p1, p2, p3, p4,  ncol=2, nrow=2)
+
+
+```
+
+
+## turbidité_VS_Précip_total
+
+```{r turbidité_VS_Précip_total}
+# Créer un graphique pour la précipitation à 2 jours plus tôt 
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la conductivité et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Turbidity_NTU")
+# Créer un graphique pour la précipitation à 6 jours plus tôt 
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.6jours, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la conductivité et la Précipitation 6jrs avant",
+       x="precip.tot.6jours",
+       y="Turbidity_NTU")
+# Créer un graphique pour la précipitation à 14 jours plus tôt 
+p3 <- ggplot(Pok2001.2022, aes(x=precip.tot.14jours, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="yellow") +
+  labs(title="Relation entre la conductivité et la Précipitation 14jrs avant",
+       x="precip.tot.14jours",
+       y="Turbidity_NTU")
+# Créer un graphique pour la précipitation à 21 jours plus tôt 
+p4 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Turbidity_NTU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="green") +
+  labs(title="Relation entre la conductivité et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Turbidity_NTU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+print(p3)
+print(p4)
+ggarrange(p1, p2, p3, p4,  ncol=2, nrow=2)
+
+
+```
+
+
+
+## couleur_VS_Précip_total
+
+```{r couleur_VS_Précip_total}
+# Créer un graphique pour la précipitation à 2 jours plus tôt 
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la conductivité et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Colour_TCU")
+# Créer un graphique pour la précipitation à 6 jours plus tôt 
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.6jours, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la conductivité et la Précipitation 6jrs avant",
+       x="precip.tot.6jours",
+       y="Colour_TCU")
+# Créer un graphique pour la précipitation à 14 jours plus tôt 
+p3 <- ggplot(Pok2001.2022, aes(x=precip.tot.14jours, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="yellow") +
+  labs(title="Relation entre la conductivité et la Précipitation 14jrs avant",
+       x="precip.tot.14jours",
+       y="Colour_TCU")
+# Créer un graphique pour la précipitation à 21 jours plus tôt 
+p4 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Colour_TCU)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="green") +
+  labs(title="Relation entre la conductivité et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Colour_TCU")
+# Afficher les graphiques
+print(p1)
+print(p2)
+print(p3)
+print(p4)
+ggarrange(p1, p2, p3, p4,  ncol=2, nrow=2)
+
+
+```
+
+
+
+## COT_VS_Précip_total
+
+```{r COT_VS_Précip_total}
+# Créer un graphique pour la précipitation à 2 jours plus tôt 
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la conductivité et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Carbon_Total_Organic_mg_L")
+# Créer un graphique pour la précipitation à 6 jours plus tôt 
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.6jours, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la conductivité et la Précipitation 6jrs avant",
+       x="precip.tot.6jours",
+       y="Carbon_Total_Organic_mg_L")
+# Créer un graphique pour la précipitation à 14 jours plus tôt 
+p3 <- ggplot(Pok2001.2022, aes(x=precip.tot.14jours, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="yellow") +
+  labs(title="Relation entre la conductivité et la Précipitation 14jrs avant",
+       x="precip.tot.14jours",
+       y="Carbon_Total_Organic_mg_L")
+# Créer un graphique pour la précipitation à 21 jours plus tôt 
+p4 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Carbon_Total_Organic_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="green") +
+  labs(title="Relation entre la conductivité et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Carbon_Total_Organic_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+print(p3)
+print(p4)
+ggarrange(p1, p2, p3, p4,  ncol=2, nrow=2)
+
+
+```
+
+
+
+## Coliforme_VS_Précip_total
+
+```{r Coliforme_VS_Précip_total}
+# Créer un graphique pour la précipitation à 2 jours plus tôt 
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la conductivité et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="E.coli_MPN_100.mL")
+# Créer un graphique pour la précipitation à 6 jours plus tôt 
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.6jours, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la conductivité et la Précipitation 6jrs avant",
+       x="precip.tot.6jours",
+       y="E.coli_MPN_100.mL")
+# Créer un graphique pour la précipitation à 14 jours plus tôt 
+p3 <- ggplot(Pok2001.2022, aes(x=precip.tot.14jours, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="yellow") +
+  labs(title="Relation entre la conductivité et la Précipitation 14jrs avant",
+       x="precip.tot.14jours",
+       y="E.coli_MPN_100.mL")
+# Créer un graphique pour la précipitation à 21 jours plus tôt 
+p4 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=E.coli_MPN_100.mL)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="green") +
+  labs(title="Relation entre la conductivité et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="E.coli_MPN_100.mL")
+# Afficher les graphiques
+print(p1)
+print(p2)
+print(p3)
+print(p4)
+ggarrange(p1, p2, p3, p4,  ncol=2, nrow=2)
+
+
+```
+
+
+
+## Phosphore_VS_Précip_total
+
+```{r Phosphore_VS_Précip_total}
+# Créer un graphique pour la précipitation à 2 jours plus tôt 
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la conductivité et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Phosphorus_Total_mg_L")
+# Créer un graphique pour la précipitation à 6 jours plus tôt 
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.6jours, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la conductivité et la Précipitation 6jrs avant",
+       x="precip.tot.6jours",
+       y="Phosphorus_Total_mg_L")
+# Créer un graphique pour la précipitation à 14 jours plus tôt 
+p3 <- ggplot(Pok2001.2022, aes(x=precip.tot.14jours, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="yellow") +
+  labs(title="Relation entre la conductivité et la Précipitation 14jrs avant",
+       x="precip.tot.14jours",
+       y="Phosphorus_Total_mg_L")
+# Créer un graphique pour la précipitation à 21 jours plus tôt 
+p4 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Phosphorus_Total_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="green") +
+  labs(title="Relation entre la conductivité et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Phosphorus_Total_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+print(p3)
+print(p4)
+ggarrange(p1, p2, p3, p4,  ncol=2, nrow=2)
+
+
+```
+
+
+
+## nitrate_VS_Précip_total
+
+```{r nitrate_VS_Précip_total}
+# Créer un graphique pour la précipitation à 2 jours plus tôt 
+p1 <- ggplot(Pok2001.2022, aes(x=precip.tot.2jours, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre la conductivité et la Précipitation 2jrs avant",
+       x="precip.tot.2jours",
+       y="Nitrate_as_N_mg_L")
+# Créer un graphique pour la précipitation à 6 jours plus tôt 
+p2 <- ggplot(Pok2001.2022, aes(x=precip.tot.6jours, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre la conductivité et la Précipitation 6jrs avant",
+       x="precip.tot.6jours",
+       y="Nitrate_as_N_mg_L")
+# Créer un graphique pour la précipitation à 14 jours plus tôt 
+p3 <- ggplot(Pok2001.2022, aes(x=precip.tot.14jours, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="yellow") +
+  labs(title="Relation entre la conductivité et la Précipitation 14jrs avant",
+       x="precip.tot.14jours",
+       y="Nitrate_as_N_mg_L")
+# Créer un graphique pour la précipitation à 21 jours plus tôt 
+p4 <- ggplot(Pok2001.2022, aes(x=precip.tot.21jours, y=Nitrate_as_N_mg_L)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="green") +
+  labs(title="Relation entre la conductivité et la Précipitation 21jrs avant",
+       x="precip.tot.21jours",
+       y="Nitrate_as_N_mg_L")
+# Afficher les graphiques
+print(p1)
+print(p2)
+print(p3)
+print(p4)
+ggarrange(p1, p2, p3, p4,  ncol=2, nrow=2)
+
+
+```
+
+
+
+
+
+```{r}
+
+# Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU
+# Carbon_Total_Organic_mg_L
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+
+
+
+```
+
+
+#code recu d'Alain le 16 juillet 2024 sur les arbres de régressions 
+
+```{r ctree1}
+#NF_km2_supdrainee_1990
+
+library("partykit") # pour ctree
+library("strucchange") # for p values of ctree models
+
+# Créer une variable "Mois"
+Pok2001.2022$Mois<-format(as.Date(Pok2001.2022$Date, format="%Y-%m-%d"),"%m")
+class(Pok2001.2022$Mois)
+# Convertir la classe en facteur
+Pok2001.2022$Mois=as.factor(Pok2001.2022$Mois)
+class(Pok2001.2022$Mois)
+# Voir les niveaux du facteur "Mois"
+levels(Pok2001.2022$Mois)
+table(Pok2001.2022$Mois)
+
+# Créer une variable "Annee"
+Pok2001.2022$Annee<-format(as.Date(Pok2001.2022$Date, format="%Y-%m-%d"),"%Y")
+class(Pok2001.2022$Annee)
+Pok2001.2022$Annee=as.factor(Pok2001.2022$Annee)
+levels(Pok2001.2022$Annee)
+table(Pok2001.2022$Annee)
+
+# Présentation de la fonction "ctree" ("categorical tree") avec
+# un modèle de température en fonction du mois de l'année
+partykit::ctree(Temp_eau_YSI_degC~Mois, data=Pok2001.2022)
+# Les températures du mois de juillet (moyenne=14,5 deg. C) se distinguent
+# de celles des mois d'août et de septembre (12,6 deg. C) et de celles
+# des mois d'octobre-novembre (6,3 deg. C)
+
+# Ces divisions binaires sont-elles "statistiquement signficatives"?
+ctree01_temp_mois=partykit::ctree(Temp_eau_YSI_degC~Mois, data=Pok2001.2022,
+control=partykit::ctree_control(minsplit=1, minbucket=1,minprob=0.1,
+maxdepth=1, testtype="Teststatistic"))
+ctree01_temp_mois 
+sctest(ctree01_temp_mois)
+# À faire: comprendre pourquoi les valeurs p ne sont pas calculées
+#plot(ctree01_temp_mois)
+
+# Modèle avec plus de paramètres (à explorer)
+# ctree01_temp_mois=partykit::ctree(Temp_eau_YSI_degC~Mois, data=Pok2001.2022,
+#control=partykit::ctree_control(minsplit=1, minbucket=1,minprob=0.1,
+#maxdepth=1,
+#testtype="Teststatistic"))
+
+
+# On peut ajouter plusieurs variables indépendantes "X" au modèle:
+ctree02_temp=partykit::ctree(Temp_eau_YSI_degC~ Mois + Period, data=Pok2001.2022,
+control=partykit::ctree_control(testtype="Teststatistic"))
+ctree02_temp
+# La première division se fait selon les mois: le mois de juillet se distinguent des mois
+# d'août et septembre et ceux-ci se distinguent des mois d'octobre et novembre.
+# Dans le mois de juillet, la période 1 a été plus chaude (16,2 deg. C en moyenne) 
+# que la période 2 (13,6 deg. C).
+sctest(ctree02_temp)
+#plot(ctree02_temp)
+
+
+# On peut ajouter plusieurs variables dépendantes "Y" au modèle:
+ctree03_temp_pH=partykit::ctree(Temp_eau_YSI_degC+pH_units~Mois, data=Pok2001.2022,
+control=partykit::ctree_control(testtype="Teststatistic"))
+ctree03_temp_pH
+sctest(ctree03_temp_pH)
+#plot(ctree03_temp_pH)
+ 
+# On peut ajouter plusieurs variables "Y" (tous les paramètres ensemble, 
+# permettant ainsi de parler de "qualité de l'eau") et plusieurs variables X...
+
+```
+
+#essaie Gaël sur les arbres de régression 
+
+
+```{r ctree1}
+#NF_km2_supdrainee_1990
+
+library("partykit") # pour ctree
+library("strucchange")  # for p values of ctree models
+
+# Créer une variable "Mois"
+Pok2001.2022$Mois<-format(as.Date(Pok2001.2022$Date, format="%Y-%m-%d"),"%m")
+class(Pok2001.2022$Mois)
+# Convertir la classe en facteur
+Pok2001.2022$Mois=as.factor(Pok2001.2022$Mois)
+class(Pok2001.2022$Mois)
+# Voir les niveaux du facteur "Mois"
+levels(Pok2001.2022$Mois)
+table(Pok2001.2022$Mois)
+
+# Créer une variable "Annee"
+Pok2001.2022$Annee<-format(as.Date(Pok2001.2022$Date, format="%Y-%m-%d"),"%Y")
+class(Pok2001.2022$Annee)
+Pok2001.2022$Annee=as.factor(Pok2001.2022$Annee)
+levels(Pok2001.2022$Annee)
+table(Pok2001.2022$Annee)
+
+# Présentation de la fonction "ctree" ("categorical tree") avec
+# un modèle de température en fonction du mois de l'année
+partykit::ctree(Oxyg_dissous_YSI_mg_L~Mois, data=Pok2001.2022)
+# Les températures du mois de juillet (moyenne=14,5 deg. C) se distinguent
+# de celles des mois d'août et de septembre (12,6 deg. C) et de celles
+# des mois d'octobre-novembre (6,3 deg. C)
+
+# Ces divisions binaires sont-elles "statistiquement signficatives"?
+ctree01_temp_mois=partykit::ctree(Oxyg_dissous_YSI_mg_L~Mois, data=Pok2001.2022,
+control=partykit::ctree_control(minsplit=1, minbucket=1,minprob=0.1,
+maxdepth=1))
+ctree01_temp_mois
+
+sctest(ctree01_temp_mois)
+# À faire: comprendre pourquoi les valeurs p ne sont pas calculées
+#plot(ctree01_temp_mois)
+
+# Vérifier si le modèle contient des valeurs NaN
+#any(is.nan(ctree01_temp_mois))
+
+
+# Modèle avec plus de paramètres (à explorer)
+# ctree01_temp_mois=partykit::ctree(Temp_eau_YSI_degC~Mois, data=Pok2001.2022,
+#control=partykit::ctree_control(minsplit=1, minbucket=1,minprob=0.1,
+#maxdepth=1,
+#testtype="Teststatistic"))
+
+
+# On peut ajouter plusieurs variables indépendantes "X" au modèle:
+ctree02_temp=partykit::ctree(Oxyg_dissous_YSI_mg_L~ Mois + Period, data=Pok2001.2022,
+control=partykit::ctree_control(minsplit=1, minbucket=1,minprob=0.1,
+maxdepth=1))
+
+ctree02_temp
+
+# La première division se fait selon les mois: le mois de juillet se distinguent des mois
+# d'août et septembre et ceux-ci se distinguent des mois d'octobre et novembre.
+# Dans le mois de juillet, la période 1 a été plus chaude (16,2 deg. C en moyenne) 
+# que la période 2 (13,6 deg. C).
+sctest(ctree02_temp)
+#plot(ctree02_temp)
+
+
+# On peut ajouter plusieurs variables dépendantes "Y" au modèle:
+ctree03_temp_pH=partykit::ctree(Temp_eau_YSI_degC+Oxyg_dissous_YSI_mg_L+Conductivity_microS_cm+pH_units+Turbidity_NTU+Colour_TCU+Carbon_Total_Organic_mg_L+E.coli_MPN_100.mL+Phosphorus_Total_mg_L+Nitrate_as_N_mg_L~Mois, data=Pok2001.2022,
+control=partykit::ctree_control(testtype="Teststatistic"))
+ctree03_temp_pH
+sctest(ctree03_temp_pH)
+#plot(ctree03_temp_pH)
+
+
+# On peut ajouter plusieurs variables "Y" (tous les paramètres ensemble, 
+# permettant ainsi de parler de "qualité de l'eau") et plusieurs variables X...
+```
+
+
+
+```{r}
+
+ctree03=partykit::ctree(Temp_eau_YSI_degC+Oxyg_dissous_YSI_mg_L+Conductivity_microS_cm+pH_units+Turbidity_NTU+Colour_TCU+Carbon_Total_Organic_mg_L+E.coli_MPN_100.mL+Phosphorus_Total_mg_L+Nitrate_as_N_mg_L~Annee+Mois, data=Pok2001.2022,
+control=partykit::ctree_control(minsplit=1, minbucket=1,minprob=0.1,
+maxdepth=1))
+ 
+
+ctree03
+
+sctest(ctree03)
+
+#plot(ctree03)
+
+```
+
+# RÉFÉRENCES
+
+
+```{r}
+
+# Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU 
+# Carbon_Total_Organic_mg_L 
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+
+
+
+
+
+
+```
+
 
 
 # RÉFÉRENCES
