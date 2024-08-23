@@ -191,7 +191,6 @@ summary(Pok2001.2022$Station2)
 ```
 
 
-
 ```{r Fonctions, eval=F, include=F, message=F, warning=F}
 # Pour lister les noms de variables (en-têtes des colonnes):
 names(Pok2001.2022)
@@ -544,7 +543,7 @@ text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$WIL_km2_supdrainee_2020,  caract
 # N	Natural Succession		Succession naturelle
 # W	Windthrow	2015	Chablis
 # M	Mining	2015	Mine
-# G	Windthrow	2015	Chablis
+# G	Windthrow	2015	Chablis (oui, il y a bien deux codes pour le chablis). 
 
 plot(caract.bv2$sup_drainee_km2_sbv, caract.bv2$C_km2_supdrainee_2020, pch="", xlim=c(0,120))
 text(caract.bv2$sup_drainee_km2_sbv, caract.bv2$C_km2_supdrainee_2020,  caract.bv2$Station)
@@ -734,7 +733,7 @@ strwrap("Faire de même pour les onze autres stations (pendant l'été 2024).")
 
 
 
-```{r Tableau_2001_etc,  include=F, message=F, warning=F}
+```{r Tableaux_2001_etc,  include=F, message=F, warning=F}
 # Créer un tableau par année
 Year2001=subset(Pok2001.2022, Year=="2001")
 dim(Year2001)
@@ -764,14 +763,59 @@ Period2=subset(Pok2001.2022, Period=="2021-2022")
 dim(Period2)
 ```
 
+```{r ordre2}
+# 2024-07-03
+# Créer un sous-tabeau avec les 12 stations (une seule date)
+Pok0=subset(Pok2001.2022, Date=="2001-08-01",
+       select=c(Station, Station2, Date, Long, Ordre, Dist_amont_station_m, 
+                Somme_ordre_1.5))
+dim(Pok0)
+```
+
+```{r ordonner_long}
+# 2024-07-03
+# Voici comment se suivent les stations de l'ouest vers l'est:
+Pok1=Pok0[order(Pok0$Long),]
+plot(Pok1$Long, pch="")
+text(Pok1$Long,, Pok1$Station)
+
+
+```
+
+```{r ordonner_parcours_long}
+# 2024-07-03
+# Ordonner selon le parcours le plus long en amont de la station
+
+Pok2=Pok0[order(Pok0$Dist_amont_station_m),]
+plot(Pok2$Dist_amont_station_m, pch="")
+text(Pok2$Dist_amont_station_m,, Pok2$Station)
+
+```
+
+```{r ordonner_somme_parcours_amont}
+# 2024-07-03
+# Ordonner selon la somme des longueurs en amont
+
+Pok3=Pok0[order(Pok0$Somme_ordre_1.5),]
+plot(Pok3$Somme_ordre_1.5, pch="")
+text(Pok3$Somme_ordre_1.5,, Pok3$Station)
+
+```
+
 ```{r analyses_chimie_bv_meteo}
 
 strwrap("2024-06-26 Le tableau complet des données de chimie, 
         caractéristiques territoriales et météo est enfin assemblé
         et prêt à être analysé.")
 
-ggplot(Pok2001.2022,aes(x=temp_moy_C,y=Temp_eau_YSI_degC)) +
-geom_point()
+
+scatterplot(Pok2001.2022$Ordre3_m_amont,Pok2001.2022$Colour_TCU,   
+              groups=Pok2001.2022$Year, smooth=F, by.groups=F, regLine=T,)
+
+scatterplot(Colour_TCU~Ordre3_m_amont | Year,  
+            data=Pok2001.2022, smooth=F, by.groups=F)
+
+
 
 
 ggplot(Pok2001.2022,aes(x=Temp_eau_YSI_degC,y=Conductivity_microS_cm)) +
@@ -785,6 +829,8 @@ dim(sub2)
 pairs(sub2)
 
 ```
+
+
 
 
 ```{r INTRO_PCA}
@@ -815,7 +861,7 @@ axis(1, at = y1$Temp_eau_YSI_degC, labels = y1$Station, las=3)
 
 ```
 
-```{r pH_vs_temp}
+```{r PCA_pH_vs_temp}
 
 # On considérant une 2e variable (2e dimenstion, 2e axe), on constate
 # que Pok-05 et Pok-01 sont aussi différents que Pok-05 et Pok-
@@ -832,7 +878,7 @@ text(y1$Temp_eau_YSI_degC, y1$pH_units, y1$Station)
 
 ```
 
-```{r Couleur_vs_COT}
+```{r PCA_Couleur_vs_COT}
 # Couleur et carbone
 summary(y1$Carbon_Total_Organic_mg_L)
 # png("slide03_couleur_COT.png", width=660, height=660, units="px", pointsize=18)
@@ -883,7 +929,7 @@ autoplot(pca2, label=T, data=y1,
   ggtitle("ACP, 5 paramètres 2001-08-01")
 ```
 
-```{r pH_vs_cond}
+```{r PCA_pH_vs_cond}
 
 strwrap("La précédente ACP suggère que le pH et la conductivité sont liés. 
         Voyons voir avec un grahpique de dispersion.")
@@ -895,6 +941,323 @@ text(y1$Conductivity_microS_cm, y1$pH_units, y1$Station)
 strwrap("Les eaux douces sont plus saturées en CO2 (respiration microbienne, etc.) et donc
         plus acides ques les eaux marines où l'activité photosynthétique peut-être plus élevée...
         À vérifier ou confirmer.")
+```
+
+### De Gaël 2024-07-15
+
+
+De : Gaël Cidoine Vignon Bayo Dossou <egd8301@umoncton.ca>
+Envoyé : 15 juillet 2024 14:30
+À : Alain Patoine <alain.patoine@umoncton.ca>
+Objet : Code pour la relation entre les paramètres et les facteurs du territoires
+
+ 
+
+```{r Agriculture_vs_Temperature, eval=F}
+# Créer un graphique pour l'année 1990
+p1 <- ggplot(Pok2001.2022, aes(x=pctAGR_supdrainee_1990, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="red") +
+  labs(title="Relation entre Température et l'agriculture en 1990",
+       x="pctAGR_supdrainee_1990",
+       y="Temp_eau_YSI_degC")
+# Créer un graphique pour l'année 2020
+p2 <- ggplot(Pok2001.2022, aes(x=pctAGR_supdrainee_2020, y=Temp_eau_YSI_degC)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE, color="blue") +
+  labs(title="Relation entre Température et l'agriculture en 2020",
+       x="pctAGR_supdrainee_2020",
+       y="Temp_eau_YSI_degC")
+# Afficher les graphiques
+print(p1)
+print(p2)
+ggarrange(p1, p2,  ncol=2, nrow=1)
+ 
+ 
+```
+
+### Code pour Gaël 2024-07-15
+
+```{r Agriculture_vs_Temperature }
+
+# Reçu par courriel de Gaël 2024-07-15 lundi au campus pendant les vacances
+
+
+# Créer les variables par période:
+
+Period1$pctAGR_supdrainee_1990 = Period1$AGR_km2_supdrainee_1990 /
+
+  Period1$sup_drainee_km2_sbv
+
+ 
+
+Period2$pctAGR_supdrainee_2020 = Period1$AGR_km2_supdrainee_2020 /
+
+  Period1$sup_drainee_km2_sbv
+
+ 
+
+# Vérifier que les données existent:
+
+subset(Period1, select=c(Station2, Date, pctAGR_supdrainee_1990,Temp_eau_YSI_degC))
+
+subset(Period2, select=c(Station2, Date, pctAGR_supdrainee_2020,Temp_eau_YSI_degC))
+
+ 
+
+# Attention à prendre le tableau "Period1" pour les graphiques de 1990
+
+# plutôt que le tableau "Pok2001.2022".
+
+ 
+
+ggplot() +
+
+# Placer d'abord les points de la série "Period1": 
+
+  geom_point(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Temp_eau_YSI_degC,
+
+                               color="P1", shape="P1")) +
+
+  geom_smooth(data=Period1, aes(x=pctAGR_supdrainee_1990, y=Temp_eau_YSI_degC),
+
+              method=lm, se=FALSE, color="red") +
+
+# Ajouter les points pour la série "Period2"
+
+  geom_point(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Temp_eau_YSI_degC,
+
+                               color="P2", shape="P2")) +
+
+  geom_smooth(data=Period2, aes(x=pctAGR_supdrainee_2020, y=Temp_eau_YSI_degC),
+
+              method=lm, se=FALSE, color="blue") +
+
+# Contrôler la couleur des séries
+
+  scale_color_manual(name="",
+
+                    values=c("P1"="red", "P2"="blue"),
+
+                    breaks=c("P1","P2")) +
+
+# Contrôler les symboles des séries
+
+scale_shape_manual(name="",
+
+                    values=c("P1"=1, "P2"=2),
+
+                    breaks=c("P1","P2")) +
+
+# Ajuster les titres
+
+  labs(title="Relation entre Température et l'agriculture en 1990",
+
+       x="Agriculture (fraction de la superficie du bassin)",
+
+       y="Temp_eau_YSI_degC") +
+
+# Utiliser un fond blanc
+
+theme_bw()
+
+ 
+
+```
+
+ 
+
+```{r pH_precip_selon_stations}
+
+ 
+
+# Montrer la relation pH vs. precip en distinguant les stations
+
+ 
+
+ggplot(data=Pok2001.2022, aes(x=precip.tot.14jours, y=pH_units,
+
+                              color=Station2, shape=Station2)) +
+
+  scale_shape_manual(values=1:nlevels(Pok2001.2022$Station2)) +
+
+         geom_point() +
+
+  theme_bw()
+
+ 
+
+```
+
+ 
+
+```{r pH_precip_selon_period}
+
+ 
+
+# Montrer la relation pH vs. precip en distinguant les périodes
+
+ 
+
+ggplot(data=Pok2001.2022, aes(x=precip.tot.14jours, y=pH_units,
+
+                              color=Period, shape=Period)) +
+
+           geom_point() +
+
+  theme_bw()
+
+# La disposition des points reste la même, mais on voit qu'il a plus plu
+
+# en 2021-2022 qu'en 2001-2002.
+
+```
+
+ 
+
+```{r pH_precip_selon_ordre}
+
+ 
+
+# Montrer la relation pH vs. precip en distinguant les ordre
+
+# Ici, il faut utiliser "as.factor" pour convertir à la volée la
+
+# variable "Ordre" qui est de classe (type) "num" en facteur.
+
+ 
+
+ggplot(data=Pok2001.2022, aes(x=precip.tot.14jours, y=pH_units,
+
+                              color=as.factor(Ordre), shape=as.factor(Ordre))) +
+
+# Utiliser "geom_jitter" pour décaler les points de gauche à droite et ainsi
+
+# éviter que des points soient cachés derrière d'autres.
+
+           geom_jitter() +
+
+  theme_bw()
+
+ 
+
+# On voit que les stations d'ordre 4 ou 5 ont généralement des valeurs
+
+# de pH plus élevées que les stations d'ordre 3.
+
+ 
+
+```
+
+### ctree pour Gaël 2024-07-16
+
+
+De : Alain Patoine
+Envoyé : 16 juillet 2024 09:24
+À : Gaël Cidoine Vignon Bayo Dossou <egd8301@umoncton.ca>
+Objet : Présentation de la fonction d'arbre de régression ctree
+ 
+Bonjour Gaël,
+
+Voici un bloc de code pour les arbres de régression. Tu peux le copier dans ton script et l'exécuter. Revois les notes du cours que tu as suivi avec Gaétan. On s'en reparle.
+
+
+```{r ctree1}
+
+library("partykit") # pour ctree
+library("strucchange") # for p values of ctree models
+
+# Créer une variable "Mois"
+Pok2001.2022$Mois<-format(as.Date(Pok2001.2022$Date, format="%Y-%m-%d"),"%m")
+class(Pok2001.2022$Mois)
+# Convertir la classe en facteur
+Pok2001.2022$Mois=as.factor(Pok2001.2022$Mois)
+class(Pok2001.2022$Mois)
+# Voir les niveaux du facteur "Mois"
+levels(Pok2001.2022$Mois)
+table(Pok2001.2022$Mois)
+
+# Créer une variable "Annee"
+Pok2001.2022$Annee<-format(as.Date(Pok2001.2022$Date, format="%Y-%m-%d"),"%Y")
+class(Pok2001.2022$Annee)
+Pok2001.2022$Annee=as.factor(Pok2001.2022$Annee)
+levels(Pok2001.2022$Annee)
+table(Pok2001.2022$Annee)
+
+# Présentation de la fonction "ctree" ("categorical tree") avec 
+# un modèle de température en fonction du mois de l'année
+partykit::ctree(Temp_eau_YSI_degC~Mois, data=Pok2001.2022)
+# Les températures du mois de juillet (moyenne=14,5 deg. C) se distinguent
+# de celles des mois d'août et de septembre (12,6 deg. C) et de celles
+# des mois d'octobre-novembre (6,3 deg. C)
+
+# Ces divisions binaires sont-elles "statistiquement signficatives"?
+ctree01_temp_mois=partykit::ctree(Temp_eau_YSI_degC~Mois, data=Pok2001.2022,
+                control=partykit::ctree_control(testtype="Teststatistic"))
+ctree01_temp_mois
+sctest(ctree01_temp_mois)
+# À faire: comprendre pourquoi les valeurs p ne sont pas calculées
+plot(ctree01_temp_mois)
+
+# Modèle avec plus de paramètres (à explorer)
+# ctree01_temp_mois=partykit::ctree(Temp_eau_YSI_degC~Mois, data=Pok2001.2022,
+#                 control=partykit::ctree_control(minsplit=1, minbucket=1,minprob=0.1,
+#                                                  maxdepth=1,
+#                                                  testtype="Teststatistic"))
+
+
+# On peut ajouter plusieurs variables indépendantes "X" au modèle:
+ctree02_temp=partykit::ctree(Temp_eau_YSI_degC~ Mois + Period, data=Pok2001.2022,
+                control=partykit::ctree_control(testtype="Teststatistic"))
+ctree02_temp
+# La première division se fait selon les mois: le mois de juillet se distinguent des mois
+# d'août et septembre et ceux-ci se distinguent des mois d'octobre et novembre.
+# Dans le mois de juillet, la période 1 a été plus chaude (16,2 deg. C en moyenne) 
+# que la période 2 (13,6 deg. C).
+sctest(ctree02_temp)
+plot(ctree02_temp)
+
+
+# On peut ajouter plusieurs variables dépendantes "Y" au modèle:
+ctree03_temp_pH=partykit::ctree(Temp_eau_YSI_degC+pH_units~Mois, data=Pok2001.2022,
+                control=partykit::ctree_control(testtype="Teststatistic"))
+ctree03_temp_pH
+sctest(ctree03_temp_pH)
+plot(ctree03_temp_pH)
+
+# On peut ajouter plusieurs variables "Y" (tous les paramètres ensemble, 
+# permettant ainsi de parler de "qualité de l'eau") et plusieurs variables X...
+
+```
+
+```{r pctNF_supdrainee}
+
+# Créer une variable Non-Forest (en km2 de la superficie draînée) qui présente
+# les valeurs de 1990 pour les rangées de 1990 et les valeurs de 2020 pour les 
+# rangées de 2020
+
+# Textuellement: "si la période est 2001-2002 alors 2001-2002, autrement 2021-2022
+Pok2001.2022$NF_km2_supdrainee=ifelse(Pok2001.2022$Period=="2001-2002",Pok2001.2022$NF_km2_supdrainee_1990,Pok2001.2022$NF_km2_supdrainee_2020)
+
+# Vérifier que la procédure a bien fonctionné:
+subset(Pok2001.2022,select=c(Period,NF_km2_supdrainee_1990,
+                             NF_km2_supdrainee_2020, NF_km2_supdrainee))
+
+# Créer la variable "universelle" pctNF_supdrainee 
+# en utilisant la variable précédemment créée.
+Pok2001.2022$pctNF_supdrainee = Pok2001.2022$NF_km2_supdrainee/Pok2001.2022$sup_drainee_km2_sbv
+
+# Vérifier que les valeurs ont du sens
+subset(Pok2001.2022,select=c(Station, Date, NF_km2_supdrainee, 
+                             sup_drainee_km2_sbv, pctNF_supdrainee))
+1.11/19.21
+# 0.057 (5,7%)
+
+2.27/20.54
+# 0.11 (11%)
+
+# Et voilà. Tu peux adapter le code ci-dessus pour créer des variables
+# "universelles" de AGR, INF, etc.
 ```
 
 
