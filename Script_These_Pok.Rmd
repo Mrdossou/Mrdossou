@@ -3245,8 +3245,6 @@ Les stations 05 et 10 sont un peu plus proches de l'autoroute, mais leurs berges
 
 # ce 22 08 2024 à 16:33 j'ai collé les manquant du script et c'est a partie d'ici
 
-
-
 #Analyse du deuxième objectif
 
 ```{r, echo=f}
@@ -3294,6 +3292,8 @@ Ecolig2002
 ``` 
 
 ```{r, echo=F}
+
+
 
 Drainageg2001_2022=ggplot(aes(y=NF_km2_supdrainee_2020 , x=NF_km2_supdrainee_1990), data=Pok2001.2022) + 
   scale_shape_manual(values=1:nlevels(Pok2001.2022$Station2)) +
@@ -3431,8 +3431,15 @@ pairs(sub2)
 # Ce lundi 08 juillets 2024
 ## la surperficie forêt drainée en 2020 
 
+
+
 ```{r analyses_la surperficie forêt drainée_vs_Paramètres, eval=FALSE}
  
+# AP 2024-08-26 Attention à créer les "variables universelles", comme indiqué
+# dans mon courriel du 2024-07-17 avec la fonction "ifelse".
+# Ces nouvelles variables territoriales présentent les valeurs de 1990
+# pour les rangées de 1990, et les valeurs de 2020 pour les rangées de 2020.
+
  scatterplot(pctAGR_km2_supdrainee_2020 ~ Temp_eau_YSI_degC | Year,  
             data=Pok2001.2022, smooth=F, by.groups=F)
  scatterplot(AGR_km2_supdrainee_2020 ~ Oxyg_dissous_YSI_mg_L | Year,  
@@ -3839,11 +3846,6 @@ Je refaire le même schéma d'analyse juste avec les données de pourcentage
 
 
 ```{r }
-
-# AP 2024-08-26 Attention à créer les "variables universelles", comme indiqué
-# dans mon courriel du 2024-07-17 avec la fonction "ifelse".
-# Ces nouvelles variables territoriales présentent les valeurs de 1990
-# pour les rangées de 1990, et les valeurs de 2020 pour les rangées de 2020.
 
 #je crée tout mes variable de % pour les sous variable de NF pour les deux anéées
 
