@@ -70,7 +70,7 @@ oldpar=par(no.readonly=TRUE) # to keep original graphical parameters
 # list.files()
 
 # Répertoire pour Gaël
-setwd("~/Shippagan_mai_aout_2024/Analyse_R_sum/Ranalyse")
+# setwd("~/Shippagan_mai_aout_2024/Analyse_R_sum/Ranalyse")
 
 
 # Répertoire pour Alain
@@ -3247,10 +3247,10 @@ Les stations 05 et 10 sont un peu plus proches de l'autoroute, mais leurs berges
 
 
 
-#Analyse du deuxième objectifs
+#Analyse du deuxième objectif
 
 ```{r, echo=f}
-names (Pok2001.2022) 
+names(Pok2001.2022) 
 
 
 ```
@@ -3834,10 +3834,17 @@ ggarrange(p1, p2,  ncol=2, nrow=1)
 
 # Ce lundi 15 juillet 2024
 
-#Je refaire le même schéma d'analyse juste avec les données de pourcentage 
+Je refaire le même schéma d'analyse juste avec les données de pourcentage 
+
 
 
 ```{r }
+
+# AP 2024-08-26 Attention à créer les "variables universelles", comme indiqué
+# dans mon courriel du 2024-07-17 avec la fonction "ifelse".
+# Ces nouvelles variables territoriales présentent les valeurs de 1990
+# pour les rangées de 1990, et les valeurs de 2020 pour les rangées de 2020.
+
 #je crée tout mes variable de % pour les sous variable de NF pour les deux anéées
 
 # AGR_km2_supdrainee_1990 et AGR_km2_supdrainee_2020
@@ -4355,31 +4362,22 @@ theme_bw()
 subset(Period1, select=c(Station2, Date, pctNF_supdrainee_1990,E.coli_MPN_100.mL))
 subset(Period2, select=c(Station2, Date, pctNF_supdrainee_2020,E.coli_MPN_100.mL))
 
+# AP 2024-08-26 chunk 191; je reformate le code; les parenthèses n'étaient
+# pas bien placées.
 ggplot() +
 geom_point(data=Period1, aes(x=pctNF_supdrainee_1990, y=log10(E.coli_MPN_100.mL),
  color="P1", shape="P1")) +
 geom_smooth(data=Period1, aes(x=pctNF_supdrainee_1990, y=log10(E.coli_MPN_100.mL)),
-            
  method=lm, se=FALSE, color="red") +
- geom_point(data=Period2, aes(x=pctNF_supdrainee_2020, y=log10(E.coli_MPN_100.mL),
-
-color="P2", shape="P2")) +
-
- geom_smooth(data=Period2, aes(x=pctNF_supdrainee_2020, y=log10(E.coli_MPN_100.mL),
+geom_point(data=Period2, aes(x=pctNF_supdrainee_2020, y=log10(E.coli_MPN_100.mL),
+ color="P2", shape="P2")) +
+geom_smooth(data=Period2, aes(x=pctNF_supdrainee_2020, y=log10(E.coli_MPN_100.mL)),
  method=lm, se=FALSE, color="blue") +
-  
- scale_color_manual(name="",
-values=c("P1"="red", "P2"="blue"),
-breaks=c("P1","P2")) +
-scale_shape_manual(name="",
-values=c("P1"=1, "P2"=2),
-breaks=c("P1","P2")) +
-
-  
+scale_color_manual(name="",values=c("P1"="red", "P2"="blue"), breaks=c("P1","P2")) +
+scale_shape_manual(name="",values=c("P1"=1, "P2"=2), breaks=c("P1","P2")) +
 labs(title="Relation entre les coliformes et la variable non_foret",
-x="Non_foret (fraction de la superficie du bassin)",
-y="E.coli_MPN_100.mL") +
-
+ x="Non_foret (fraction de la superficie du bassin)",
+ y="E.coli_MPN_100.mL") +
 theme_bw()
 
 ```
@@ -4390,7 +4388,7 @@ theme_bw()
 ```{r non_foret_vs_phosphore }
 
 #names(Pok2001.2022) 
-
+# AP 2024-08-26: ce code (chunk 192) est OK
 subset(Period1, select=c(Station2, Date, pctNF_supdrainee_1990,Phosphorus_Total_mg_L))
 
 subset(Period2, select=c(Station2, Date, pctNF_supdrainee_2020,Phosphorus_Total_mg_L))
@@ -10135,5 +10133,3 @@ sctest(ctree03)
 ```
 
 
-
-# RÉFÉRENCES
