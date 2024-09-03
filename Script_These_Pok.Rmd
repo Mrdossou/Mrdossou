@@ -10295,6 +10295,7 @@ ggplot(aes(y=Tmax7jours, x= Period), data=Pok2001.2022) + geom_boxplot() +
 ```
 
 #Les température minimums 
+
 #Tmin2jours
 ```{r, echo=F, message=F, warning=F, fig.cap = "Tmin2jours"}
 # AP 2024-06-13 Essayer l'option "fig.cap" ci-dessus, ici et partout.
