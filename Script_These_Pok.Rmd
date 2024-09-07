@@ -8291,13 +8291,14 @@ theme_bw()
 ```
 
 
-# Coupeablanc_vs_Conductivité 
+# Coupeablanc_vs_Conductivité : tableau synthèse
 
 ```{r Coupeablanc_vs_Conductivité }
 
 #names(Pok2001.2022) 
 
 subset(Period1, select=c(Station2, Date, pctC_supdrainee_1990,Conductivity_microS_cm))
+
 subset(Period2, select=c(Station2, Date, pctC_supdrainee_2020,Conductivity_microS_cm))
 
 ggplot() +
@@ -8331,7 +8332,7 @@ theme_bw()
 
 
 
-# Coupeablanc_vs_pH 
+# Coupeablanc_vs_pH: tableau synthèse
 
 ```{r Coupeablanc_vs_pH }
 
