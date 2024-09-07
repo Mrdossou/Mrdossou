@@ -70,7 +70,7 @@ oldpar=par(no.readonly=TRUE) # to keep original graphical parameters
 # list.files()
 
 # Répertoire pour Gaël
-# setwd("~/Shippagan_mai_aout_2024/Analyse_R_sum/Ranalyse")
+ setwd("~/Shippagan_mai_aout_2024/Analyse_R_sum/Ranalyse")
 
 
 # Répertoire pour Alain
@@ -4941,9 +4941,10 @@ Period1$sup_drainee_km2_sbv
 
 ```
 
+
 # Zone_industriel_vs_température 
 
-```{r Zone_industriel_vs_température }
+```{r Zone_industriel_vs_température}
 
 #names(Pok2001.2022) 
 
@@ -4951,16 +4952,16 @@ subset(Period1, select=c(Station2, Date, pctIND_supdrainee_1990,Temp_eau_YSI_deg
 subset(Period2, select=c(Station2, Date, pctIND_supdrainee_2020,Temp_eau_YSI_degC))
 
 ggplot() +
-geom_point(data=Period1, aes(x=pctIND_supdrainee_1990, y=log10(Temp_eau_YSI_degC),
+geom_point(data=Period1, aes(x=pctIND_supdrainee_1990, y=Temp_eau_YSI_degC,
  color="P1", shape="P1")) +
-geom_smooth(data=Period1, aes(x=pctIND_supdrainee_1990, y=log10(Temp_eau_YSI_degC)),
+geom_smooth(data=Period1, aes(x=pctIND_supdrainee_1990, y=Temp_eau_YSI_degC),
             
  method=lm, se=FALSE, color="red") +
- geom_point(data=Period2, aes(x=pctIND_supdrainee_2020, y=log10(Temp_eau_YSI_degC ,
+ geom_point(data=Period2, aes(x=pctIND_supdrainee_2020, y=Temp_eau_YSI_degC,
 
 color="P2", shape="P2")) +
 
- geom_smooth(data=Period2, aes(x=pctIND_supdrainee_2020, y=log10(Temp_eau_YSI_degC)),
+ geom_smooth(data=Period2, aes(x=pctIND_supdrainee_2020, y=Temp_eau_YSI_degC),
  method=lm, se=FALSE, color="blue") +
   
  scale_color_manual(name="",
@@ -4971,13 +4972,15 @@ values=c("P1"=1, "P2"=2),
 breaks=c("P1","P2")) +
 
   
-labs(title="Relation entre la température et la Zone industriel",
+labs(title="Relation entre la température et les Zone industriel",
 x=" Zone industriel (fraction de la superficie du bassin)",
 y="Temp_eau_YSI_degC") +
 
 theme_bw()
 
 ```
+
+
 
 # Zone_industriel_vs_Oxyg_dissous 
 
@@ -8291,14 +8294,13 @@ theme_bw()
 ```
 
 
-# Coupeablanc_vs_Conductivité : tableau synthèse
+# Coupeablanc_vs_Conductivité 
 
 ```{r Coupeablanc_vs_Conductivité }
 
 #names(Pok2001.2022) 
 
 subset(Period1, select=c(Station2, Date, pctC_supdrainee_1990,Conductivity_microS_cm))
-
 subset(Period2, select=c(Station2, Date, pctC_supdrainee_2020,Conductivity_microS_cm))
 
 ggplot() +
@@ -8332,7 +8334,7 @@ theme_bw()
 
 
 
-# Coupeablanc_vs_pH: tableau synthèse
+# Coupeablanc_vs_pH 
 
 ```{r Coupeablanc_vs_pH }
 
@@ -10055,7 +10057,7 @@ ctree01_temp_mois
 
 sctest(ctree01_temp_mois)
 # À faire: comprendre pourquoi les valeurs p ne sont pas calculées
-#plot(ctree01_temp_mois)
+plot(ctree01_temp_mois)
 
 # Vérifier si le modèle contient des valeurs NaN
 #any(is.nan(ctree01_temp_mois))
@@ -10080,7 +10082,7 @@ ctree02_temp
 # Dans le mois de juillet, la période 1 a été plus chaude (16,2 deg. C en moyenne) 
 # que la période 2 (13,6 deg. C).
 sctest(ctree02_temp)
-#plot(ctree02_temp)
+plot(ctree02_temp)
 
 
 # On peut ajouter plusieurs variables dépendantes "Y" au modèle:
@@ -10088,7 +10090,7 @@ ctree03_temp_pH=partykit::ctree(Temp_eau_YSI_degC+Oxyg_dissous_YSI_mg_L+Conducti
 control=partykit::ctree_control(testtype="Teststatistic"))
 ctree03_temp_pH
 sctest(ctree03_temp_pH)
-#plot(ctree03_temp_pH)
+plot(ctree03_temp_pH)
 
 
 # On peut ajouter plusieurs variables "Y" (tous les paramètres ensemble, 
@@ -10108,7 +10110,7 @@ ctree03
 
 sctest(ctree03)
 
-#plot(ctree03)
+plot(ctree03)
 
 ```
 
@@ -10132,7 +10134,335 @@ sctest(ctree03)
 
 
 
+```
+
+# Graphique pour expliquer la relation des précpitation sur les périodes de chaque année.
+
+#precip_tot_mm
+```{r, echo=F, message=F, warning=F, fig.cap = "précipitations totale mm jours"}
+# AP 2024-06-13 Essayer l'option "fig.cap" ci-dessus, ici et partout.
+# Température variabilité spatiale
+ggplot(aes(y=precip_tot_mm, x= Period), data=Pok2001.2022) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la pluies à 20ans entre les deux Period")
+
+```
+#precip.tot.2jours
+```{r, echo=F, message=F, warning=F, fig.cap = "precip.tot.2jours"}
+# AP 2024-06-13 Essayer l'option "fig.cap" ci-dessus, ici et partout.
+# Température variabilité spatiale
+ggplot(aes(y=precip.tot.2jours, x= Period), data=Pok2001.2022) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la pluies à 20ans entre les deux Period")
+```
+#precip.tot.3jours
+```{r, echo=F, message=F, warning=F, fig.cap = "precip.tot.3jours"}
+# AP 2024-06-13 Essayer l'option "fig.cap" ci-dessus, ici et partout.
+# Température variabilité spatiale
+ggplot(aes(y=precip.tot.3jours, x= Period), data=Pok2001.2022) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la pluies à 20ans entre les deux Period")
+```
+
+#precip.tot.4jours
+```{r, echo=F, message=F, warning=F, fig.cap = "precip.tot.4jours"}
+# AP 2024-06-13 Essayer l'option "fig.cap" ci-dessus, ici et partout.
+# Température variabilité spatiale
+ggplot(aes(y=precip.tot.4jours , x= Period), data=Pok2001.2022) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la pluies à 20ans entre les deux Period")
+```
+
+#precip.tot.5jours
+```{r, echo=F, message=F, warning=F, fig.cap = "precip.tot.5jours"}
+# AP 2024-06-13 Essayer l'option "fig.cap" ci-dessus, ici et partout.
+# Température variabilité spatiale
+ggplot(aes(y=precip.tot.5jours, x= Period), data=Pok2001.2022) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la pluies à 20ans entre les deux Period")
+```
+#precip.tot.6jours
+```{r, echo=F, message=F, warning=F, fig.cap = "precip.tot.6jours"}
+# AP 2024-06-13 Essayer l'option "fig.cap" ci-dessus, ici et partout.
+# Température variabilité spatiale
+ggplot(aes(y=precip.tot.6jours, x= Period), data=Pok2001.2022) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la pluies à 20ans entre les deux Period")
+```
+
+#precip.tot.7jours
+```{r, echo=F, message=F, warning=F, fig.cap = "precip.tot.7jours"}
+# AP 2024-06-13 Essayer l'option "fig.cap" ci-dessus, ici et partout.
+# Température variabilité spatiale
+ggplot(aes(y=precip.tot.7jours , x= Period), data=Pok2001.2022) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la pluies à 20ans entre les deux Period")
+```
+
+#precip.tot.14jours
+```{r, echo=F, message=F, warning=F, fig.cap = "precip.tot.14jours"}
+# AP 2024-06-13 Essayer l'option "fig.cap" ci-dessus, ici et partout.
+# Température variabilité spatiale
+ggplot(aes(y=precip.tot.14jours, x= Period), data=Pok2001.2022) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la pluies à 20ans entre les deux Period")
+```
+#precip.tot.21jours
+```{r, echo=F, message=F, warning=F, fig.cap = "precip.tot.21jours"}
+# AP 2024-06-13 Essayer l'option "fig.cap" ci-dessus, ici et partout.
+# Température variabilité spatiale
+ggplot(aes(y=precip.tot.21jours, x= Period), data=Pok2001.2022) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la pluies à 20ans entre les deux Period")
+```
+
+# Graphique pour expliquer la relation des températures sur les périodes des années détudes.
+
+
+#Variation de la temperature de l'eau sur les deux periodes 
+```{r, echo=F, message=F, warning=F, fig.cap = "Temp_eau_YSI_degC"}
+# AP 2024-06-13 Essayer l'option "fig.cap" ci-dessus, ici et partout.
+# Température variabilité spatiale
+ggplot(aes(y=Temp_eau_YSI_degC, x= Period), data=Pok2001.2022) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la température à 20ans entre les deux Period")
+```
+
+#Tmax2jours
+```{r, echo=F, message=F, warning=F, fig.cap = "Tmax2jours"}
+# AP 2024-06-13 Essayer l'option "fig.cap" ci-dessus, ici et partout.
+# Température variabilité spatiale
+ggplot(aes(y=Tmax2jours, x= Period), data=Pok2001.2022) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la pluies à 20ans entre les deux Period")
+```
+#Tmax3jours
+```{r, echo=F, message=F, warning=F, fig.cap = "Tmax3jours"}
+# AP 2024-06-13 Essayer l'option "fig.cap" ci-dessus, ici et partout.
+# Température variabilité spatiale
+ggplot(aes(y=Tmax3jours, x= Period), data=Pok2001.2022) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la pluies à 20ans entre les deux Period")
+```
+#Tmax4jours
+```{r, echo=F, message=F, warning=F, fig.cap = "Tmax4jours"}
+# AP 2024-06-13 Essayer l'option "fig.cap" ci-dessus, ici et partout.
+# Température variabilité spatiale
+ggplot(aes(y=Tmax4jours, x= Period), data=Pok2001.2022) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la pluies à 20ans entre les deux Period")
+```
+
+#Tmax5jours
+```{r, echo=F, message=F, warning=F, fig.cap = "Tmax5jours"}
+# AP 2024-06-13 Essayer l'option "fig.cap" ci-dessus, ici et partout.
+# Température variabilité spatiale
+ggplot(aes(y=Tmax5jours , x= Period), data=Pok2001.2022) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la pluies à 20ans entre les deux Period")
+```
+#Tmax6jours
+```{r, echo=F, message=F, warning=F, fig.cap = "Tmax6jours"}
+# AP 2024-06-13 Essayer l'option "fig.cap" ci-dessus, ici et partout.
+# Température variabilité spatiale
+ggplot(aes(y=Tmax6jours, x= Period), data=Pok2001.2022) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la pluies à 20ans entre les deux Period")
+```
+#Tmax7jours
+```{r, echo=F, message=F, warning=F, fig.cap = "Tmax7jours"}
+# AP 2024-06-13 Essayer l'option "fig.cap" ci-dessus, ici et partout.
+# Température variabilité spatiale
+ggplot(aes(y=Tmax7jours, x= Period), data=Pok2001.2022) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la pluies à 20ans entre les deux Period")
+```
+
+#Les température minimums 
+
+#Tmin2jours
+```{r, echo=F, message=F, warning=F, fig.cap = "Tmin2jours"}
+# AP 2024-06-13 Essayer l'option "fig.cap" ci-dessus, ici et partout.
+# Température variabilité spatiale
+ggplot(aes(y=Tmin2jours, x= Period), data=Pok2001.2022) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la pluies à 20ans entre les deux Period")
+```
+
+#Tmin3jours
+```{r, echo=F, message=F, warning=F, fig.cap = "Tmin3jours"}
+# AP 2024-06-13 Essayer l'option "fig.cap" ci-dessus, ici et partout.
+# Température variabilité spatiale
+ggplot(aes(y=Tmin3jours , x= Period), data=Pok2001.2022) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la pluies à 20ans entre les deux Period")
+```
+
+#Tmin4jours
+```{r, echo=F, message=F, warning=F, fig.cap = "Tmin4jours"}
+# AP 2024-06-13 Essayer l'option "fig.cap" ci-dessus, ici et partout.
+# Température variabilité spatiale
+ggplot(aes(y=Tmin4jours , x= Period), data=Pok2001.2022) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la pluies à 20ans entre les deux Period")
+```
+#Tmin5jours
+```{r, echo=F, message=F, warning=F, fig.cap = "Tmin5jours"}
+# AP 2024-06-13 Essayer l'option "fig.cap" ci-dessus, ici et partout.
+# Température variabilité spatiale
+ggplot(aes(y=Tmin5jours , x= Period), data=Pok2001.2022) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la pluies à 20ans entre les deux Period")
+```
+#Tmin6jours
+```{r, echo=F, message=F, warning=F, fig.cap = "Tmin6jours"}
+# AP 2024-06-13 Essayer l'option "fig.cap" ci-dessus, ici et partout.
+# Température variabilité spatiale
+ggplot(aes(y=Tmin6jours , x= Period), data=Pok2001.2022) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la pluies à 20ans entre les deux Period")
+```
+#Tmin7jours
+```{r, echo=F, message=F, warning=F, fig.cap = "Tminjours"}
+# AP 2024-06-13 Essayer l'option "fig.cap" ci-dessus, ici et partout.
+# Température variabilité spatiale
+ggplot(aes(y=Tmin7jours , x= Period), data=Pok2001.2022) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))+
+  ggtitle("Variation  de la pluies à 20ans entre les deux Period")
+```
+
+
+#Ne compte pas
+
+#Correlation entre Conductivité et pluies
+
+```{r Zone_industriel_vs_Conductivité}
+
+#names(Pok2001.2022) 
+
+#subset(Period1, select=c(Station2, Date, pctIND_supdrainee_1990,Conductivity_microS_cm))
+#subset(Period2, select=c(Station2, Date, pctIND_supdrainee_2020,Conductivity_microS_cm))
+
+ggplot() +
+geom_point(data=Period1, aes(x=Conductivity_microS_cm, y=precip_tot_mm,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=Conductivity_microS_cm, y=precip_tot_mm),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=Conductivity_microS_cm, y=precip_tot_mm,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=Conductivity_microS_cm, y=precip_tot_mm),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la conductivité et la Zone industriel",
+x=" Zone industriel (fraction de la superficie du bassin)",
+y="Conductivity_microS_cm") +
+
+theme_bw()
 
 ```
 
 
+```{r Zone_industriel_vs_Conductivité}
+
+#names(Pok2001.2022) 
+
+#subset(Period1, select=c(Station2, Date, pctIND_supdrainee_1990,Conductivity_microS_cm))
+#subset(Period2, select=c(Station2, Date, pctIND_supdrainee_2020,Conductivity_microS_cm))
+
+ggplot() +
+geom_point(data=Period1, aes(x=Conductivity_microS_cm, y=Temp_eau_YSI_degC,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=Conductivity_microS_cm, y=Temp_eau_YSI_degC),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=Conductivity_microS_cm, y=Temp_eau_YSI_degC,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=Conductivity_microS_cm, y=Temp_eau_YSI_degC),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la conductivité et la Zone industriel",
+x=" Zone industriel (fraction de la superficie du bassin)",
+y="Conductivity_microS_cm") +
+
+theme_bw()
+
+```
+
+```{r Zone_industriel_vs_Conductivité}
+
+#names(Pok2001.2022) 
+
+#subset(Period1, select=c(Station2, Date, pctIND_supdrainee_1990,Conductivity_microS_cm))
+#subset(Period2, select=c(Station2, Date, pctIND_supdrainee_2020,Conductivity_microS_cm))
+
+ggplot() +
+geom_point(data=Period1, aes(x=Carbon_Total_Organic_mg_L, y=precip_tot_mm,
+ color="P1", shape="P1")) +
+geom_smooth(data=Period1, aes(x=Carbon_Total_Organic_mg_L, y=precip_tot_mm),
+            
+ method=lm, se=FALSE, color="red") +
+ geom_point(data=Period2, aes(x=Carbon_Total_Organic_mg_L, y=precip_tot_mm,
+
+color="P2", shape="P2")) +
+
+ geom_smooth(data=Period2, aes(x=Carbon_Total_Organic_mg_L, y=precip_tot_mm),
+ method=lm, se=FALSE, color="blue") +
+  
+ scale_color_manual(name="",
+values=c("P1"="red", "P2"="blue"),
+breaks=c("P1","P2")) +
+scale_shape_manual(name="",
+values=c("P1"=1, "P2"=2),
+breaks=c("P1","P2")) +
+
+  
+labs(title="Relation entre la conductivité et la Zone industriel",
+x=" Zone industriel (fraction de la superficie du bassin)",
+y="Conductivity_microS_cm") +
+
+theme_bw()
+
+```
