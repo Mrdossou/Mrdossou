@@ -11,6 +11,7 @@ editor_options:
 bibliography: bibliographie_de_these
 ---
 
+
 Tous les chunks jusqu'à "merge03" ne sont pas évalués (eval=F) puisque ceux-ci sont désormais inutiles après la création du fichier de données en format RData qui est chargé ci-dessous dans le chunk "charger_Pok2001.2022.RData".
 
 ```{r Charger_librairies, include=F, message=F, warning=F}
@@ -10261,6 +10262,8 @@ labs(title="Relation entre la conductivité et la Zone industriel",
 x=" Zone industriel (fraction de la superficie du bassin)",
 y="Conductivity_microS_cm") +
 
-theme_bw()
+theme_bw() 
+
 
 ```
+
