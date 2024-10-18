@@ -4989,7 +4989,147 @@ theme_bw()
 
 ```
 
+# Arbre de regression
 
+# essaie sur les arbres de régression
+
+```{r, ctree1_1}
+#NF_km2_supdrainee_1990
+
+library("partykit") # pour ctree
+library("strucchange")  # for p values of ctree models
+
+# Créer une variable "Mois"
+Pok2001.2022$Mois<-format(as.Date(Pok2001.2022$Date, format="%Y-%m-%d"),"%m")
+class(Pok2001.2022$Mois)
+# Convertir la classe en facteur
+Pok2001.2022$Mois=as.factor(Pok2001.2022$Mois)
+class(Pok2001.2022$Mois)
+# Voir les niveaux du facteur "Mois"
+levels(Pok2001.2022$Mois)
+table(Pok2001.2022$Mois)
+
+# Créer une variable "Annee"
+Pok2001.2022$Annee<-format(as.Date(Pok2001.2022$Date, format="%Y-%m-%d"),"%Y")
+class(Pok2001.2022$Annee)
+Pok2001.2022$Annee=as.factor(Pok2001.2022$Annee)
+levels(Pok2001.2022$Annee)
+table(Pok2001.2022$Annee)
+
+
+partykit::ctree(Oxyg_dissous_YSI_mg_L~Mois, data=Pok2001.2022)
+
+
+ctree01_temp_mois=partykit::ctree(Oxyg_dissous_YSI_mg_L~Mois, data=Pok2001.2022,
+control=partykit::ctree_control(minsplit=1, minbucket=1,minprob=0.1,
+maxdepth=1))
+ctree01_temp_mois
+
+sctest(ctree01_temp_mois)
+
+plot(ctree01_temp_mois)
+
+# On peut ajouter plusieurs variables indépendantes "X" au modèle:
+ctree02_temp=partykit::ctree(pctAGR_supdrainee_2020 + pctAGR_supdrainee_1990 ~Phosphorus_Total_mg_L , data=Pok2001.2022,
+control=partykit::ctree_control(minsplit=1, minbucket=1,minprob=0.1,
+maxdepth=1))
+
+ctree02_temp
+
+sctest(ctree02_temp)
+
+plot(ctree02_temp)
+
+
+
+
+```
+
+
+# prototype
+
+```{r}
+
+
+# Créer une variable "Mois"
+Pok2001.2022$Mois<-format(as.Date(Pok2001.2022$Date, format="%Y-%m-%d"),"%m")
+class(Pok2001.2022$Mois)
+# Convertir la classe en facteur
+Pok2001.2022$Mois=as.factor(Pok2001.2022$Mois)
+class(Pok2001.2022$Mois)
+# Voir les niveaux du facteur "Mois"
+levels(Pok2001.2022$Mois)
+table(Pok2001.2022$Mois)
+
+# Créer une variable "Annee"
+Pok2001.2022$Annee<-format(as.Date(Pok2001.2022$Date, format="%Y-%m-%d"),"%Y")
+class(Pok2001.2022$Annee)
+Pok2001.2022$Annee=as.factor(Pok2001.2022$Annee)
+levels(Pok2001.2022$Annee)
+table(Pok2001.2022$Annee)
+
+
+
+
+```
+
+
+
+```{r}
+
+
+ctree02_temp=partykit::ctree(pctAGR_supdrainee_2020 + pctAGR_supdrainee_1990 ~Phosphorus_Total_mg_L , data=Pok2001.2022,
+control=partykit::ctree_control(minsplit=1, minbucket=1,minprob=0.1,
+maxdepth=1))
+
+ctree02_temp
+
+sctest(ctree02_temp)
+
+plot(ctree02_temp)
+
+
+
+
+
+```
+
+
+```{r}
+
+
+ctree02_temp=partykit::ctree(pctAGR_supdrainee_2020 + pctAGR_supdrainee_1990 ~Nitrate_as_N_mg_L , data=Pok2001.2022,
+control=partykit::ctree_control(minsplit=1, minbucket=1,minprob=0.1,
+maxdepth=1))
+
+ctree02_temp
+
+sctest(ctree02_temp)
+
+plot(ctree02_temp)
+
+
+
+
+
+```
+
+# RÉFÉRENCES
+
+```{r}
+
+# Temp_eau_YSI_degC
+# Oxyg_dissous_YSI_mg_L
+# Conductivity_microS_cm
+# pH_units
+# Turbidity_NTU
+# Colour_TCU 
+# Carbon_Total_Organic_mg_L 
+# E.coli_MPN_100.mL
+# Phosphorus_Total_mg_L
+# Nitrate_as_N_mg_L
+
+```
 
 # RÉFÉRENCES
 
